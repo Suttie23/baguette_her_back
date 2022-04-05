@@ -71,7 +71,7 @@ void MenuScene::Update(const double& dt) {
     static float countdown = 0.0f;
     countdown -= dt;
 
-    // Keyboard controls for the menu
+    // Keyboard controls for the menu (Up and Down)
     if (sf::Keyboard::isKeyPressed(Keyboard::Down)) {
         if (curIndex < (menuIndex.size() - 1) && countdown <= 0) {
             countdown = 0.25f;
@@ -90,15 +90,16 @@ void MenuScene::Update(const double& dt) {
         }
     }
 
-    if (sf::Keyboard::isKeyPressed(Keyboard::Enter)) {//set boolean on keypressed until is not released
-        if (ents.find("pointer")[0]->getPosition() == menuIndex[0] - Vector2f(20.f, -20.f)) {//newgame
+    // Keyboard controls for the menu (Select)
+    if (sf::Keyboard::isKeyPressed(Keyboard::Enter)) {
+        if (ents.find("pointer")[0]->getPosition() == menuIndex[0] - Vector2f(20.f, -20.f)) { // Play Game
             Engine::ChangeScene(&level1);
             this->menuTheme.stop();
         }
-        else if (ents.find("pointer")[0]->getPosition() == menuIndex[1] - Vector2f(20.f, -20.f)) {//shop
+        else if (ents.find("pointer")[0]->getPosition() == menuIndex[1] - Vector2f(20.f, -20.f)) { // Options
             //Engine::ChangeScene(&optionScene)
         }
-        else if (ents.find("pointer")[0]->getPosition() == menuIndex[2] - Vector2f(20.f, -20.f)) {//options
+        else if (ents.find("pointer")[0]->getPosition() == menuIndex[2] - Vector2f(20.f, -20.f)) {// Exit
             Engine::GetWindow().close();
         }
     }
