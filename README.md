@@ -1,4 +1,4 @@
-# Baguette Her Back! test
+# Baguette Her Back!
 
 Coursework Submission for Games Engineering SET09121.
 Contributors: Michael Thomas Suttie & Mikolaj Figiel
