@@ -11,3 +11,9 @@ not an option for you, but hey, at yeast you’ve got legs. Any character additi
 come strictly through the levels, no shops or money systems as frankly you don’t have the time or 
 resources to make any dough. Rye-s to the occasion and get back what was wrongfully taken from 
 you, but most of all have fun, no-one likes a sourdough.
+
+## Game Credits
+
+New York Baguette (Menu Music) - https://www.dargolan-free.com/world-music
+
+Chic Magnet (Gameplay) - https://www.dargolan-free.com/world-music
