@@ -11,6 +11,8 @@
 using namespace std;
 using namespace sf;
 
+static shared_ptr<Texture> _texture;
+
 void MenuScene::Load() {
 
     if (!this->menuTheme.openFromFile("res/music/new_york_baguette.mp3"))
@@ -23,26 +25,42 @@ void MenuScene::Load() {
     cout << "Menu Load \n";
     {
 
-        // Creating menu button entities and setting position
-        auto title = makeEntity();
-        auto t = title->addComponent<TextComponent>(
-            "Baguette Her Back!");
-        title->setPosition(Vcast<float>(Engine::getWindowSize()) * Vector2f(0.1f, 0.05f));
+        auto background = makeEntity();
+        auto bg = background->addComponent<SpriteComponent>();
+        _texture = make_shared<Texture>();
+        _texture->loadFromFile("res/menu/test_bg.png");
+        bg->setTexture(_texture);
+        background->setPosition(Vcast<float>(Engine::getWindowSize()) * Vector2f(0.0f, 0.0f));
+
+        auto logo = makeEntity();
+        auto lo = logo->addComponent<SpriteComponent>();
+        _texture = make_shared<Texture>();
+        _texture->loadFromFile("res/menu/game_logo.png");
+        lo->setTexture(_texture);
+        logo->setPosition(Vcast<float>(Engine::getWindowSize()) * Vector2f(0.34f, 0.05f));
 
         auto playGame = makeEntity();
-        auto pg = playGame->addComponent<TextComponent>(
-            "Play Now");
-        playGame->setPosition(Vcast<float>(Engine::getWindowSize()) * Vector2f(0.1f, 0.4f));
+        auto pg = playGame->addComponent<SpriteComponent>();
+        _texture = make_shared<Texture>();
+        _texture->loadFromFile("res/menu/play_button_norm.png");
+        pg->setTexture(_texture);
+        playGame->setPosition(Vcast<float>(Engine::getWindowSize()) * Vector2f(0.45f, 0.45f));
 
-        auto options = makeEntity();
-        auto o = options->addComponent<TextComponent>(
-            "Options");
-        options->setPosition(Vcast<float>(Engine::getWindowSize()) * Vector2f(0.1f, 0.5f));
+        auto settings = makeEntity();
+        auto se = settings->addComponent<SpriteComponent>();
+        _texture = make_shared<Texture>();
+        _texture->loadFromFile("res/menu/settings_button_norm.png");
+        se->setTexture(_texture);
+        settings->setPosition(Vcast<float>(Engine::getWindowSize()) * Vector2f(0.45f, 0.55f));
 
-        auto exit = makeEntity();
-        auto e = exit->addComponent<TextComponent>(
-            "Exit");
-        exit->setPosition(Vcast<float>(Engine::getWindowSize()) * Vector2f(0.1f, 0.6f));
+        auto quit = makeEntity();
+        auto qu = quit->addComponent<SpriteComponent>();
+        _texture = make_shared<Texture>();
+        _texture->loadFromFile("res/menu/quit_button_norm.png");
+        qu->setTexture(_texture);
+        quit->setPosition(Vcast<float>(Engine::getWindowSize()) * Vector2f(0.45f, 0.65f));
+
+
 
         // Menu pointer to indicate which option the user is hovering over
         auto pointer = makeEntity();
@@ -54,8 +72,8 @@ void MenuScene::Load() {
         s->getShape().setFillColor(Color::Cyan);
         s->getShape().setOrigin(Vector2f(5.f, 5.f));
         menuIndex.push_back(playGame->getPosition());
-        menuIndex.push_back(options->getPosition());
-        menuIndex.push_back(exit->getPosition());
+        menuIndex.push_back(settings->getPosition());
+        menuIndex.push_back(quit->getPosition());
         for (int i = 0; i < menuIndex.size(); i++) {
             cout << menuIndex[i] << endl;
         }
