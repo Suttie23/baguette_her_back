@@ -1,0 +1,45 @@
+#include "scene_settings.h"
+#include "../components/cmp_sprite.h"
+#include "../components/cmp_text.h"
+#include "../components/cmp_blinking.h"
+#include "../game.h"
+#include <SFML/Window/Keyboard.hpp>
+#include "SFML/Graphics.hpp"
+#include <SFML\Audio\Music.hpp>
+#include <iostream>
+
+using namespace std;
+using namespace sf;
+
+static shared_ptr<Texture> _texture;
+
+void SettingsScene::Load() {
+
+    setLoaded(true);
+    cout << "Menu Load \n";
+    {
+
+        auto background = makeEntity();
+        auto bg = background->addComponent<SpriteComponent>();
+        _texture = make_shared<Texture>();
+        _texture->loadFromFile("res/menu/test_bg.png");
+        bg->setTexture(_texture);
+        background->setPosition(Vcast<float>(Engine::getWindowSize()) * Vector2f(0.0f, 0.0f));
+
+        auto logo = makeEntity();
+        auto lo = logo->addComponent<SpriteComponent>();
+        _texture = make_shared<Texture>();
+        _texture->loadFromFile("res/menu/settings_title.png");
+        lo->setTexture(_texture);
+        logo->setPosition(Vcast<float>(Engine::getWindowSize()) * Vector2f(0.34f, 0.05f));
+
+ 
+    }
+}
+
+void SettingsScene::Update(const double& dt) {
+    
+
+
+    Scene::Update(dt);
+}

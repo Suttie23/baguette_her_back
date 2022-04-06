@@ -25,6 +25,7 @@ void MenuScene::Load() {
     cout << "Menu Load \n";
     {
 
+        // Background Entity
         auto background = makeEntity();
         auto bg = background->addComponent<SpriteComponent>();
         _texture = make_shared<Texture>();
@@ -32,6 +33,7 @@ void MenuScene::Load() {
         bg->setTexture(_texture);
         background->setPosition(Vcast<float>(Engine::getWindowSize()) * Vector2f(0.0f, 0.0f));
 
+        // Game Logo Entity
         auto logo = makeEntity();
         auto lo = logo->addComponent<SpriteComponent>();
         _texture = make_shared<Texture>();
@@ -39,28 +41,32 @@ void MenuScene::Load() {
         lo->setTexture(_texture);
         logo->setPosition(Vcast<float>(Engine::getWindowSize()) * Vector2f(0.34f, 0.05f));
 
+        // Play Button Entity
         auto playGame = makeEntity();
+        playGame->addTag("playButton");
         auto pg = playGame->addComponent<SpriteComponent>();
         _texture = make_shared<Texture>();
         _texture->loadFromFile("res/menu/play_button_norm.png");
         pg->setTexture(_texture);
         playGame->setPosition(Vcast<float>(Engine::getWindowSize()) * Vector2f(0.45f, 0.45f));
 
+        // Settings Button Entity
         auto settings = makeEntity();
+        settings->addTag("settingsButton");
         auto se = settings->addComponent<SpriteComponent>();
         _texture = make_shared<Texture>();
         _texture->loadFromFile("res/menu/settings_button_norm.png");
         se->setTexture(_texture);
         settings->setPosition(Vcast<float>(Engine::getWindowSize()) * Vector2f(0.45f, 0.55f));
 
+        // Quit Button Entity
         auto quit = makeEntity();
+        quit->addTag("quitButton");
         auto qu = quit->addComponent<SpriteComponent>();
         _texture = make_shared<Texture>();
         _texture->loadFromFile("res/menu/quit_button_norm.png");
         qu->setTexture(_texture);
         quit->setPosition(Vcast<float>(Engine::getWindowSize()) * Vector2f(0.45f, 0.65f));
-
-
 
         // Menu pointer to indicate which option the user is hovering over
         auto pointer = makeEntity();
@@ -69,7 +75,7 @@ void MenuScene::Load() {
         auto s = pointer->addComponent<ShapeComponent>();
         pointer->setPosition(playGame->getPosition() - Vector2f(20.f, -(20.f)));
         s->setShape<sf::RectangleShape>(Vector2f(10.f, 10.f));
-        s->getShape().setFillColor(Color::Cyan);
+        s->getShape().setFillColor(Color::Transparent);
         s->getShape().setOrigin(Vector2f(5.f, 5.f));
         menuIndex.push_back(playGame->getPosition());
         menuIndex.push_back(settings->getPosition());
@@ -97,6 +103,15 @@ void MenuScene::Update(const double& dt) {
             cout << curIndex << endl;
             cout << menuIndex[curIndex] << endl;
             ents.find("pointer")[0]->setPosition(menuIndex[curIndex] - Vector2f(20.f, -20.f));
+            if (ents.find("pointer")[0]->getPosition() == menuIndex[0] - Vector2f(20.f, -20.f)) { // Play Game
+
+            }
+            else if (ents.find("pointer")[0]->getPosition() == menuIndex[1] - Vector2f(20.f, -20.f)) {
+
+            }
+            else if (ents.find("pointer")[0]->getPosition() == menuIndex[2] - Vector2f(20.f, -20.f)) {
+
+            }
         }
     }
     if (sf::Keyboard::isKeyPressed(Keyboard::Up)) {
@@ -104,9 +119,20 @@ void MenuScene::Update(const double& dt) {
             countdown = 0.2f;
             curIndex--;
             ents.find("pointer")[0]->setPosition(menuIndex[curIndex] - Vector2f(20.f, -20.f));
+            if (ents.find("pointer")[0]->getPosition() == menuIndex[2] - Vector2f(20.f, -20.f)) { // Play Game
 
+            }
+            else if (ents.find("pointer")[0]->getPosition() == menuIndex[1] - Vector2f(20.f, -20.f)) {
+
+            }
+            else if (ents.find("pointer")[0]->getPosition() == menuIndex[0] - Vector2f(20.f, -20.f)) {
+
+            }
         }
     }
+
+
+
 
     // Keyboard controls for the menu (Select)
     if (sf::Keyboard::isKeyPressed(Keyboard::Enter)) {
@@ -115,7 +141,7 @@ void MenuScene::Update(const double& dt) {
             this->menuTheme.stop();
         }
         else if (ents.find("pointer")[0]->getPosition() == menuIndex[1] - Vector2f(20.f, -20.f)) { // Options
-            //Engine::ChangeScene(&optionScene)
+            Engine::ChangeScene(&settings);
         }
         else if (ents.find("pointer")[0]->getPosition() == menuIndex[2] - Vector2f(20.f, -20.f)) {// Exit
             Engine::GetWindow().close();
