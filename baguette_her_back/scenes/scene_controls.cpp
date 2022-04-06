@@ -15,8 +15,6 @@ static shared_ptr<Texture> _texture;
 
 void ControlsScene::Load() {
 
-    setLoaded(true);
-    cout << "Controls Load \n";
     {
 
         auto background = makeEntity();
@@ -33,8 +31,10 @@ void ControlsScene::Load() {
         lo->setTexture(_texture);
         logo->setPosition(Vcast<float>(Engine::getWindowSize()) * Vector2f(0.34f, 0.05f));
 
- 
     }
+
+    setLoaded(true);
+    cout << "Controls Load \n";
 }
 
 void ControlsScene::Update(const double& dt) {
@@ -44,4 +44,9 @@ void ControlsScene::Update(const double& dt) {
     }
 
     Scene::Update(dt);
+}
+
+void ControlsScene::UnLoad() {
+    cout << "Controls Unload" << endl;
+    Scene::UnLoad();
 }

@@ -21,8 +21,7 @@ void MenuScene::Load() {
     this->menuTheme.setVolume(50);
     this->menuTheme.play();
 
-    setLoaded(true);
-    cout << "Menu Load \n";
+
     {
 
         // Background Entity
@@ -77,6 +76,7 @@ void MenuScene::Load() {
         qu->setTexture(_texture);
         quit->setPosition(Vcast<float>(Engine::getWindowSize()) * Vector2f(0.45f, 0.75f));
 
+
         // Menu indicator to highlight the button selected
         auto pointer = makeEntity();
         pointer->addTag("pointer");
@@ -92,10 +92,13 @@ void MenuScene::Load() {
         for (int i = 0; i < menuIndex.size(); i++) {
             cout << menuIndex[i] << endl;
         }
-        
-      
+           
     }
+    setLoaded(true);
+    cout << "Menu Load \n";
 }
+
+
 
 void MenuScene::Update(const double& dt) {
   
@@ -134,6 +137,7 @@ void MenuScene::Update(const double& dt) {
             Engine::ChangeScene(&settings);
         }
         else if (ents.find("pointer")[0]->getPosition() == menuIndex[2] - Vector2f(-4.15f, (-7.f))) {// Exit
+            MenuScene::UnLoad();
             Engine::ChangeScene(&controls);
         }
         else if (ents.find("pointer")[0]->getPosition() == menuIndex[3] - Vector2f(-4.15f, (-7.f))) {// Exit
@@ -142,4 +146,9 @@ void MenuScene::Update(const double& dt) {
     }
 
     Scene::Update(dt);
+}
+
+void MenuScene::UnLoad() {
+    cout << "Menu Unload" << endl;
+    Scene::UnLoad();
 }

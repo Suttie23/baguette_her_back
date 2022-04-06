@@ -15,8 +15,6 @@ static shared_ptr<Texture> _texture;
 
 void SettingsScene::Load() {
 
-    setLoaded(true);
-    cout << "Settings Load \n";
     {
 
         auto background = makeEntity();
@@ -35,6 +33,9 @@ void SettingsScene::Load() {
 
  
     }
+
+    setLoaded(true);
+    cout << "Settings Load \n";
 }
 
 void SettingsScene::Update(const double& dt) {
@@ -44,4 +45,9 @@ void SettingsScene::Update(const double& dt) {
     }
 
     Scene::Update(dt);
+}
+
+void SettingsScene::UnLoad() {
+    cout << "Settings Unload" << endl;
+    Scene::UnLoad();
 }
