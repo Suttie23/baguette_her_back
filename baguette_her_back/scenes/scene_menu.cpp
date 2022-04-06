@@ -29,7 +29,7 @@ void MenuScene::Load() {
         auto background = makeEntity();
         auto bg = background->addComponent<SpriteComponent>();
         _texture = make_shared<Texture>();
-        _texture->loadFromFile("res/menu/test_bg.png");
+        _texture->loadFromFile("res/menu/");
         bg->setTexture(_texture);
         background->setPosition(Vcast<float>(Engine::getWindowSize()) * Vector2f(0.0f, 0.0f));
 
@@ -46,7 +46,7 @@ void MenuScene::Load() {
         playGame->addTag("playButton");
         auto pg = playGame->addComponent<SpriteComponent>();
         _texture = make_shared<Texture>();
-        _texture->loadFromFile("res/menu/play_button_norm.png");
+        _texture->loadFromFile("res/menu/play_button.png");
         pg->setTexture(_texture);
         playGame->setPosition(Vcast<float>(Engine::getWindowSize()) * Vector2f(0.45f, 0.45f));
 
@@ -55,30 +55,39 @@ void MenuScene::Load() {
         settings->addTag("settingsButton");
         auto se = settings->addComponent<SpriteComponent>();
         _texture = make_shared<Texture>();
-        _texture->loadFromFile("res/menu/settings_button_norm.png");
+        _texture->loadFromFile("res/menu/settings_button.png");
         se->setTexture(_texture);
         settings->setPosition(Vcast<float>(Engine::getWindowSize()) * Vector2f(0.45f, 0.55f));
+
+        // Controls Button Entity
+        auto controls = makeEntity();
+        controls->addTag("settingsButton");
+        auto ct = controls->addComponent<SpriteComponent>();
+        _texture = make_shared<Texture>();
+        _texture->loadFromFile("res/menu/controls_button.png");
+        ct->setTexture(_texture);
+        controls->setPosition(Vcast<float>(Engine::getWindowSize()) * Vector2f(0.45f, 0.65f));
 
         // Quit Button Entity
         auto quit = makeEntity();
         quit->addTag("quitButton");
         auto qu = quit->addComponent<SpriteComponent>();
         _texture = make_shared<Texture>();
-        _texture->loadFromFile("res/menu/quit_button_norm.png");
+        _texture->loadFromFile("res/menu/quit_button.png");
         qu->setTexture(_texture);
-        quit->setPosition(Vcast<float>(Engine::getWindowSize()) * Vector2f(0.45f, 0.65f));
+        quit->setPosition(Vcast<float>(Engine::getWindowSize()) * Vector2f(0.45f, 0.75f));
 
-        // Menu pointer to indicate which option the user is hovering over
+        // Menu indicator to highlight the button selected
         auto pointer = makeEntity();
         pointer->addTag("pointer");
-        pointer->addComponent<BlinkComponent>(0.5f);
         auto s = pointer->addComponent<ShapeComponent>();
-        pointer->setPosition(playGame->getPosition() - Vector2f(20.f, -(20.f)));
-        s->setShape<sf::RectangleShape>(Vector2f(10.f, 10.f));
-        s->getShape().setFillColor(Color::Transparent);
+        pointer->setPosition(playGame->getPosition() - Vector2f(-4.15f, (-7.f)));
+        s->setShape<sf::RectangleShape>(Vector2f(132.f, 40.f));
+        s->getShape().setFillColor(Color(220, 140, 44, 128));
         s->getShape().setOrigin(Vector2f(5.f, 5.f));
         menuIndex.push_back(playGame->getPosition());
         menuIndex.push_back(settings->getPosition());
+        menuIndex.push_back(controls->getPosition());
         menuIndex.push_back(quit->getPosition());
         for (int i = 0; i < menuIndex.size(); i++) {
             cout << menuIndex[i] << endl;
@@ -89,7 +98,7 @@ void MenuScene::Load() {
 }
 
 void MenuScene::Update(const double& dt) {
-    
+  
     static int curIndex = 0;
     // Countdown should stop the pointer from warping to ludicrous speed when navigating
     static float countdown = 0.0f;
@@ -102,48 +111,32 @@ void MenuScene::Update(const double& dt) {
             curIndex++;
             cout << curIndex << endl;
             cout << menuIndex[curIndex] << endl;
-            ents.find("pointer")[0]->setPosition(menuIndex[curIndex] - Vector2f(20.f, -20.f));
-            if (ents.find("pointer")[0]->getPosition() == menuIndex[0] - Vector2f(20.f, -20.f)) { // Play Game
-
-            }
-            else if (ents.find("pointer")[0]->getPosition() == menuIndex[1] - Vector2f(20.f, -20.f)) {
-
-            }
-            else if (ents.find("pointer")[0]->getPosition() == menuIndex[2] - Vector2f(20.f, -20.f)) {
-
-            }
+            ents.find("pointer")[0]->setPosition(menuIndex[curIndex] - Vector2f(-4.15f, (-7.f)));          
         }
     }
     if (sf::Keyboard::isKeyPressed(Keyboard::Up)) {
         if (curIndex > 0 && countdown <= 0) {
             countdown = 0.2f;
             curIndex--;
-            ents.find("pointer")[0]->setPosition(menuIndex[curIndex] - Vector2f(20.f, -20.f));
-            if (ents.find("pointer")[0]->getPosition() == menuIndex[2] - Vector2f(20.f, -20.f)) { // Play Game
-
-            }
-            else if (ents.find("pointer")[0]->getPosition() == menuIndex[1] - Vector2f(20.f, -20.f)) {
-
-            }
-            else if (ents.find("pointer")[0]->getPosition() == menuIndex[0] - Vector2f(20.f, -20.f)) {
-
-            }
+            cout << curIndex << endl;
+            cout << menuIndex[curIndex] << endl;
+            ents.find("pointer")[0]->setPosition(menuIndex[curIndex] - Vector2f(-4.15f, (-7.f)));
         }
     }
 
-
-
-
-    // Keyboard controls for the menu (Select)
+    // Keyboard controls for the menu (Enter)
     if (sf::Keyboard::isKeyPressed(Keyboard::Enter)) {
-        if (ents.find("pointer")[0]->getPosition() == menuIndex[0] - Vector2f(20.f, -20.f)) { // Play Game
+        if (ents.find("pointer")[0]->getPosition() == menuIndex[0] - Vector2f(-4.15f, (-7.f))) { // Play Game
             Engine::ChangeScene(&level1);
             this->menuTheme.stop();
         }
-        else if (ents.find("pointer")[0]->getPosition() == menuIndex[1] - Vector2f(20.f, -20.f)) { // Options
+        else if (ents.find("pointer")[0]->getPosition() == menuIndex[1] - Vector2f(-4.15f, (-7.f))) { // Options
             Engine::ChangeScene(&settings);
         }
-        else if (ents.find("pointer")[0]->getPosition() == menuIndex[2] - Vector2f(20.f, -20.f)) {// Exit
+        else if (ents.find("pointer")[0]->getPosition() == menuIndex[2] - Vector2f(-4.15f, (-7.f))) {// Exit
+            Engine::ChangeScene(&controls);
+        }
+        else if (ents.find("pointer")[0]->getPosition() == menuIndex[3] - Vector2f(-4.15f, (-7.f))) {// Exit
             Engine::GetWindow().close();
         }
     }
