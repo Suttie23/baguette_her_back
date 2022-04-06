@@ -28,7 +28,6 @@
 #include <SFML/Audio/ALCheck.hpp>
 #include <SFML/System/Err.hpp>
 #include <string>
-#include <ostream>
 
 #if defined(__APPLE__)
     #if defined(__clang__)
@@ -43,13 +42,14 @@ namespace sf
 namespace priv
 {
 ////////////////////////////////////////////////////////////
-void alCheckError(const std::filesystem::path& file, unsigned int line, const char* expression)
+void alCheckError(const char* file, unsigned int line, const char* expression)
 {
     // Get the last error
     ALenum errorCode = alGetError();
 
     if (errorCode != AL_NO_ERROR)
     {
+        std::string fileString = file;
         std::string error = "Unknown error";
         std::string description = "No description";
 
@@ -94,9 +94,9 @@ void alCheckError(const std::filesystem::path& file, unsigned int line, const ch
 
         // Log the error
         err() << "An internal OpenAL call failed in "
-              << file.filename() << "(" << line << ")."
+              << fileString.substr(fileString.find_last_of("\\/") + 1) << "(" << line << ")."
               << "\nExpression:\n   " << expression
-              << "\nError description:\n   " << error << "\n   " << description << '\n'
+              << "\nError description:\n   " << error << "\n   " << description << "\n"
               << std::endl;
     }
 }

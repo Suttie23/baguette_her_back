@@ -35,8 +35,6 @@
 #include <OpenGLES/EAGLDrawable.h>
 #include <QuartzCore/CAEAGLLayer.h>
 #include <dlfcn.h>
-#include <ostream>
-
 
 #if defined(__APPLE__)
     #if defined(__clang__)
@@ -273,7 +271,7 @@ void EaglContext::display()
     // therefore we fake it with a manual framerate limit
     if (m_vsyncEnabled)
     {
-        constexpr Time frameDuration = seconds(1.f / 60.f);
+        static const Time frameDuration = seconds(1.f / 60.f);
         sleep(frameDuration - m_clock.getElapsedTime());
         m_clock.restart();
     }

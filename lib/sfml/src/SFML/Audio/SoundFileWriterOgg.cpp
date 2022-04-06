@@ -29,7 +29,6 @@
 #include <SFML/System/Err.hpp>
 #include <SFML/System/Utils.hpp>
 #include <algorithm>
-#include <ostream>
 #include <cctype>
 #include <cstdlib>
 #include <cassert>
@@ -40,9 +39,11 @@ namespace sf
 namespace priv
 {
 ////////////////////////////////////////////////////////////
-bool SoundFileWriterOgg::check(const std::filesystem::path& filename)
+bool SoundFileWriterOgg::check(const std::string& filename)
 {
-    return toLower(filename.extension().string()) == ".ogg";
+    const std::string extension = toLower(filename.substr(filename.find_last_of('.') + 1));
+
+    return extension == "ogg";
 }
 
 
@@ -65,7 +66,7 @@ SoundFileWriterOgg::~SoundFileWriterOgg()
 
 
 ////////////////////////////////////////////////////////////
-bool SoundFileWriterOgg::open(const std::filesystem::path& filename, unsigned int sampleRate, unsigned int channelCount)
+bool SoundFileWriterOgg::open(const std::string& filename, unsigned int sampleRate, unsigned int channelCount)
 {
     // Save the channel count
     m_channelCount = channelCount;
@@ -79,7 +80,7 @@ bool SoundFileWriterOgg::open(const std::filesystem::path& filename, unsigned in
     int status = vorbis_encode_init_vbr(&m_vorbis, static_cast<long>(channelCount), static_cast<long>(sampleRate), 0.4f);
     if (status < 0)
     {
-        err() << "Failed to write ogg/vorbis file " << filename << " (unsupported bitrate)" << std::endl;
+        err() << "Failed to write ogg/vorbis file \"" << filename << "\" (unsupported bitrate)" << std::endl;
         close();
         return false;
     }
@@ -89,7 +90,7 @@ bool SoundFileWriterOgg::open(const std::filesystem::path& filename, unsigned in
     m_file.open(filename.c_str(), std::ios::binary);
     if (!m_file)
     {
-        err() << "Failed to write ogg/vorbis file " << filename << " (cannot open file)" << std::endl;
+        err() << "Failed to write ogg/vorbis file \"" << filename << "\" (cannot open file)" << std::endl;
         close();
         return false;
     }
@@ -104,7 +105,7 @@ bool SoundFileWriterOgg::open(const std::filesystem::path& filename, unsigned in
     vorbis_comment_clear(&comment);
     if (status < 0)
     {
-        err() << "Failed to write ogg/vorbis file " << filename << " (cannot generate the headers)" << std::endl;
+        err() << "Failed to write ogg/vorbis file \"" << filename << "\" (cannot generate the headers)" << std::endl;
         close();
         return false;
     }
@@ -130,7 +131,7 @@ bool SoundFileWriterOgg::open(const std::filesystem::path& filename, unsigned in
 void SoundFileWriterOgg::write(const Int16* samples, Uint64 count)
 {
     // Vorbis has issues with buffers that are too large, so we ask for 64K
-    constexpr int bufferSize = 65536;
+    static const int bufferSize = 65536;
 
     // A frame contains a sample from each channel
     int frameCount = static_cast<int>(count / m_channelCount);

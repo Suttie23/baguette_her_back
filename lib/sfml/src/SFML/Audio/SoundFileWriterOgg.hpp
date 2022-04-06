@@ -30,7 +30,6 @@
 ////////////////////////////////////////////////////////////
 #include <SFML/Audio/SoundFileWriter.hpp>
 #include <vorbis/vorbisenc.h>
-#include <filesystem>
 #include <fstream>
 
 
@@ -54,7 +53,7 @@ public:
     /// \return True if the file can be written by this writer
     ///
     ////////////////////////////////////////////////////////////
-    [[nodiscard]] static bool check(const std::filesystem::path& filename);
+    static bool check(const std::string& filename);
 
 public:
 
@@ -80,7 +79,7 @@ public:
     /// \return True if the file was successfully opened
     ///
     ////////////////////////////////////////////////////////////
-    [[nodiscard]] bool open(const std::filesystem::path& filename, unsigned int sampleRate, unsigned int channelCount) override;
+    bool open(const std::string& filename, unsigned int sampleRate, unsigned int channelCount) override;
 
     ////////////////////////////////////////////////////////////
     /// \brief Write audio samples to the open file

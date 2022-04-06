@@ -29,7 +29,6 @@
 #include <SFML/System/Err.hpp>
 #include <algorithm>
 #include <iterator>
-#include <ostream>
 
 
 namespace sf

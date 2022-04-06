@@ -36,11 +36,17 @@ namespace
     // Compute the normal of a segment
     sf::Vector2f computeNormal(const sf::Vector2f& p1, const sf::Vector2f& p2)
     {
-        sf::Vector2f normal = (p2 - p1).perpendicular();
-        float length = normal.length();
+        sf::Vector2f normal(p1.y - p2.y, p2.x - p1.x);
+        float length = std::sqrt(normal.x * normal.x + normal.y * normal.y);
         if (length != 0.f)
             normal /= length;
         return normal;
+    }
+
+    // Compute the dot product of two vectors
+    float dotProduct(const sf::Vector2f& p1, const sf::Vector2f& p2)
+    {
+        return p1.x * p2.x + p1.y * p2.y;
     }
 }
 
@@ -203,21 +209,19 @@ void Shape::update()
 
 
 ////////////////////////////////////////////////////////////
-void Shape::draw(RenderTarget& target, const RenderStates& states) const
+void Shape::draw(RenderTarget& target, RenderStates states) const
 {
-    RenderStates statesCopy(states);
-
-    statesCopy.transform *= getTransform();
+    states.transform *= getTransform();
 
     // Render the inside
-    statesCopy.texture = m_texture;
-    target.draw(m_vertices, statesCopy);
+    states.texture = m_texture;
+    target.draw(m_vertices, states);
 
     // Render the outline
     if (m_outlineThickness != 0)
     {
-        statesCopy.texture = nullptr;
-        target.draw(m_outlineVertices, statesCopy);
+        states.texture = nullptr;
+        target.draw(m_outlineVertices, states);
     }
 }
 
@@ -274,9 +278,9 @@ void Shape::updateOutline()
 
         // Make sure that the normals point towards the outside of the shape
         // (this depends on the order in which the points were defined)
-        if (n1.dot(m_vertices[0].position - p1) > 0)
+        if (dotProduct(n1, m_vertices[0].position - p1) > 0)
             n1 = -n1;
-        if (n2.dot(m_vertices[0].position - p1) > 0)
+        if (dotProduct(n2, m_vertices[0].position - p1) > 0)
             n2 = -n2;
 
         // Combine them to get the extrusion direction

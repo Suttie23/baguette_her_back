@@ -33,7 +33,6 @@
 #include <SFML/System/Err.hpp>
 #include <ApplicationServices/ApplicationServices.h>
 #include <algorithm>
-#include <ostream>
 
 #import <SFML/Window/OSX/NSImage+raw.h>
 #import <SFML/Window/OSX/Scaling.h>
@@ -134,7 +133,7 @@
 
         // Set the view to the window as its content view.
         [m_window setContentView:m_oglView];
-
+        
         [m_oglView finishInit];
     }
 
@@ -631,7 +630,8 @@
     NSDictionary* deviceDescription = [[m_window screen] deviceDescription];
     NSNumber* screenNumber = [deviceDescription valueForKey:@"NSScreenNumber"];
     CGDirectDisplayID screenID = static_cast<CGDirectDisplayID>([screenNumber intValue]);
-    return static_cast<float>(CGDisplayPixelsHigh(screenID));
+    CGFloat height = CGDisplayPixelsHigh(screenID);
+    return static_cast<float>(height);
 }
 
 

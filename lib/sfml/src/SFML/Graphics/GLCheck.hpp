@@ -30,7 +30,6 @@
 ////////////////////////////////////////////////////////////
 #include <SFML/Config.hpp>
 #include <SFML/Graphics/GLExtensions.hpp>
-#include <filesystem>
 
 
 namespace sf
@@ -61,7 +60,7 @@ namespace priv
 /// \param expression The evaluated expression as a string
 ///
 ////////////////////////////////////////////////////////////
-void glCheckError(const std::filesystem::path& file, unsigned int line, const char* expression);
+void glCheckError(const char* file, unsigned int line, const char* expression);
 
 } // namespace priv
 

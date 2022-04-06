@@ -29,7 +29,6 @@
 // Headers
 ////////////////////////////////////////////////////////////
 #include <SFML/Config.hpp>
-#include <filesystem>
 
 #if defined(__APPLE__)
     #if defined(__clang__)
@@ -73,7 +72,7 @@ namespace priv
 /// \param expression The evaluated expression as a string
 ///
 ////////////////////////////////////////////////////////////
-void alCheckError(const std::filesystem::path& file, unsigned int line, const char* expression);
+void alCheckError(const char* file, unsigned int line, const char* expression);
 
 } // namespace priv
 

@@ -36,7 +36,6 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <utility>
-#include <ostream>
 
 
 namespace
@@ -242,8 +241,8 @@ bool RenderTextureImplFBO::create(unsigned int width, unsigned int height, unsig
 
             if (settings.antialiasingLevel > static_cast<unsigned int>(samples))
             {
-                err() << "Impossible to create render texture (unsupported anti-aliasing level)"
-                      << " Requested: " << settings.antialiasingLevel << " Maximum supported: " << samples << std::endl;
+                err() << "Impossible to create render texture (unsupported anti-aliasing level)";
+                err() << " Requested: " << settings.antialiasingLevel << " Maximum supported: " << samples << std::endl;
                 return false;
             }
         }

@@ -53,7 +53,7 @@ public:
     /// \return True if the file is supported by this reader
     ///
     ////////////////////////////////////////////////////////////
-    [[nodiscard]] static bool check(InputStream& stream);
+    static bool check(InputStream& stream);
 
 public:
 
@@ -76,7 +76,7 @@ public:
     /// \param info   Structure to fill with the attributes of the loaded sound
     ///
     ////////////////////////////////////////////////////////////
-    [[nodiscard]] bool open(sf::InputStream& stream, Info& info) override;
+    bool open(sf::InputStream& stream, Info& info) override;
 
     ////////////////////////////////////////////////////////////
     /// \brief Change the current read position to the given sample offset
@@ -102,7 +102,7 @@ public:
     /// \return Number of samples actually read (may be less than \a maxCount)
     ///
     ////////////////////////////////////////////////////////////
-    [[nodiscard]] Uint64 read(Int16* samples, Uint64 maxCount) override;
+    Uint64 read(Int16* samples, Uint64 maxCount) override;
 
 public:
 

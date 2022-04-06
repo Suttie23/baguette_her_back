@@ -31,7 +31,6 @@
 #include <X11/Xlib.h>
 #include <X11/extensions/Xrandr.h>
 #include <algorithm>
-#include <ostream>
 
 
 namespace sf

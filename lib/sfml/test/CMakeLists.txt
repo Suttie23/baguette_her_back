@@ -1,60 +1,62 @@
-add_library(sfml-test-main STATIC
-    DoctestMain.cpp
-    TestUtilities/SystemUtil.hpp
-    TestUtilities/SystemUtil.cpp
-    TestUtilities/WindowUtil.hpp
-    TestUtilities/WindowUtil.cpp
-    TestUtilities/GraphicsUtil.hpp
-    TestUtilities/GraphicsUtil.cpp
-)
-target_include_directories(sfml-test-main SYSTEM PUBLIC "${PROJECT_SOURCE_DIR}/extlibs/headers")
-target_include_directories(sfml-test-main PUBLIC TestUtilities)
-target_link_libraries(sfml-test-main PUBLIC SFML::System)
+set(SRCROOT "${PROJECT_SOURCE_DIR}/test")
+
+add_library(sfml-test-main STATIC "${SRCROOT}/DoctestMain.cpp")
+target_include_directories(sfml-test-main PUBLIC "${PROJECT_SOURCE_DIR}/extlibs/headers" "${SRCROOT}/TestUtilities")
+target_compile_features(sfml-test-main PRIVATE cxx_std_17)
 
 # System is always built
 SET(SYSTEM_SRC
-    System/Angle.cpp
-    System/Clock.cpp
-    System/FileInputStream.cpp
-    System/Time.cpp
-    System/Vector2.cpp
-    System/Vector3.cpp
+    "${SRCROOT}/System/Angle.cpp"
+    "${SRCROOT}/System/Clock.cpp"
+    "${SRCROOT}/System/FileInputStream.cpp"
+    "${SRCROOT}/System/Time.cpp"
+    "${SRCROOT}/System/Vector2.cpp"
+    "${SRCROOT}/System/Vector3.cpp"
+    "${SRCROOT}/TestUtilities/SystemUtil.hpp"
+    "${SRCROOT}/TestUtilities/SystemUtil.cpp"
 )
 sfml_add_test(test-sfml-system "${SYSTEM_SRC}" SFML::System)
+target_link_libraries(test-sfml-system PRIVATE sfml-test-main)
 
 if(SFML_BUILD_WINDOW)
     SET(WINDOW_SRC
-        Window/ContextSettings.cpp
-        Window/VideoMode.cpp
+        "${SRCROOT}/Window/ContextSettings.cpp"
+        "${SRCROOT}/Window/VideoMode.cpp"
+        "${SRCROOT}/TestUtilities/WindowUtil.hpp"
+        "${SRCROOT}/TestUtilities/WindowUtil.cpp"
     )
     sfml_add_test(test-sfml-window "${WINDOW_SRC}" SFML::Window)
+    target_link_libraries(test-sfml-window PRIVATE sfml-test-main)
 endif()
 
 if(SFML_BUILD_GRAPHICS)
     SET(GRAPHICS_SRC
-        Graphics/BlendMode.cpp
-        Graphics/Color.cpp
-        Graphics/Rect.cpp
-        Graphics/Transform.cpp
-        Graphics/Transformable.cpp
-        Graphics/Vertex.cpp
-        Graphics/VertexArray.cpp
+        "${SRCROOT}/Graphics/BlendMode.cpp"
+        "${SRCROOT}/Graphics/Color.cpp"
+        "${SRCROOT}/Graphics/Rect.cpp"
+        "${SRCROOT}/Graphics/Transform.cpp"
+        "${SRCROOT}/Graphics/Vertex.cpp"
+        "${SRCROOT}/TestUtilities/GraphicsUtil.hpp"
+        "${SRCROOT}/TestUtilities/GraphicsUtil.cpp"
     )
     sfml_add_test(test-sfml-graphics "${GRAPHICS_SRC}" SFML::Graphics)
+    target_link_libraries(test-sfml-graphics PRIVATE sfml-test-main)
 endif()
 
 if(SFML_BUILD_NETWORK)
     SET(NETWORK_SRC
-        Network/Packet.cpp
+        "${SRCROOT}/Network/Packet.cpp"
     )
     sfml_add_test(test-sfml-network "${NETWORK_SRC}" SFML::Network)
+    target_link_libraries(test-sfml-network PRIVATE sfml-test-main)
 endif()
 
 if(SFML_BUILD_AUDIO)
     SET(AUDIO_SRC
-        Audio/Dummy.cpp # TODO: Remove when there are real tests
+        "${SRCROOT}/Audio/Dummy.cpp" # TODO: Remove when there are real tests
     )
     sfml_add_test(test-sfml-audio "${AUDIO_SRC}" SFML::Audio)
+    target_link_libraries(test-sfml-audio PRIVATE sfml-test-main)
 endif()
 
 # Automatically run the tests at the end of the build

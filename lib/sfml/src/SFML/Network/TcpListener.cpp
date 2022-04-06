@@ -29,7 +29,6 @@
 #include <SFML/Network/TcpSocket.hpp>
 #include <SFML/Network/SocketImpl.hpp>
 #include <SFML/System/Err.hpp>
-#include <ostream>
 
 
 namespace sf

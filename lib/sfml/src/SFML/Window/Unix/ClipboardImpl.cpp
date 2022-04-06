@@ -32,7 +32,6 @@
 #include <SFML/System/Time.hpp>
 #include <X11/Xatom.h>
 #include <vector>
-#include <ostream>
 
 
 namespace

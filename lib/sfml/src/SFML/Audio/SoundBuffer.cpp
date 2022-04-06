@@ -34,7 +34,6 @@
 #include <SFML/System/Err.hpp>
 #include <SFML/System/Time.hpp>
 #include <memory>
-#include <ostream>
 
 #if defined(__APPLE__)
     #if defined(__clang__)
@@ -92,7 +91,7 @@ SoundBuffer::~SoundBuffer()
 
 
 ////////////////////////////////////////////////////////////
-bool SoundBuffer::loadFromFile(const std::filesystem::path& filename)
+bool SoundBuffer::loadFromFile(const std::string& filename)
 {
     InputSoundFile file;
     if (file.openFromFile(filename))
@@ -151,7 +150,7 @@ bool SoundBuffer::loadFromSamples(const Int16* samples, Uint64 sampleCount, unsi
 
 
 ////////////////////////////////////////////////////////////
-bool SoundBuffer::saveToFile(const std::filesystem::path& filename) const
+bool SoundBuffer::saveToFile(const std::string& filename) const
 {
     // Create the sound file in write mode
     OutputSoundFile file;

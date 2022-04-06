@@ -31,7 +31,6 @@
 #include <SFML/System/Err.hpp>
 #include <mutex>
 #include <vector>
-#include <ostream>
 
 // We check for this definition in order to avoid multiple definitions of GLAD
 // entities during unity builds of SFML.
@@ -740,14 +739,14 @@ void GlxContext::createContext(GlxContext* shared)
                 else if (m_settings.minorVersion > 0)
                 {
                     // If the minor version is not 0, we decrease it and try again
-                    --m_settings.minorVersion;
+                    m_settings.minorVersion--;
 
                     m_settings.attributeFlags = settings.attributeFlags;
                 }
                 else
                 {
                     // If the minor version is 0, we decrease the major version
-                    --m_settings.majorVersion;
+                    m_settings.majorVersion--;
                     m_settings.minorVersion = 9;
 
                     m_settings.attributeFlags = settings.attributeFlags;

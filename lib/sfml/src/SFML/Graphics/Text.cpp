@@ -119,22 +119,6 @@ m_fontTextureId      (0)
 
 
 ////////////////////////////////////////////////////////////
-Text::Text(const Text&) = default;
-
-
-////////////////////////////////////////////////////////////
-Text& Text::operator=(const Text&) = default;
-
-
-////////////////////////////////////////////////////////////
-Text::Text(Text&&) noexcept = default;
-
-
-////////////////////////////////////////////////////////////
-Text& Text::operator=(Text&&) noexcept = default;
-
-
-////////////////////////////////////////////////////////////
 void Text::setString(const String& string)
 {
     if (m_string != string)
@@ -375,22 +359,20 @@ FloatRect Text::getGlobalBounds() const
 
 
 ////////////////////////////////////////////////////////////
-void Text::draw(RenderTarget& target, const RenderStates& states) const
+void Text::draw(RenderTarget& target, RenderStates states) const
 {
     if (m_font)
     {
         ensureGeometryUpdate();
 
-        RenderStates statesCopy(states);
-
-        statesCopy.transform *= getTransform();
-        statesCopy.texture = &m_font->getTexture(m_characterSize);
+        states.transform *= getTransform();
+        states.texture = &m_font->getTexture(m_characterSize);
 
         // Only draw the outline if there is something to draw
         if (m_outlineThickness != 0)
-            target.draw(m_outlineVertices, statesCopy);
+            target.draw(m_outlineVertices, states);
 
-        target.draw(m_vertices, statesCopy);
+        target.draw(m_vertices, states);
     }
 }
 

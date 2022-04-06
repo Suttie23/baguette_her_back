@@ -27,7 +27,6 @@
 ////////////////////////////////////////////////////////////
 #include <SFML/Network/Unix/SocketImpl.hpp>
 #include <SFML/System/Err.hpp>
-#include <ostream>
 #include <cerrno>
 #include <cstring>
 #include <fcntl.h>

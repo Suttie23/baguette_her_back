@@ -138,15 +138,13 @@ FloatRect Sprite::getGlobalBounds() const
 
 
 ////////////////////////////////////////////////////////////
-void Sprite::draw(RenderTarget& target, const RenderStates& states) const
+void Sprite::draw(RenderTarget& target, RenderStates states) const
 {
     if (m_texture)
     {
-        RenderStates statesCopy(states);
-
-        statesCopy.transform *= getTransform();
-        statesCopy.texture = m_texture;
-        target.draw(m_vertices, 4, TriangleStrip, statesCopy);
+        states.transform *= getTransform();
+        states.texture = m_texture;
+        target.draw(m_vertices, 4, TriangleStrip, states);
     }
 }
 

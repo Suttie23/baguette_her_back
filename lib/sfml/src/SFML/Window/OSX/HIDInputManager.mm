@@ -29,7 +29,6 @@
 #include <SFML/Window/OSX/HIDInputManager.hpp>
 #include <SFML/System/Err.hpp>
 #include <AppKit/AppKit.h>
-#include <ostream>
 
 namespace sf
 {

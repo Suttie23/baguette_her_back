@@ -43,7 +43,7 @@ class SFML_SYSTEM_API LogcatStream : public std::streambuf
 public:
     LogcatStream();
 
-    std::streambuf::int_type overflow(std::streambuf::int_type c) override;
+    std::streambuf::int_type overflow (std::streambuf::int_type c);
 
 private:
     std::string m_message;

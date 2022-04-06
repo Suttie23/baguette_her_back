@@ -42,7 +42,7 @@ public:
     DefaultErrStreamBuf()
     {
         // Allocate the write buffer
-        constexpr int size = 64;
+        static const int size = 64;
         char* buffer = new char[size];
         setp(buffer, buffer + size);
     }

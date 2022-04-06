@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2021 Laurent Gomila (laurent@sfml-dev.org)
+// Copyright (C) 2007-2022 Laurent Gomila (laurent@sfml-dev.org)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -22,27 +22,17 @@
 //
 ////////////////////////////////////////////////////////////
 
-#ifndef SFML_SYSTEM_EXPORT_HPP
-#define SFML_SYSTEM_EXPORT_HPP
-
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
-#include <SFML/Config.hpp>
+#include <SFML/System/Time.hpp>
 
 
+namespace sf
+{
 ////////////////////////////////////////////////////////////
-// Define portable import / export macros
+// Static member data
 ////////////////////////////////////////////////////////////
-#if defined(SFML_SYSTEM_EXPORTS)
+const Time Time::Zero;
 
-    #define SFML_SYSTEM_API SFML_API_EXPORT
-
-#else
-
-    #define SFML_SYSTEM_API SFML_API_IMPORT
-
-#endif
-
-
-#endif // SFML_SYSTEM_EXPORT_HPP
+} // namespace sf

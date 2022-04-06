@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2022 Laurent Gomila (laurent@sfml-dev.org)
+// Copyright (C) 2007-2021 Laurent Gomila (laurent@sfml-dev.org)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -66,7 +66,7 @@ protected:
     /// \param states Current render states
     ///
     ////////////////////////////////////////////////////////////
-    virtual void draw(RenderTarget& target, const RenderStates& states) const = 0;
+    virtual void draw(RenderTarget& target, RenderStates states) const = 0;
 };
 
 } // namespace sf
@@ -100,15 +100,14 @@ protected:
 ///
 /// private:
 ///
-///     void draw(sf::RenderTarget& target, const sf::RenderStates& states) const override
+///     void draw(sf::RenderTarget& target, sf::RenderStates states) const override
 ///     {
 ///         // You can draw other high-level objects
 ///         target.draw(m_sprite, states);
 ///
 ///         // ... or use the low-level API
-///         sf::RenderStates statesCopy(states);
-///         statesCopy.texture = &m_texture;
-///         target.draw(m_vertices, statesCopy);
+///         states.texture = &m_texture;
+///         target.draw(m_vertices, states);
 ///
 ///         // ... or draw with OpenGL directly
 ///         glBegin(GL_TRIANGLES);

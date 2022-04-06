@@ -33,7 +33,6 @@
 #include <fstream>
 #include <iterator>
 #include <sstream>
-#include <ostream>
 #include <cstdio>
 
 
@@ -123,7 +122,7 @@ Ftp::Response(response)
 
 
 ////////////////////////////////////////////////////////////
-const std::filesystem::path& Ftp::DirectoryResponse::getDirectory() const
+const std::string& Ftp::DirectoryResponse::getDirectory() const
 {
     return m_directory;
 }
@@ -270,25 +269,25 @@ Ftp::Response Ftp::deleteDirectory(const std::string& name)
 
 
 ////////////////////////////////////////////////////////////
-Ftp::Response Ftp::renameFile(const std::filesystem::path& file, const std::filesystem::path& newName)
+Ftp::Response Ftp::renameFile(const std::string& file, const std::string& newName)
 {
-    Response response = sendCommand("RNFR", file.string());
+    Response response = sendCommand("RNFR", file);
     if (response.isOk())
-       response = sendCommand("RNTO", newName.string());
+       response = sendCommand("RNTO", newName);
 
     return response;
 }
 
 
 ////////////////////////////////////////////////////////////
-Ftp::Response Ftp::deleteFile(const std::filesystem::path& name)
+Ftp::Response Ftp::deleteFile(const std::string& name)
 {
-    return sendCommand("DELE", name.string());
+    return sendCommand("DELE", name);
 }
 
 
 ////////////////////////////////////////////////////////////
-Ftp::Response Ftp::download(const std::filesystem::path& remoteFile, const std::filesystem::path& localPath, TransferMode mode)
+Ftp::Response Ftp::download(const std::string& remoteFile, const std::string& localPath, TransferMode mode)
 {
     // Open a data channel using the given transfer mode
     DataChannel data(*this);
@@ -296,12 +295,22 @@ Ftp::Response Ftp::download(const std::filesystem::path& remoteFile, const std::
     if (response.isOk())
     {
         // Tell the server to start the transfer
-        response = sendCommand("RETR", remoteFile.string());
+        response = sendCommand("RETR", remoteFile);
         if (response.isOk())
         {
+            // Extract the filename from the file path
+            std::string filename = remoteFile;
+            std::string::size_type pos = filename.find_last_of("/\\");
+            if (pos != std::string::npos)
+                filename = filename.substr(pos + 1);
+
+            // Make sure the destination path ends with a slash
+            std::string path = localPath;
+            if (!path.empty() && (path[path.size() - 1] != '\\') && (path[path.size() - 1] != '/'))
+                path += "/";
+
             // Create the file and truncate it if necessary
-            const std::filesystem::path filepath = localPath / remoteFile.filename();
-            std::ofstream file(filepath, std::ios_base::binary | std::ios_base::trunc);
+            std::ofstream file((path + filename).c_str(), std::ios_base::binary | std::ios_base::trunc);
             if (!file)
                 return Response(Response::InvalidFile);
 
@@ -316,7 +325,7 @@ Ftp::Response Ftp::download(const std::filesystem::path& remoteFile, const std::
 
             // If the download was unsuccessful, delete the partial file
             if (!response.isOk())
-                std::remove(filepath.string().c_str());
+                std::remove((path + filename).c_str());
         }
     }
 
@@ -487,7 +496,7 @@ Ftp::Response Ftp::getResponse()
 
                             // Append it to the current message
                             std::ostringstream out;
-                            out << code << separator << line << '\n';
+                            out << code << separator << line << "\n";
                             message += out.str();
                         }
                     }
@@ -553,11 +562,11 @@ Ftp::Response Ftp::DataChannel::open(Ftp::TransferMode mode)
                 while (isdigit(str[index]))
                 {
                     datum = static_cast<Uint8>(static_cast<Uint8>(datum * 10) + static_cast<Uint8>(str[index] - '0'));
-                    ++index;
+                    index++;
                 }
 
                 // Skip separator
-                ++index;
+                index++;
             }
 
             // Reconstruct connection port and address

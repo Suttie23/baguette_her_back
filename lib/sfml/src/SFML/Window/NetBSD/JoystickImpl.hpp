@@ -76,7 +76,7 @@ public:
     /// \return True on success, false on failure
     ///
     ////////////////////////////////////////////////////////////
-    [[nodiscard]] bool open(unsigned int index);
+    bool open(unsigned int index);
 
     ////////////////////////////////////////////////////////////
     /// \brief Close the joystick
@@ -106,7 +106,7 @@ public:
     /// \return Joystick state
     ///
     ////////////////////////////////////////////////////////////
-    [[nodiscard]] JoystickState update();
+    JoystickState update();
 
 private:
 

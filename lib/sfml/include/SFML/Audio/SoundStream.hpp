@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////
 //
 // SFML - Simple and Fast Multimedia Library
-// Copyright (C) 2007-2022 Laurent Gomila (laurent@sfml-dev.org)
+// Copyright (C) 2007-2021 Laurent Gomila (laurent@sfml-dev.org)
 //
 // This software is provided 'as-is', without any express or implied warranty.
 // In no event will the authors be held liable for any damages arising from the use of this software.
@@ -396,7 +396,7 @@ private:
 /// {
 /// public:
 ///
-///     [[nodiscard]] bool open(const std::string& location)
+///     bool open(const std::string& location)
 ///     {
 ///         // Open the source and get audio settings
 ///         ...
@@ -405,7 +405,6 @@ private:
 ///
 ///         // Initialize the stream -- important!
 ///         initialize(channelCount, sampleRate);
-///         return true;
 ///     }
 ///
 /// private:
@@ -415,9 +414,9 @@ private:
 ///         // Fill the chunk with audio data from the stream source
 ///         // (note: must not be empty if you want to continue playing)
 ///         data.samples = ...;
+///         data.sampleCount = ...;
 ///
 ///         // Return true to continue playing
-///         data.sampleCount = ...;
 ///         return true;
 ///     }
 ///

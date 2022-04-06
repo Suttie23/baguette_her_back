@@ -32,7 +32,6 @@
 #include <cctype>
 #include <cassert>
 #include <cstring>
-#include <ostream>
 
 
 namespace

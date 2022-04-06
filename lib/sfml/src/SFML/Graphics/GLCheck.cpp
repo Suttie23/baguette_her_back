@@ -28,7 +28,6 @@
 #include <SFML/Graphics/GLCheck.hpp>
 #include <SFML/System/Err.hpp>
 #include <string>
-#include <ostream>
 
 
 namespace sf
@@ -36,13 +35,14 @@ namespace sf
 namespace priv
 {
 ////////////////////////////////////////////////////////////
-void glCheckError(const std::filesystem::path& file, unsigned int line, const char* expression)
+void glCheckError(const char* file, unsigned int line, const char* expression)
 {
     // Get the last error
     GLenum errorCode = glGetError();
 
     if (errorCode != GL_NO_ERROR)
     {
+        std::string fileString = file;
         std::string error = "Unknown error";
         std::string description  = "No description";
 
@@ -101,9 +101,9 @@ void glCheckError(const std::filesystem::path& file, unsigned int line, const ch
 
         // Log the error
         err() << "An internal OpenGL call failed in "
-              << file.filename() << "(" << line << ")."
+              << fileString.substr(fileString.find_last_of("\\/") + 1) << "(" << line << ")."
               << "\nExpression:\n   " << expression
-              << "\nError description:\n   " << error << "\n   " << description << '\n'
+              << "\nError description:\n   " << error << "\n   " << description << "\n"
               << std::endl;
     }
 }

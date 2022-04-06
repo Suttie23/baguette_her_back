@@ -33,8 +33,8 @@
 #include <SFML/System/MemoryInputStream.hpp>
 #include <SFML/System/Err.hpp>
 #include <SFML/System/Time.hpp>
+#include <iostream>
 #include <algorithm>
-#include <ostream>
 
 
 namespace sf
@@ -84,7 +84,7 @@ InputSoundFile::~InputSoundFile()
 
 
 ////////////////////////////////////////////////////////////
-bool InputSoundFile::openFromFile(const std::filesystem::path& filename)
+bool InputSoundFile::openFromFile(const std::string& filename)
 {
     // If the file is already open, first close it
     close();

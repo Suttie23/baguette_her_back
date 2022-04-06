@@ -32,7 +32,6 @@
 #include <SFML/Window/OSX/InputImpl.hpp>
 #include <SFML/Window/OSX/HIDInputManager.hpp>
 #include <SFML/System/Err.hpp>
-#include <ostream>
 
 #import <SFML/Window/OSX/SFOpenGLView.h>
 #import <AppKit/AppKit.h>
