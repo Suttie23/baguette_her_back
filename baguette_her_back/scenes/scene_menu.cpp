@@ -12,6 +12,7 @@ using namespace std;
 using namespace sf;
 
 static shared_ptr<Texture> _texture;
+sf::SoundBuffer buffer;
 
 void MenuScene::Load() {
 
@@ -21,7 +22,10 @@ void MenuScene::Load() {
     this->menuTheme.setVolume(50);
     this->menuTheme.play();
 
-
+    if (!buffer.loadFromFile("res/sfx/menu_crunch.ogg")) {
+        std::cout << "ERROR" << std::endl;
+    }
+        this->crunch.setBuffer(buffer);
 
     {
 
@@ -116,7 +120,8 @@ void MenuScene::Update(const double& dt) {
             curIndex++;
             cout << curIndex << endl;
             cout << menuIndex[curIndex] << endl;
-            ents.find("indicator")[0]->setPosition(menuIndex[curIndex] - Vector2f(-4.15f, (-7.f)));          
+            ents.find("indicator")[0]->setPosition(menuIndex[curIndex] - Vector2f(-4.15f, (-7.f)));
+            this->crunch.play();
         }
     }
     if (sf::Keyboard::isKeyPressed(Keyboard::Up)) {
@@ -126,6 +131,7 @@ void MenuScene::Update(const double& dt) {
             cout << curIndex << endl;
             cout << menuIndex[curIndex] << endl;
             ents.find("indicator")[0]->setPosition(menuIndex[curIndex] - Vector2f(-4.15f, (-7.f)));
+            this->crunch.play();
         }
     }
 
