@@ -20,7 +20,7 @@ void ControlsScene::Load() {
         auto background = makeEntity();
         auto bg = background->addComponent<SpriteComponent>();
         _texture = make_shared<Texture>();
-        _texture->loadFromFile("res/menu/");
+        _texture->loadFromFile("res/menu/menu_bg.png");
         bg->setTexture(_texture);
         background->setPosition(Vcast<float>(Engine::getWindowSize()) * Vector2f(0.0f, 0.0f));
 

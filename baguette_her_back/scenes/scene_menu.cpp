@@ -22,23 +22,24 @@ void MenuScene::Load() {
     this->menuTheme.play();
 
 
+
     {
 
         // Background Entity
         auto background = makeEntity();
         auto bg = background->addComponent<SpriteComponent>();
         _texture = make_shared<Texture>();
-        _texture->loadFromFile("res/menu/");
+        _texture->loadFromFile("res/menu/menu_bg.png");
         bg->setTexture(_texture);
         background->setPosition(Vcast<float>(Engine::getWindowSize()) * Vector2f(0.0f, 0.0f));
 
-        // Game Logo Entity
+        // Logo Entity
         auto logo = makeEntity();
         auto lo = logo->addComponent<SpriteComponent>();
         _texture = make_shared<Texture>();
         _texture->loadFromFile("res/menu/game_logo.png");
         lo->setTexture(_texture);
-        logo->setPosition(Vcast<float>(Engine::getWindowSize()) * Vector2f(0.34f, 0.05f));
+        logo->setPosition(Vcast<float>(Engine::getWindowSize()) * Vector2f(0.33f, 0.05f));
 
         // Play Button Entity
         auto playGame = makeEntity();
@@ -76,12 +77,11 @@ void MenuScene::Load() {
         qu->setTexture(_texture);
         quit->setPosition(Vcast<float>(Engine::getWindowSize()) * Vector2f(0.45f, 0.75f));
 
-
         // Menu indicator to highlight the button selected
-        auto pointer = makeEntity();
-        pointer->addTag("pointer");
-        auto s = pointer->addComponent<ShapeComponent>();
-        pointer->setPosition(playGame->getPosition() - Vector2f(-4.15f, (-7.f)));
+        auto indicator = makeEntity();
+        indicator->addTag("indicator");
+        auto s = indicator->addComponent<ShapeComponent>();
+        indicator->setPosition(playGame->getPosition() - Vector2f(-4.15f, (-7.f)));
         s->setShape<sf::RectangleShape>(Vector2f(132.f, 40.f));
         s->getShape().setFillColor(Color(220, 140, 44, 128));
         s->getShape().setOrigin(Vector2f(5.f, 5.f));
@@ -94,8 +94,10 @@ void MenuScene::Load() {
         }
            
     }
-    setLoaded(true);
-    cout << "Menu Load \n";
+
+    // Weird bug, having this commented out stops the menu from breaking as much?
+    //setLoaded(true);
+    //cout << "Menu Load \n";
 }
 
 
@@ -114,7 +116,7 @@ void MenuScene::Update(const double& dt) {
             curIndex++;
             cout << curIndex << endl;
             cout << menuIndex[curIndex] << endl;
-            ents.find("pointer")[0]->setPosition(menuIndex[curIndex] - Vector2f(-4.15f, (-7.f)));          
+            ents.find("indicator")[0]->setPosition(menuIndex[curIndex] - Vector2f(-4.15f, (-7.f)));          
         }
     }
     if (sf::Keyboard::isKeyPressed(Keyboard::Up)) {
@@ -123,24 +125,24 @@ void MenuScene::Update(const double& dt) {
             curIndex--;
             cout << curIndex << endl;
             cout << menuIndex[curIndex] << endl;
-            ents.find("pointer")[0]->setPosition(menuIndex[curIndex] - Vector2f(-4.15f, (-7.f)));
+            ents.find("indicator")[0]->setPosition(menuIndex[curIndex] - Vector2f(-4.15f, (-7.f)));
         }
     }
 
     // Keyboard controls for the menu (Enter)
     if (sf::Keyboard::isKeyPressed(Keyboard::Enter)) {
-        if (ents.find("pointer")[0]->getPosition() == menuIndex[0] - Vector2f(-4.15f, (-7.f))) { // Play Game
+        if (ents.find("indicator")[0]->getPosition() == menuIndex[0] - Vector2f(-4.15f, (-7.f))) { // Play Game
             Engine::ChangeScene(&level1);
             this->menuTheme.stop();
         }
-        else if (ents.find("pointer")[0]->getPosition() == menuIndex[1] - Vector2f(-4.15f, (-7.f))) { // Options
+        else if (ents.find("indicator")[0]->getPosition() == menuIndex[1] - Vector2f(-4.15f, (-7.f))) { // Options
             Engine::ChangeScene(&settings);
         }
-        else if (ents.find("pointer")[0]->getPosition() == menuIndex[2] - Vector2f(-4.15f, (-7.f))) {// Exit
+        else if (ents.find("indicator")[0]->getPosition() == menuIndex[2] - Vector2f(-4.15f, (-7.f))) {// Exit
             MenuScene::UnLoad();
             Engine::ChangeScene(&controls);
         }
-        else if (ents.find("pointer")[0]->getPosition() == menuIndex[3] - Vector2f(-4.15f, (-7.f))) {// Exit
+        else if (ents.find("indicator")[0]->getPosition() == menuIndex[3] - Vector2f(-4.15f, (-7.f))) {// Exit
             Engine::GetWindow().close();
         }
     }

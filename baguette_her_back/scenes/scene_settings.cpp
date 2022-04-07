@@ -20,7 +20,7 @@ void SettingsScene::Load() {
         auto background = makeEntity();
         auto bg = background->addComponent<SpriteComponent>();
         _texture = make_shared<Texture>();
-        _texture->loadFromFile("res/menu/test_bg.png");
+        _texture->loadFromFile("res/menu/menu_bg.png");
         bg->setTexture(_texture);
         background->setPosition(Vcast<float>(Engine::getWindowSize()) * Vector2f(0.0f, 0.0f));
 
@@ -41,7 +41,7 @@ void SettingsScene::Load() {
 void SettingsScene::Update(const double& dt) {
     
     if (sf::Keyboard::isKeyPressed(Keyboard::Escape)) {
-        Engine::ChangeScene((Scene*)&menu);
+        Engine::ChangeScene(&menu);
     }
 
     Scene::Update(dt);
