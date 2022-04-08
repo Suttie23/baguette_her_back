@@ -20,6 +20,7 @@ public:
   std::shared_ptr<Entity> makeEntity();
 
   EntityManager ents;
+  sf::Vector2f mouse_pos;
 
 protected:
   void setLoaded(bool);

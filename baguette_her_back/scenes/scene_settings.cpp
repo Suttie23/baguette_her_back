@@ -1,6 +1,7 @@
 #include "scene_settings.h"
 #include "../components/cmp_sprite.h"
 #include "../components/cmp_text.h"
+#include "../components/cmp_text_list.h"
 #include "../components/cmp_blinking.h"
 #include "../game.h"
 #include <SFML/Window/Keyboard.hpp>
@@ -33,36 +34,31 @@ void SettingsScene::Load() {
         lo->setTexture(_texture);
         logo->setPosition(Vcast<float>(Engine::getWindowSize()) * Vector2f(0.33f, 0.05f));
 
+        auto resolution_text = makeEntity();
+        auto tr = resolution_text->addComponent<TextComponent>(
+            "Resolution:");
+        resolution_text->setPosition(Vector2f(425.f, 400.f));
+
+        resolution = makeEntity();
+        vector<string> textlist1{ "800 x 600", "1024 x 800", "1280 x 1024", "1360 x 768", "1600 x 900", "1920 x 1080" };
+        auto res = resolution->addComponent<TextListComponent>(textlist1);
+        res->setDefault(to_string(static_cast<int>(Engine::user_preferences.video_resolution.x)) + " x " + to_string(static_cast<int>(Engine::user_preferences.video_resolution.y)));
+        resolution->setPosition(Vector2f(650.0f, 400.f));
+
         auto fullscreen_text = makeEntity();
-        auto t = fullscreen_text->addComponent<TextComponent>(
+        auto tf = fullscreen_text->addComponent<TextComponent>(
             "Toggle Full Screen:");
         fullscreen_text->setPosition(Vector2f(425.f, 300.f));
 
-        auto fullscreen_ON = makeEntity();
-        auto fson = fullscreen_ON->addComponent<TextComponent>(
-            "ON");
-        fullscreen_ON->setPosition(Vector2f(875.f, 300.f));
-
-        auto fullscreen_OFF = makeEntity();
-        auto fsoff = fullscreen_OFF->addComponent<TextComponent>(
-            "OFF");
-        fullscreen_OFF->setPosition(Vector2f(775.f, 300.f));
-
-        // Menu indicator to highlight the button selected
-        auto indicator = makeEntity();
-        indicator->addTag("indicator");
-        indicator->addComponent<BlinkComponent>(0.5f);
-        auto s = indicator->addComponent<ShapeComponent>();
-        indicator->setPosition(fullscreen_OFF->getPosition() - Vector2f(-4.15f, (-2.f)));
-        s->setShape<sf::RectangleShape>(Vector2f(60.f, 40.f));
-        s->getShape().setFillColor(Color(220, 140, 44, 128));
-        s->getShape().setOrigin(Vector2f(5.f, 5.f));
-        menuIndex.clear();
-        menuIndex.push_back(fullscreen_OFF->getPosition());
-        menuIndex.push_back(fullscreen_ON->getPosition());
-        for (int i = 0; i < menuIndex.size(); i++) {
-            cout << menuIndex[i] << endl;
-        }
+        // fullscreen toggle
+        fullscreen = makeEntity();
+        vector<string> fsoptions{ "ON", "OFF" };
+        auto fs = fullscreen->addComponent<TextListComponent>(fsoptions);
+        if (Engine::user_preferences.fullscreen == 7)
+            fs->setDefault("OFF");
+        else
+            fs->setDefault("ON");
+        fullscreen->setPosition(Vector2f(775.0f, 300.0f));
 
     }
 
@@ -72,45 +68,36 @@ void SettingsScene::Load() {
 
 void SettingsScene::Update(const double& dt) {
     
-    static int curIndex = 0;
-    // Countdown should stop the pointer from warping to ludicrous speed when navigating
-    static float countdown = 0.0f;
-    countdown -= dt;
+    if (resolution->get_components<TextListComponent>()[0]->changed)
+    {
+        string text = resolution->get_components<TextListComponent>()[0]->getText().getString();
+        int index = text.find('x');
+        int i1;
+        int i2;
+        stringstream(text.substr(0, index - 1)) >> i1;
+        stringstream(text.substr(index + 1)) >> i2;
 
-    // Keyboard controls for the menu (Left and Right)
-    if (sf::Keyboard::isKeyPressed(Keyboard::Right)) {
-        if (curIndex < (menuIndex.size() - 1) && countdown <= 0) {
-            countdown = 0.25f;
-            curIndex++;
-            cout << curIndex << endl;
-            cout << menuIndex[curIndex] << endl;
-            ents.find("indicator")[0]->setPosition(menuIndex[curIndex] - Vector2f(-4.15f, (-7.f)));
-        }
-    }
-    if (sf::Keyboard::isKeyPressed(Keyboard::Left)) {
-        if (curIndex > 0 && countdown <= 0) {
-            countdown = 0.2f;
-            curIndex--;
-            cout << curIndex << endl;
-            cout << menuIndex[curIndex] << endl;
-            ents.find("indicator")[0]->setPosition(menuIndex[curIndex] - Vector2f(-4.15f, (-7.f)));
-        }
+        cout << i1 << "x" << i2 << endl;
+
+        Engine::user_preferences.video_resolution = Vector2f(i1, i2);
+        Engine::user_preferences.changed_resolution = true;
     }
 
-    // Keyboard controls for the menu (Enter)
-    if (sf::Keyboard::isKeyPressed(Keyboard::Enter)) {
-        if (ents.find("indicator")[0]->getPosition() == menuIndex[0] - Vector2f(-4.15f, (-7.f))) { // Fullscreen OFF
-            cout << "FullScreen OFF" << endl;
-            Engine::user_preferences.fullscreen = 7;
-        }
-        else if (ents.find("indicator")[0]->getPosition() == menuIndex[1] - Vector2f(-4.15f, (-7.f))) { // Fullscreen ON
-            cout << "FullScreen ON" << endl;
+    // Check whether the fullscreen mode has been toggled or not
+    if (fullscreen->get_components<TextListComponent>()[0]->changed) {
+        Engine::user_preferences.changed_fullscreen = true;
+        if (fullscreen->get_components<TextListComponent>()[0]->getText().getString() == "ON") {
             Engine::user_preferences.fullscreen = 8;
+            cout << "ON" << endl;
+        }
+        else {
+            cout << "OFF" << endl;
+            Engine::user_preferences.fullscreen = 7;
         }
     }
 
     if (sf::Keyboard::isKeyPressed(Keyboard::Escape)) {
-        Engine::ChangeScene(&menu);
+            Engine::ChangeScene(&menu);
     }
 
     Scene::Update(dt);

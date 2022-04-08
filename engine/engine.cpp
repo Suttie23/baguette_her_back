@@ -83,7 +83,7 @@ void Engine::Render(RenderWindow& window) {
 void Engine::Start(unsigned int width, unsigned int height,
                    const std::string& gameName, Scene* scn) {
   user_preferences.video_resolution_default = Vector2f(width, height);
-  RenderWindow window(VideoMode(width, height), gameName, user_preferences.fullscreen);
+  RenderWindow window(VideoMode(width, height), gameName);
   _gameName = gameName;
   _window = &window;
   Renderer::initialise(window);
@@ -91,9 +91,13 @@ void Engine::Start(unsigned int width, unsigned int height,
   ChangeScene(scn);
   while (window.isOpen()) {
     Event event;
+    _activeScene->mouse_pos = Vector2f(-1.0f, -1.0f);
     while (window.pollEvent(event)) {
       if (event.type == Event::Closed) {
         window.close();
+      }
+      if (event.type == Event::MouseButtonReleased) {
+          _activeScene->mouse_pos = Vector2f(Mouse::getPosition(window));
       }
     }
 
