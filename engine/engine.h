@@ -1,5 +1,6 @@
 #pragma once
 #include <SFML/Graphics/RenderWindow.hpp>
+#include "user_preferences.h"
 #include <ecm.h>
 #include <future>
 #include <maths.h>
@@ -37,6 +38,7 @@ public:
   static sf::RenderWindow& GetWindow();
   static sf::Vector2u getWindowSize();
   static void setVsync(bool b);
+  static UserPreferences user_preferences;
 
 private:
   static Scene* _activeScene;

@@ -16,6 +16,7 @@ sf::SoundBuffer buffer;
 
 void MenuScene::Load() {
 
+
     if (!this->menuTheme.openFromFile("res/music/new_york_baguette.mp3"))
         cout << "Error: we not found music file";
     this->menuTheme.setLoop(true);

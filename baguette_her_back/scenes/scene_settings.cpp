@@ -101,12 +101,13 @@ void SettingsScene::Update(const double& dt) {
     if (sf::Keyboard::isKeyPressed(Keyboard::Enter)) {
         if (ents.find("indicator")[0]->getPosition() == menuIndex[0] - Vector2f(-4.15f, (-7.f))) { // Fullscreen OFF
             cout << "FullScreen OFF" << endl;
+            Engine::user_preferences.fullscreen = 7;
         }
         else if (ents.find("indicator")[0]->getPosition() == menuIndex[1] - Vector2f(-4.15f, (-7.f))) { // Fullscreen ON
             cout << "FullScreen ON" << endl;
+            Engine::user_preferences.fullscreen = 8;
         }
     }
-
 
     if (sf::Keyboard::isKeyPressed(Keyboard::Escape)) {
         Engine::ChangeScene(&menu);
