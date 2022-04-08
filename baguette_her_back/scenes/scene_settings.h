@@ -4,6 +4,8 @@
 #include "engine.h"
 
 class SettingsScene : public Scene {
+private:
+	std::vector<sf::Vector2f> menuIndex;
 public:
   SettingsScene() = default;
   ~SettingsScene() override = default;
@@ -12,6 +14,5 @@ public:
 
   void Update(const double& dt) override;
 
-  void UnLoad() override;
 
 };

@@ -2,7 +2,6 @@
 #include "ecm.h"
 
 class BlinkComponent : public Component {
-	friend class LifeComponent;
 private:
 	float blinktimer;
 public:

@@ -26,6 +26,7 @@ void MenuScene::Load() {
         std::cout << "ERROR" << std::endl;
     }
         this->crunch.setBuffer(buffer);
+        this->crunch.setVolume(15);
 
     {
 
@@ -89,6 +90,7 @@ void MenuScene::Load() {
         s->setShape<sf::RectangleShape>(Vector2f(132.f, 40.f));
         s->getShape().setFillColor(Color(220, 140, 44, 128));
         s->getShape().setOrigin(Vector2f(5.f, 5.f));
+        menuIndex.clear(); // Ensures that the index does not stack each time the level is loaded
         menuIndex.push_back(playGame->getPosition());
         menuIndex.push_back(settings->getPosition());
         menuIndex.push_back(controls->getPosition());
@@ -154,9 +156,4 @@ void MenuScene::Update(const double& dt) {
     }
 
     Scene::Update(dt);
-}
-
-void MenuScene::UnLoad() {
-    cout << "Menu Unload" << endl;
-    Scene::UnLoad();
 }

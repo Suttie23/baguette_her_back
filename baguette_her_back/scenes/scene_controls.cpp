@@ -29,7 +29,7 @@ void ControlsScene::Load() {
         _texture = make_shared<Texture>();
         _texture->loadFromFile("res/menu/controls_title.png");
         lo->setTexture(_texture);
-        logo->setPosition(Vcast<float>(Engine::getWindowSize()) * Vector2f(0.34f, 0.05f));
+        logo->setPosition(Vcast<float>(Engine::getWindowSize()) * Vector2f(0.33f, 0.05f));
 
     }
 
@@ -44,9 +44,4 @@ void ControlsScene::Update(const double& dt) {
     }
 
     Scene::Update(dt);
-}
-
-void ControlsScene::UnLoad() {
-    cout << "Controls Unload" << endl;
-    Scene::UnLoad();
 }
