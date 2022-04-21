@@ -17,9 +17,8 @@ Animation::~Animation()
 
 }
 
-void Animation::Update(int row, float deltaTime, bool faceRight)
+void Animation::Update(float deltaTime, bool faceRight)
 {
-	currentImage.y = row;
 	totalTime += deltaTime;
 
 	if (totalTime >= switchTime)
@@ -30,6 +29,12 @@ void Animation::Update(int row, float deltaTime, bool faceRight)
 		if (currentImage.x >= imageCount.x)
 		{
 			currentImage.x = 0;
+			currentImage.y++;
+
+			if (currentImage.y >= imageCount.y)
+			{
+				currentImage.y = 0;
+			}
 		}
 	}
 

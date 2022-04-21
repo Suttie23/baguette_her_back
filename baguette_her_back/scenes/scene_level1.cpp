@@ -23,12 +23,11 @@ void Level1Scene::Load() {
   {
       player = makeEntity();
       player->setPosition(ls::getTilePosition(ls::findTiles(ls::START)[0]));
-      auto s = player->addComponent<SpriteComponent>();
       _texture = make_shared<Texture>();
       _texture->loadFromFile("res/sprites/jaque_right.png");
+      auto s = player->addComponent<AnimatedSpriteComponent>(_texture.get(), Vector2u(3, 3), 0.1f);
       s->setTextureRect(_texture);
-      
-      s->getSprite().setOrigin(Vector2f(11.f, 29.f));
+      s->getSprite().setOrigin(Vector2f(32.f, 32.f));
 
       player->addComponent<PlayerPhysicsComponent>(Vector2f(20.f, 30.f));
   }
@@ -62,7 +61,7 @@ void Level1Scene::UnLoad() {
 void Level1Scene::Update(const double& dt) {
 
   if (ls::getTileAt(player->getPosition()) == ls::END) {
-    Engine::ChangeScene((Scene*)&level2);
+    Engine::ChangeScene((Scene*)&menu);
   }
   Scene::Update(dt);
 }
