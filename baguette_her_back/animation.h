@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include <vector>
 
 class Animation
 {
@@ -8,7 +9,8 @@ public:
 	Animation(sf::Texture* texture, sf::Vector2u imageCount, float switchTime);
 	~Animation();
 
-	void Update(int row, float deltaTime, bool faceRight);
+	void Update(float deltaTime, bool faceRight);
+	void SetFrames(std::vector<sf::Vector2u>& newFrames);
 
 public:
 
@@ -16,7 +18,8 @@ public:
 
 private:
 	sf::Vector2u imageCount;
-	sf::Vector2u currentImage;
+	int currentFrame;
+	std::vector<sf::Vector2u> Frames;
 
 	float totalTime;
 	float switchTime;

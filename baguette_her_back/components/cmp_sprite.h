@@ -3,7 +3,9 @@
 #include "ecm.h"
 #include <SFML/Graphics/Shape.hpp>
 #include <SFML/Graphics/Sprite.hpp>
+#include"../animation.h">
 
+// STATIC SPRITE
 class SpriteComponent : public Component {
 protected:
   std::shared_ptr<sf::Sprite> _sprite;
@@ -19,9 +21,29 @@ public:
 
 
   void setTexture(std::shared_ptr<sf::Texture> tex);
-  void setTextureRect(std::shared_ptr<sf::Texture> tex);
 };
 
+// ANIMATED SPRITE
+class AnimatedSpriteComponent : public Component {
+protected:
+    std::shared_ptr<sf::Sprite> _sprite;
+    std::shared_ptr<sf::Texture> _texture;
+    Animation _animation;
+public:
+    AnimatedSpriteComponent() = delete;
+
+    explicit AnimatedSpriteComponent(Entity* p, sf::Texture* texture, sf::Vector2u imageCount, float switchTime);
+    void SetFrames(std::vector<sf::Vector2u>& newFrames);
+    void update(double dt) override;
+    void render() override;
+    bool faceRight;
+    sf::Sprite& getSprite() const;
+
+
+    void setTextureRect(std::shared_ptr<sf::Texture> tex);
+};
+
+// SHAPE
 class ShapeComponent : public Component {
 protected:
   std::shared_ptr<sf::Shape> _shape;

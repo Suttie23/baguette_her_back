@@ -1,11 +1,74 @@
 #include "cmp_player_physics.h"
 #include "system_physics.h"
+#include "cmp_sprite.h"
 #include <LevelSystem.h>
 #include <SFML/Window/Keyboard.hpp>
 
 using namespace std;
 using namespace sf;
 using namespace Physics;
+
+
+// Run Frames
+std::vector<sf::Vector2u>& GetRunFrames() {
+    static bool isSetup = false;
+    static std::vector<sf::Vector2u> runFrames;
+
+    if (!isSetup) 
+    {
+        isSetup = true;
+        runFrames.push_back(Vector2u(0, 1));
+        runFrames.push_back(Vector2u(1, 1));
+        runFrames.push_back(Vector2u(2, 1));
+        runFrames.push_back(Vector2u(0, 2));
+        runFrames.push_back(Vector2u(1, 2));
+        runFrames.push_back(Vector2u(2, 2));
+    }
+
+    return runFrames;
+}
+
+// Idle Frame
+std::vector<sf::Vector2u>& GetIdleFrames() {
+    static bool isSetup = false;
+    static std::vector<sf::Vector2u> idleFrames;
+
+    if (!isSetup)
+    {
+        isSetup = true;
+        idleFrames.push_back(Vector2u(0, 0));
+    }
+
+    return idleFrames;
+}
+
+// Jump Frame
+std::vector<sf::Vector2u>& GetJumpFrames() {
+    static bool isSetup = false;
+    static std::vector<sf::Vector2u> jumpFrames;
+
+    if (!isSetup)
+    {
+        isSetup = true;
+        jumpFrames.push_back(Vector2u(0, 1));
+    }
+
+    return jumpFrames;
+}
+
+// Falling Frame
+std::vector<sf::Vector2u>& GetFallingFrames() {
+    static bool isSetup = false;
+    static std::vector<sf::Vector2u> fallingFrames;
+
+    if (!isSetup)
+    {
+        isSetup = true;
+        fallingFrames.push_back(Vector2u(2, 1));
+    }
+
+    return fallingFrames;
+}
 
 bool PlayerPhysicsComponent::isGrounded() const {
   auto touch = getTouching();
@@ -31,6 +94,8 @@ bool PlayerPhysicsComponent::isGrounded() const {
 
 void PlayerPhysicsComponent::update(double dt) {
 
+  // Get parent Component (AnimatedSpriteComponent)  
+  shared_ptr<AnimatedSpriteComponent> dude { _parent->GetCompatibleComponent<AnimatedSpriteComponent>() [0]};
   const auto pos = _parent->getPosition();
 
   //Teleport to start if we fall off map.
@@ -47,13 +112,20 @@ void PlayerPhysicsComponent::update(double dt) {
         Joystick::getAxisPosition(0, Joystick::X) > 10.0f) {
       if (getVelocity().x < _maxVelocity.x)
         impulse({(float)(dt * _groundspeed), 0});
+      // Setting run frames and direction
+      dude->SetFrames(GetRunFrames());
+      dude->faceRight = true;
     } else {
       if (getVelocity().x > -_maxVelocity.x)
         impulse({-(float)(dt * _groundspeed), 0});
+      // Setting run frames and direction
+      dude->SetFrames(GetRunFrames());
+      dude->faceRight = false;
     }
   } else {
     // Dampen X axis movement
     dampen({0.9f, 1.0f});
+    dude->SetFrames(GetIdleFrames());
   }
 
   // Handle Jump
@@ -70,7 +142,14 @@ void PlayerPhysicsComponent::update(double dt) {
 
   //Are we in air?
   if (!_grounded) {
-    // Check to see if we have landed yet
+      // setting falling frames
+      if (getVelocity().y > 0) {
+          dude->SetFrames(GetFallingFrames());
+      }
+      // setting jumping frames
+      else {
+          dude->SetFrames(GetJumpFrames());
+      }
     _grounded = isGrounded();
     // disable friction while jumping
     setFriction(0.f);
