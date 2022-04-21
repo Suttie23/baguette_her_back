@@ -107,8 +107,6 @@ void MenuScene::Load() {
     //cout << "Menu Load \n";
 }
 
-
-
 void MenuScene::Update(const double& dt) {
   
     static int curIndex = 0;
@@ -117,7 +115,8 @@ void MenuScene::Update(const double& dt) {
     countdown -= dt;
 
     // Keyboard controls for the menu (Up and Down)
-    if (sf::Keyboard::isKeyPressed(Keyboard::Down)) {
+    if (sf::Keyboard::isKeyPressed(Keyboard::Down) ||
+        Joystick::getAxisPosition(0, Joystick::Y) > 10.0f) {
         if (curIndex < (menuIndex.size() - 1) && countdown <= 0) {
             countdown = 0.25f;
             curIndex++;
@@ -127,7 +126,8 @@ void MenuScene::Update(const double& dt) {
             this->crunch.play();
         }
     }
-    if (sf::Keyboard::isKeyPressed(Keyboard::Up)) {
+    if (sf::Keyboard::isKeyPressed(Keyboard::Up) ||
+        Joystick::getAxisPosition(0, Joystick::Y) < -10.0f) {
         if (curIndex > 0 && countdown <= 0) {
             countdown = 0.2f;
             curIndex--;
@@ -139,7 +139,8 @@ void MenuScene::Update(const double& dt) {
     }
 
     // Keyboard controls for the menu (Enter)
-    if (sf::Keyboard::isKeyPressed(Keyboard::Enter)) {
+    if (sf::Keyboard::isKeyPressed(Keyboard::Enter) ||
+        Joystick::isButtonPressed(0, Joystick::isButtonPressed(0, 1))) {
         if (ents.find("indicator")[0]->getPosition() == menuIndex[0] - Vector2f(-4.15f, (-7.f))) { // Play Game
             Engine::ChangeScene(&level1);
             this->menuTheme.stop();

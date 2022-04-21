@@ -39,9 +39,12 @@ void PlayerPhysicsComponent::update(double dt) {
   }
 
   if (Keyboard::isKeyPressed(Keyboard::Left) ||
-      Keyboard::isKeyPressed(Keyboard::Right)) {
+      Keyboard::isKeyPressed(Keyboard::Right) || 
+      Joystick::getAxisPosition(0, Joystick::X) < -10.0f || Joystick::getAxisPosition(0, Joystick::X) > 10.0f)
+  {
     // Moving Either Left or Right
-    if (Keyboard::isKeyPressed(Keyboard::Right)) {
+    if (Keyboard::isKeyPressed(Keyboard::Right) ||
+        Joystick::getAxisPosition(0, Joystick::X) > 10.0f) {
       if (getVelocity().x < _maxVelocity.x)
         impulse({(float)(dt * _groundspeed), 0});
     } else {
@@ -54,7 +57,8 @@ void PlayerPhysicsComponent::update(double dt) {
   }
 
   // Handle Jump
-  if (Keyboard::isKeyPressed(Keyboard::Up)) {
+  if (Keyboard::isKeyPressed(Keyboard::Up) ||
+      Joystick::isButtonPressed(0, Joystick::isButtonPressed(0,1))) {
     _grounded = isGrounded();
     if (_grounded) {
       setVelocity(Vector2f(getVelocity().x, 0.f));
@@ -62,6 +66,7 @@ void PlayerPhysicsComponent::update(double dt) {
       impulse(Vector2f(0, -6.f));
     }
   }
+
 
   //Are we in air?
   if (!_grounded) {
