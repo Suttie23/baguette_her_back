@@ -11,6 +11,13 @@ void SpriteComponent::setTexture(std::shared_ptr<sf::Texture> tex)
   _sprite->setTexture(*_texture);
 }
 
+void SpriteComponent::setTextureRect(std::shared_ptr<sf::Texture> tex)
+{
+    _texture = tex;
+    _sprite->setTexture(*_texture);
+    _sprite->setTextureRect(sf::IntRect(sf::Vector2i(13, 1), sf::Vector2i(23, 47)));
+}
+
 
 SpriteComponent::SpriteComponent(Entity* p)
     : Component(p), _sprite(make_shared<sf::Sprite>()) {}

@@ -19,6 +19,7 @@ public:
 
 
   void setTexture(std::shared_ptr<sf::Texture> tex);
+  void setTextureRect(std::shared_ptr<sf::Texture> tex);
 };
 
 class ShapeComponent : public Component {
