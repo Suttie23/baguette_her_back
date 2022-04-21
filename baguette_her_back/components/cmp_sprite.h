@@ -29,14 +29,14 @@ protected:
     std::shared_ptr<sf::Sprite> _sprite;
     std::shared_ptr<sf::Texture> _texture;
     Animation _animation;
-    bool _faceRight;
 public:
     AnimatedSpriteComponent() = delete;
 
     explicit AnimatedSpriteComponent(Entity* p, sf::Texture* texture, sf::Vector2u imageCount, float switchTime);
+    void SetFrames(std::vector<sf::Vector2u>& newFrames);
     void update(double dt) override;
     void render() override;
-
+    bool faceRight;
     sf::Sprite& getSprite() const;
 
 

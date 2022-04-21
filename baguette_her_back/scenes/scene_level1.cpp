@@ -5,6 +5,7 @@
 #include <LevelSystem.h>
 #include <iostream>
 #include <thread>
+#include <vector>
 
 using namespace std;
 using namespace sf;
@@ -28,6 +29,7 @@ void Level1Scene::Load() {
       auto s = player->addComponent<AnimatedSpriteComponent>(_texture.get(), Vector2u(3, 3), 0.1f);
       s->setTextureRect(_texture);
       s->getSprite().setOrigin(Vector2f(32.f, 32.f));
+
 
       player->addComponent<PlayerPhysicsComponent>(Vector2f(20.f, 30.f));
   }

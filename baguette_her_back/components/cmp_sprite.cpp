@@ -49,6 +49,11 @@ void AnimatedSpriteComponent::setTextureRect(std::shared_ptr<sf::Texture> tex)
 
 }
 
+void AnimatedSpriteComponent::SetFrames(std::vector<sf::Vector2u>& newFrames)
+{
+    _animation.SetFrames(newFrames);
+}
+
 AnimatedSpriteComponent::AnimatedSpriteComponent(Entity* p, sf::Texture* texture, sf::Vector2u imageCount, float switchTime)
     : Component(p), _sprite(make_shared<sf::Sprite>()), _animation(texture, imageCount, switchTime) {}
 
@@ -56,7 +61,7 @@ void AnimatedSpriteComponent::update(double dt) {
     _sprite->setPosition(_parent->getPosition());
     _sprite->setRotation(sf::degrees(_parent->getRotation()));
 
-    _animation.Update(dt, _faceRight);
+    _animation.Update(dt, faceRight);
     _sprite->setTextureRect(_animation.uvRect);
 
 }
