@@ -18,6 +18,7 @@ public:
   virtual void UnLoad();
   virtual void Update(const double& dt);
   virtual void Render();
+  sf::View* getView();
   std::shared_ptr<sf::Sprite> getBackground();
   void setBackground(sf::Sprite& background);
   std::shared_ptr<sf::Sprite> getForeground();

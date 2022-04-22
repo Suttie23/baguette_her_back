@@ -12,6 +12,7 @@ using namespace sf;
 using namespace std;
 Scene* Engine::_activeScene = nullptr;
 std::string Engine::_gameName;
+sf::View Renderer::view;
 UserPreferences Engine::user_preferences;
 
 static bool loading = false;
@@ -166,6 +167,11 @@ void Scene::setForeground(sf::Sprite& foreground)
 void Scene::Update(const double& dt) { ents.update(dt); }
 
 void Scene::Render() { ents.render(); }
+
+sf::View* Scene::getView()
+{
+    return nullptr;
+}
 
 bool Scene::isLoaded() const {
   {

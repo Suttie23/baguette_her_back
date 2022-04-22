@@ -1,5 +1,6 @@
 #include "system_renderer.h"
 #include "engine.h"
+#include <LevelSystem.h>
 #include <queue>
 
 using namespace std;
@@ -8,7 +9,10 @@ using namespace sf;
 static queue<const Drawable*> sprites;
 static RenderWindow* rw;
 
-void Renderer::initialise(sf::RenderWindow& r) { rw = &r; }
+void Renderer::initialise(sf::RenderWindow& r) {
+	rw = &r;
+	view = rw->getDefaultView();
+}
 
 void Renderer::shutdown() {
   while (!sprites.empty())
@@ -40,10 +44,29 @@ void Renderer::render() {
 	  }
   }
 
+  view.setSize(Vector2f(Engine::getWindowSize()));
+
+  Vector2f view_temp_center = view.getCenter();
+  view.setCenter(Vector2f(Engine::getWindowSize().x / 2, Engine::getWindowSize().y / 2));
+  rw->setView(view);
+
+  view.setCenter(view_temp_center);
+
+  
+  float x = view.getCenter().x;
+  float y = view.getCenter().y;
+
+
+  view.setCenter(Vector2f(x, y));
+  rw->setView(view);
+
   while (!sprites.empty()) {
-    rw->draw(*sprites.front());
-    sprites.pop();
+	  rw->draw(*sprites.front());
+	  sprites.pop();
   }
+  view_temp_center = Vector2f(0.0f, 0.0f);
+
 }
+
 
 void Renderer::queue(const sf::Drawable* s) { sprites.push(s); }

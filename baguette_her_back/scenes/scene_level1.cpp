@@ -3,7 +3,9 @@
 #include "../components/cmp_sprite.h"
 #include "../game.h"
 #include "../components/cmp_enemy_turret.h"
+#include <SFML\Graphics\View.hpp>
 #include <LevelSystem.h>
+#include "system_renderer.h"
 #include <iostream>
 #include <thread>
 #include <vector>
@@ -51,6 +53,8 @@ void Level1Scene::Load() {
 
 
       player->addComponent<PlayerPhysicsComponent>(Vector2f(20.f, 30.f));
+      //set view to center on player
+      Renderer::view.reset(FloatRect(Vector2f(player->getPosition().x, player->getPosition().y), Vector2f(Engine::getWindowSize().x, Engine::getWindowSize().y)));
   }
 
   // Create ENEMY
@@ -97,6 +101,9 @@ void Level1Scene::Update(const double& dt) {
   if (ls::getTileAt(player->getPosition()) == ls::END) {
     Engine::ChangeScene((Scene*)&menu);
   }
+
+  Renderer::view.setCenter(Vector2f(player->getPosition().x, player->getPosition().y));
+
   Scene::Update(dt);
 }
 

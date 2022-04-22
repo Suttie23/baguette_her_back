@@ -4,13 +4,15 @@
 //#include "cmp_sprite.h"
 
 namespace Renderer {
-void initialise(sf::RenderWindow&);
+	void initialise(sf::RenderWindow&);
 
-void shutdown();
+	void shutdown();
 
-void update(const double&);
+	void update(const double&);
 
-void queue(const sf::Drawable* s);
+	void queue(const sf::Drawable* s);
 
-void render();
+	void render();
+
+	extern sf::View view;
 }; // namespace Renderer
