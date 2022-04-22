@@ -101,7 +101,7 @@ void Engine::Start(unsigned int width, unsigned int height,
       }
     }
 
-    window.clear(Color(150, 150, 150));
+    window.clear();
     Update();
     Render(window);
     window.display();
@@ -139,6 +139,28 @@ void Engine::ChangeScene(Scene* s) {
     //_activeScene->Load();
     loading = true;
   }
+}
+
+std::shared_ptr<Sprite> Scene::getBackground()
+{
+    return _background;
+}
+
+void Scene::setBackground(sf::Sprite& background)
+{
+    _background.reset();
+    _background = make_shared<Sprite>(background);
+}
+
+std::shared_ptr<Sprite> Scene::getForeground()
+{
+    return _foreground;
+}
+
+void Scene::setForeground(sf::Sprite& foreground)
+{
+    _foreground.reset();
+    _foreground = make_shared<Sprite>(foreground);
 }
 
 void Scene::Update(const double& dt) { ents.update(dt); }

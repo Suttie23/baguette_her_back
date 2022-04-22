@@ -23,7 +23,8 @@ public:
     END = 'e',
     WALL = 'w',
     ENEMY = 'n',
-    WAYPOINT = '+'
+    WAYPOINT = '+',
+    HAZZARD = 'h'
   };
 
   static Tile getTile(sf::Vector2ul);

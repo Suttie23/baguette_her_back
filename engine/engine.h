@@ -1,5 +1,7 @@
 #pragma once
 #include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Graphics/Texture.hpp>
+#include <SFML/Graphics/Sprite.hpp>
 #include "user_preferences.h"
 #include <ecm.h>
 #include <future>
@@ -16,6 +18,10 @@ public:
   virtual void UnLoad();
   virtual void Update(const double& dt);
   virtual void Render();
+  std::shared_ptr<sf::Sprite> getBackground();
+  void setBackground(sf::Sprite& background);
+  std::shared_ptr<sf::Sprite> getForeground();
+  void setForeground(sf::Sprite& foreground);
   bool isLoaded() const;
   std::shared_ptr<Entity> makeEntity();
 
@@ -23,6 +29,8 @@ public:
   sf::Vector2f mouse_pos;
 
 protected:
+  std::shared_ptr<sf::Sprite> _background;
+  std::shared_ptr<sf::Sprite> _foreground;
   void setLoaded(bool);
 private:
   mutable bool _loaded;

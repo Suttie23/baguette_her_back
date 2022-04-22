@@ -10,9 +10,9 @@ we                             w
 wwwww                          w
 w        www                   w
 w              ww              w
-w                   www        w
-w                        w     w
-w                       ww     w
-w s             w     wwww     w
-w  w      n    www             w
-wwwwwww wwwwwwwwwwww  wwwwww  ww
+w                       n      w
+w                       w      w
+w                   w          w
+w s              w             w
+w             w                w
+wwwwwwwhhhwwwwwwhhhhhwwwwwwwwwww
