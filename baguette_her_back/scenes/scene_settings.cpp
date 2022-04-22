@@ -37,18 +37,18 @@ void SettingsScene::Load() {
         auto resolution_text = makeEntity();
         auto tr = resolution_text->addComponent<TextComponent>(
             "Resolution:");
-        resolution_text->setPosition(Vector2f(425.f, 400.f));
+        resolution_text->setPosition(Vcast<float>(Engine::getWindowSize()) * Vector2f(0.35f, 0.45f));
 
         resolution = makeEntity();
         vector<string> textlist1{ "800 x 600", "1024 x 800", "1280 x 1024", "1360 x 768", "1600 x 900", "1920 x 1080" };
         auto res = resolution->addComponent<TextListComponent>(textlist1);
         res->setDefault(to_string(static_cast<int>(Engine::user_preferences.video_resolution.x)) + " x " + to_string(static_cast<int>(Engine::user_preferences.video_resolution.y)));
-        resolution->setPosition(Vector2f(650.0f, 400.f));
+        resolution->setPosition(Vcast<float>(Engine::getWindowSize()) * Vector2f(0.52f, 0.45f));
 
         auto fullscreen_text = makeEntity();
         auto tf = fullscreen_text->addComponent<TextComponent>(
             "Toggle Full Screen:");
-        fullscreen_text->setPosition(Vector2f(425.f, 300.f));
+        fullscreen_text->setPosition(Vcast<float>(Engine::getWindowSize()) * Vector2f(0.35f, 0.55f));
 
         // fullscreen toggle
         fullscreen = makeEntity();
@@ -58,7 +58,7 @@ void SettingsScene::Load() {
             fs->setDefault("OFF");
         else
             fs->setDefault("ON");
-        fullscreen->setPosition(Vector2f(775.0f, 300.0f));
+        fullscreen->setPosition(Vcast<float>(Engine::getWindowSize()) * Vector2f(0.62f, 0.55f));
 
     }
 

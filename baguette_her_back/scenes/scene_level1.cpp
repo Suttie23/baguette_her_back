@@ -21,7 +21,7 @@ static shared_ptr<Texture> glass_text;
 
 void Level1Scene::Load() {
   cout << " Scene 1 Load" << endl;
-  ls::loadLevelFile("res/level_1.txt", 40.0f);
+  ls::loadLevelFile("res/level_1.txt", 38.0f);
 
   auto ho = Engine::getWindowSize().y - (ls::getHeight() * 40.f);
   ls::setOffset(Vector2f(0, ho));
@@ -102,7 +102,7 @@ void Level1Scene::Update(const double& dt) {
     Engine::ChangeScene((Scene*)&menu);
   }
 
-  Renderer::view.setCenter(Vector2f(player->getPosition().x, player->getPosition().y));
+  Renderer::view.setCenter(Vector2f(player->getPosition().x, player->getPosition().y - 150));
 
   Scene::Update(dt);
 }

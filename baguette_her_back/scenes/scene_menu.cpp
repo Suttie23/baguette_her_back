@@ -12,7 +12,6 @@ using namespace std;
 using namespace sf;
 
 static shared_ptr<Texture> _texture;
-static shared_ptr<Texture> background_text;
 sf::SoundBuffer buffer;
 
 void MenuScene::Load() {
@@ -32,12 +31,13 @@ void MenuScene::Load() {
 
     {
 
-        // Create Background
-        background_text = make_shared<Texture>();
-        background_text->loadFromFile("res/menu/menu_bg.png");
-        Sprite bg(*background_text);
-        bg.setPosition(Vector2f(0, 0));
-        setBackground(bg);
+        // Background Entity
+        auto background = makeEntity();
+        auto bg = background->addComponent<SpriteComponent>();
+        _texture = make_shared<Texture>();
+        _texture->loadFromFile("res/menu/menu_bg.png");
+        bg->setTexture(_texture);
+        background->setPosition(Vcast<float>(Engine::getWindowSize()) * Vector2f(0.0f, 0.0f));;
 
         // Logo Entity
         auto logo = makeEntity();
