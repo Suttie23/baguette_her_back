@@ -1,7 +1,7 @@
 #include "scene_level1.h"
+#include "../game.h"
 #include "../components/cmp_player_physics.h"
 #include "../components/cmp_sprite.h"
-#include "../game.h"
 #include "../components/cmp_enemy_turret.h"
 #include <SFML\Graphics\View.hpp>
 #include <LevelSystem.h>
@@ -53,11 +53,23 @@ void Level1Scene::Load() {
 
 
       player->addComponent<PlayerPhysicsComponent>(Vector2f(20.f, 30.f));
-      //set view to center on player
-      Renderer::view.reset(FloatRect(Vector2f(player->getPosition().x, player->getPosition().y), Vector2f(Engine::getWindowSize().x, Engine::getWindowSize().y)));
+
+
   }
 
-  // Create ENEMY
+  // Player health
+  {
+
+
+      auto life = makeEntity();
+      auto li = life->addComponent<SpriteComponent>();
+      _texture = make_shared<Texture>();
+      _texture->loadFromFile("res/sprites/healthbar_full.png");
+      li->setTexture(_texture);
+      //life->setPosition(Vector2f(Engine::getWindowSize().x - 300, 80));
+  }
+
+  // Create enemy
   {
       enemy = makeEntity();
       enemy->setPosition(ls::getTilePosition(ls::findTiles(ls::ENEMY)[0]));
@@ -83,7 +95,7 @@ void Level1Scene::Load() {
   }
 
   //Simulate long loading times
-  std::this_thread::sleep_for(std::chrono::milliseconds(3000));
+  //std::this_thread::sleep_for(std::chrono::milliseconds(3000));
   cout << " Scene 1 Load Done" << endl;
 
   setLoaded(true);
@@ -98,11 +110,13 @@ void Level1Scene::UnLoad() {
 
 void Level1Scene::Update(const double& dt) {
 
+    Renderer::view.setSize(Vector2f(Engine::getWindowSize()) * Vector2f(0.5f, 0.55f));
+    Renderer::view.setCenter(Vector2f(player->getPosition().x, player->getPosition().y - 150));
+
+
   if (ls::getTileAt(player->getPosition()) == ls::END) {
     Engine::ChangeScene((Scene*)&menu);
   }
-
-  Renderer::view.setCenter(Vector2f(player->getPosition().x, player->getPosition().y - 150));
 
   Scene::Update(dt);
 }
@@ -111,9 +125,9 @@ void Level1Scene::Render() {
 
     auto& window = Engine::GetWindow();
 
-   // if (_background != nullptr) {
-     //   window.draw(*_background);
-   // }
+    //if (_background != nullptr) {
+      // window.draw(*_background);
+   //}
 
   ls::render(Engine::GetWindow());
 

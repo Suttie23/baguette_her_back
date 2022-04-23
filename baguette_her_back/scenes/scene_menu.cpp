@@ -2,6 +2,7 @@
 #include "../components/cmp_sprite.h"
 #include "../components/cmp_text.h"
 #include "../components/cmp_blinking.h"
+#include "system_renderer.h"
 #include "../game.h"
 #include <SFML/Window/Keyboard.hpp>
 #include "SFML/Graphics.hpp"
@@ -30,6 +31,8 @@ void MenuScene::Load() {
         this->crunch.setVolume(15);
 
     {
+
+        Renderer::view.reset(FloatRect(Vector2f(0.0f, 0.0f), Vector2f(Engine::getWindowSize().x, Engine::getWindowSize().y)));
 
         // Background Entity
         auto background = makeEntity();

@@ -44,7 +44,7 @@ void Renderer::render() {
 	  }
   }
 
-  view.setSize(Vector2f(Engine::getWindowSize()));
+  //view.setSize(Vector2f(Engine::getWindowSize()) * Vector2f(0.5f, 0.5f));
 
   Vector2f view_temp_center = view.getCenter();
   view.setCenter(Vector2f(Engine::getWindowSize().x / 2, Engine::getWindowSize().y / 2));

@@ -49,8 +49,11 @@ void LevelSystem::loadLevelFile(const std::string& path, float tileSize) {
   int widthCheck = 0;
   for (int i = 0; i < buffer.size(); ++i) {
     const char c = buffer[i];
-    if (c == '\0') {  break; }
-    if (c == '\n') { // newline
+
+    // MAKE SURE THERE IS A NEW LINE AT THE END OF EACH LINE OR IT WILL DIE
+    // DON'T WORRY THIS IS FIXED NOW JUST DON'T LEAVE THE LINE THERE. UNO REVERSE
+
+    if (c == '\n' || c=='\0') { // newline
       if (w == 0) {  // if we haven't written width yet
         w = i;       // set width
       } else if (w != (widthCheck - 1)) {
@@ -61,6 +64,7 @@ void LevelSystem::loadLevelFile(const std::string& path, float tileSize) {
     } else {
       temp_tiles.push_back((Tile)c);
     }
+    if (c == '\0') { break; }
     ++widthCheck;
   }
 
