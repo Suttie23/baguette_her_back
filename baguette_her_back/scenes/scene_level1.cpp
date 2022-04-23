@@ -14,6 +14,7 @@ using namespace std;
 using namespace sf;
 
 static shared_ptr<Entity> player;
+static shared_ptr<Entity> life;
 static shared_ptr<Entity> enemy;
 static shared_ptr<Texture> _texture;
 static shared_ptr<Texture> background_text;
@@ -59,14 +60,12 @@ void Level1Scene::Load() {
 
   // Player health
   {
-
-
-      auto life = makeEntity();
+      life = makeEntity();
       auto li = life->addComponent<SpriteComponent>();
       _texture = make_shared<Texture>();
       _texture->loadFromFile("res/sprites/healthbar_full.png");
       li->setTexture(_texture);
-      //life->setPosition(Vector2f(Engine::getWindowSize().x - 300, 80));
+      life->setPosition(Vector2f(player->getPosition().x, player->getPosition().y));
   }
 
   // Create enemy
@@ -118,6 +117,9 @@ void Level1Scene::Update(const double& dt) {
     Engine::ChangeScene((Scene*)&menu);
   }
 
+  // Cheaty way to keep GUI on screen with player. Would be better to create another view
+  life->setPosition(Vector2f(player->getPosition().x - 300.f, player->getPosition().y - 350.f));
+
   Scene::Update(dt);
 }
 
@@ -125,9 +127,9 @@ void Level1Scene::Render() {
 
     auto& window = Engine::GetWindow();
 
-    //if (_background != nullptr) {
-      // window.draw(*_background);
-   //}
+    if (_background != nullptr) {
+       window.draw(*_background);
+   }
 
   ls::render(Engine::GetWindow());
 
