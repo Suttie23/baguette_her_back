@@ -23,6 +23,31 @@ public:
   void setTexture(std::shared_ptr<sf::Texture> tex);
 };
 
+// REPEATED SPRITE
+
+class RepeatedSpriteComponent : public Component {
+protected:
+	std::shared_ptr<std::vector<sf::Sprite>> _sprite;
+	std::shared_ptr<sf::Texture> _texture;
+	int _repetition; std::vector<sf::Sprite>* a = new std::vector<sf::Sprite>();
+
+public:
+	explicit RepeatedSpriteComponent(Entity* p, int repetition);
+	void update(double dt) override;
+	void render() override;
+	void decreaseRep();
+	void setRep(int rep);
+
+	sf::Texture* setTexture(sf::Texture& texture);
+	template <typename... Targs> void setSprite(Targs... params) {
+		Sprite s(params...);
+		_sprite.reset(new std::vector<sf::Sprite>());
+		for (int i = 0; i < _repetition; i++) {
+			_sprite->push_back(s);
+		}
+	}
+};
+
 // ANIMATED SPRITE
 class AnimatedSpriteComponent : public Component {
 protected:

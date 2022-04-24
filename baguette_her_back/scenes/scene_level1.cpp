@@ -3,6 +3,8 @@
 #include "../components/cmp_player_physics.h"
 #include "../components/cmp_sprite.h"
 #include "../components/cmp_enemy_turret.h"
+#include "../components/cmp_life.h"
+#include "../components/cmp_hurt_player.h"
 #include <SFML\Graphics\View.hpp>
 #include <LevelSystem.h>
 #include "system_renderer.h"
@@ -18,7 +20,6 @@ static shared_ptr<Entity> life;
 static shared_ptr<Entity> enemy;
 static shared_ptr<Texture> _texture;
 static shared_ptr<Texture> background_text;
-static shared_ptr<Texture> glass_text;
 
 void Level1Scene::Load() {
   cout << " Scene 1 Load" << endl;
@@ -34,13 +35,6 @@ void Level1Scene::Load() {
   bg.setPosition(Vector2f(0, -1020));
   setBackground(bg);
 
-  // Foreground (glass)
-  glass_text = make_shared<Texture>();
-  glass_text->loadFromFile("res/menu/glasstest.png");
-  Sprite gl(*glass_text);
-  gl.setPosition(Vector2f(0, 0));
-  setForeground(gl);
-
   // Create player
   {
       player = makeEntity();
@@ -54,17 +48,19 @@ void Level1Scene::Load() {
 
 
       player->addComponent<PlayerPhysicsComponent>(Vector2f(20.f, 30.f));
+      player->addComponent<LifeComponent>(3);
 
 
   }
 
   // Player health
   {
+      Texture h;
+      h.loadFromFile("res/sprites/life.png");
       life = makeEntity();
-      auto li = life->addComponent<SpriteComponent>();
-      _texture = make_shared<Texture>();
-      _texture->loadFromFile("res/sprites/healthbar_full.png");
-      li->setTexture(_texture);
+      life->addTag("life");
+      auto li = life->addComponent<RepeatedSpriteComponent>(player->get_components<LifeComponent>()[0]->getLives());
+      li->setSprite(Sprite(*(li->setTexture(h))));
       life->setPosition(Vector2f(player->getPosition().x, player->getPosition().y));
   }
 
@@ -119,6 +115,11 @@ void Level1Scene::Update(const double& dt) {
   else {
       // Cheaty way to keep GUI on screen with player. Would be better to create another view
       life->setPosition(Vector2f(player->getPosition().x - 300.f, player->getPosition().y - 250.f));
+  }
+
+  if (!player->isAlive()) {     
+      Engine::ChangeScene((Scene*)&menu);
+      return;
   }
 
   Scene::Update(dt);

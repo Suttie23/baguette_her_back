@@ -1,6 +1,7 @@
 
 #include "cmp_sprite.h"
 #include "system_renderer.h"
+#include <SFML/Graphics.hpp>
 #include "../animation.h"
 
 using namespace std;
@@ -69,3 +70,48 @@ void AnimatedSpriteComponent::update(double dt) {
 void AnimatedSpriteComponent::render() { Renderer::queue(_sprite.get()); }
 
 sf::Sprite& AnimatedSpriteComponent::getSprite() const { return *_sprite; }
+
+// REPEATED SPRITE COMPONENT
+
+RepeatedSpriteComponent::RepeatedSpriteComponent(Entity* p, int repetition)
+	: Component(p), _repetition(repetition), _sprite(make_shared<std::vector<sf::Sprite>>())
+	, _texture(make_shared<sf::Texture>())
+{
+	for (int i = 0; i < _repetition; i++) {
+		_sprite->push_back(sf::Sprite());
+	}
+
+}
+
+void RepeatedSpriteComponent::update(double dt)
+{
+	for (int i = 0; i < _repetition; i++) {
+		_sprite->at(i).setPosition(_parent->getPosition());
+	}
+}
+
+void RepeatedSpriteComponent::render()
+{
+	for (int i = 0; i < _repetition; i++) {
+		float x = _parent->getPosition().x + _sprite->at(i).getLocalBounds().width * i + i * 5.0f;
+		float y = _parent->getPosition().y;
+		_sprite->at(i).setPosition(sf::Vector2f(x, y));
+		Renderer::queue(&_sprite->at(i));
+	}
+}
+
+void RepeatedSpriteComponent::decreaseRep()
+{
+	_repetition--;
+}
+
+void RepeatedSpriteComponent::setRep(int reps)
+{
+	_repetition = reps;
+}
+
+sf::Texture* RepeatedSpriteComponent::setTexture(sf::Texture& texture)
+{
+	*_texture = texture;
+	return &(*_texture);
+}
