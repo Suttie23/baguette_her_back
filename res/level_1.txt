@@ -1,22 +1,44 @@
-w                                 w
-w                                 w
-w                                 w
-w                                 w
-w                                 w
-w                                 w
-w                                 w
-w                                 w
-we                                w
-wwwww                             w
-w        w                        w
-w           w                     w
-w                        n        w
-w             w          w        w
-w                w                w
-w                    w            w
-w             w                   w
-w                                 w
-w                                 w
-ws                                w
-w                                 w
-wwwwwwhhhwwwwwwwwwwwwwwwwwwwwwwwwww
+wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+w                                    w
+w                                    w
+w                                    w
+w                                    w
+w                                    w
+w                                    w
+w                                    w
+w                                    w
+w                                    w
+w                                    w
+w                                    w
+w  wwww                              w
+w                                    w
+w                                    w
+w                                    w
+w                                    w
+wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww   w
+w                                   ww
+w                                ww  w
+w                             ww     w
+w                          ww        w
+w                      ww            w
+w               ww                   w
+w        ww                          w
+w   w                                w
+wwwwww                               w
+w        ww                          w
+w            ww                      w
+w                                    w
+w               w                    w
+wwwww       wwwwwwwwwwwwwwwwwwwwwwwwww
+w       ww                           w
+w          ww                        w
+w                                    w
+w            ww                      w
+w               ww   ww    n         w
+w                          w         w
+w                        wwwwwwwwwwwww
+w                     ww             w
+w                 ww                 w
+w            ww                      w
+w  s      ww                         w
+wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww

@@ -102,7 +102,7 @@ void Engine::Start(unsigned int width, unsigned int height,
       }
     }
 
-    window.clear(Color(150, 150, 150));
+    window.clear();
     Update();
     Render(window);
     window.display();
@@ -120,6 +120,11 @@ std::shared_ptr<Entity> Scene::makeEntity() {
   auto e = make_shared<Entity>(this);
   ents.list.push_back(e);
   return std::move(e);
+}
+
+Scene* Engine::getActiveScene()
+{
+    return _activeScene;
 }
 
 void Engine::setVsync(bool b) { _window->setVerticalSyncEnabled(b); }

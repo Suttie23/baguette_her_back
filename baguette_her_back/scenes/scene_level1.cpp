@@ -29,9 +29,9 @@ void Level1Scene::Load() {
 
   // Background
   background_text = make_shared<Texture>();
-  background_text->loadFromFile("res/menu/menu_bg.png");
+  background_text->loadFromFile("res/sprites/game_bg.png");
   Sprite bg(*background_text);
-  bg.setPosition(Vector2f(0, 0));
+  bg.setPosition(Vector2f(0, -1020));
   setBackground(bg);
 
   // Foreground (glass)
@@ -110,15 +110,16 @@ void Level1Scene::UnLoad() {
 void Level1Scene::Update(const double& dt) {
 
     Renderer::view.setSize(Vector2f(Engine::getWindowSize()) * Vector2f(0.5f, 0.55f));
-    Renderer::view.setCenter(Vector2f(player->getPosition().x, player->getPosition().y - 150));
+    Renderer::view.setCenter(Vector2f(player->getPosition().x, player->getPosition().y - 50));
 
 
   if (ls::getTileAt(player->getPosition()) == ls::END) {
     Engine::ChangeScene((Scene*)&menu);
   }
-
-  // Cheaty way to keep GUI on screen with player. Would be better to create another view
-  life->setPosition(Vector2f(player->getPosition().x - 300.f, player->getPosition().y - 350.f));
+  else {
+      // Cheaty way to keep GUI on screen with player. Would be better to create another view
+      life->setPosition(Vector2f(player->getPosition().x - 300.f, player->getPosition().y - 250.f));
+  }
 
   Scene::Update(dt);
 }
