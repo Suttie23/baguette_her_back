@@ -32,7 +32,7 @@ void Level1Scene::Load() {
   background_text = make_shared<Texture>();
   background_text->loadFromFile("res/sprites/game_bg.png");
   Sprite bg(*background_text);
-  bg.setPosition(Vector2f(0, -1020));
+  bg.setPosition(Vcast<float>(Engine::getWindowSize()) * Vector2f(0.0f, -1.40f));;
   setBackground(bg);
 
   // Create player
@@ -53,6 +53,19 @@ void Level1Scene::Load() {
 
   }
 
+  // Create enemy
+  {
+      enemy = makeEntity();
+      enemy->setPosition(ls::getTilePosition(ls::findTiles(ls::ENEMY)[0]));
+      auto e = enemy->addComponent<ShapeComponent>();
+      e->setShape<sf::RectangleShape>(Vector2f(20.f, 30.f));
+      e->getShape().setFillColor(Color::Magenta);
+      e->getShape().setOrigin(Vector2f(10.f, 15.f));
+
+      enemy->addComponent<EnemyTurretComponent>();
+
+  }
+
   // Player health
   {
       Texture h;
@@ -64,29 +77,33 @@ void Level1Scene::Load() {
       life->setPosition(Vector2f(player->getPosition().x, player->getPosition().y));
   }
 
-  // Create enemy
-  {
-      enemy = makeEntity();
-      enemy->setPosition(ls::getTilePosition(ls::findTiles(ls::ENEMY)[0]));
-      auto e = enemy->addComponent<ShapeComponent>();
-      e->setShape<sf::RectangleShape>(Vector2f(20.f, 30.f));
-      e->getShape().setFillColor(Color::Magenta);
-      e->getShape().setOrigin(Vector2f(10.f, 15.f));
-
-      enemy->addComponent<EnemyTurretComponent>();
-;
-  }
-
   // Add physics colliders to level tiles.
   {
-    auto walls = ls::findTiles(ls::WALL);
-    for (auto w : walls) {
-      auto pos = ls::getTilePosition(w);
-      pos += Vector2f(20.f, 20.f); //offset to center
-      auto e = makeEntity();
-      e->setPosition(pos);
-      e->addComponent<PhysicsComponent>(false, Vector2f(40.f, 40.f));
-    }
+      // WALL COLLIDERS
+      {
+          auto walls = ls::findTiles(ls::WALL);
+          for (auto w : walls) {
+              auto pos = ls::getTilePosition(w);
+              pos += Vector2f(20.f, 20.f); //offset to center
+              auto e = makeEntity();
+              e->setPosition(pos);
+              e->addComponent<PhysicsComponent>(false, Vector2f(40.f, 40.f));
+          }
+      }
+
+      // HAZARD COLLIDERS
+      {
+          auto hazards = ls::findTiles(ls::HAZZARD);
+          for (auto h : hazards) {
+              auto pos = ls::getTilePosition(h);
+              pos += Vector2f(20.f, 20.f); //offset to center
+              auto e = makeEntity();
+              e->setPosition(pos);
+              e->addComponent<PhysicsComponent>(false, Vector2f(40.f, 40.f));
+              e->addComponent<HurtComponentHazard>();
+          }
+      }
+
   }
 
   //Simulate long loading times
@@ -113,7 +130,7 @@ void Level1Scene::Update(const double& dt) {
     Engine::ChangeScene((Scene*)&menu);
   }
   else {
-      // Cheaty way to keep GUI on screen with player. Would be better to create another view
+      // Cheaty way to keep GUI on screen with player for testing. TODO: Create seperate view for UI
       life->setPosition(Vector2f(player->getPosition().x - 300.f, player->getPosition().y - 250.f));
   }
 

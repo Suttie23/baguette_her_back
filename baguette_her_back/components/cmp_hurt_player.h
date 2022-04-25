@@ -13,3 +13,15 @@ public:
   explicit HurtComponent(Entity* p);
   HurtComponent() = delete;
 };
+
+class HurtComponentHazard : public Component {
+protected:
+	void fire() const;
+	std::weak_ptr<Entity> _player;
+
+public:
+	void update(double dt) override;
+	void render() override {}
+	explicit HurtComponentHazard(Entity* p);
+	HurtComponentHazard() = delete;
+};
