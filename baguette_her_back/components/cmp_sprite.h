@@ -21,7 +21,6 @@ public:
 
 
   void setTexture(std::shared_ptr<sf::Texture> tex);
-
 };
 
 // REPEATED SPRITE

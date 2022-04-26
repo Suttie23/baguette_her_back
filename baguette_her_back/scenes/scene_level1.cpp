@@ -9,6 +9,7 @@
 #include <LevelSystem.h>
 #include "system_renderer.h"
 #include <iostream>
+#include <fstream>
 #include <thread>
 #include <vector>
 
@@ -183,46 +184,62 @@ void Level1Scene::Update(const double& dt) {
     Renderer::view.setSize(Vector2f(Engine::getWindowSize()) * Vector2f(0.5f, 0.55f));
     Renderer::view.setCenter(Vector2f(player->getPosition().x, player->getPosition().y - 50));
 
-  // If the player is at the end of the level, change to next scene
-  if (ls::getTileAt(player->getPosition()) == ls::END) {
-    Engine::ChangeScene((Scene*)&menu);
-  }
-  else {
-      // Cheaty way to keep GUI on screen with player for testing. TODO: Create seperate view for UI
-      life->setPosition(Vector2f(player->getPosition().x - 300.f, player->getPosition().y - 250.f));
+    // If the player is at the end of the level, change to next scene
+    if (ls::getTileAt(player->getPosition()) == ls::END) {
+        Engine::ChangeScene((Scene*)&menu);
+    }
+    else {
+        // Cheaty way to keep GUI on screen with player for testing. TODO: Create seperate view for UI
+        life->setPosition(Vector2f(player->getPosition().x - 300.f, player->getPosition().y - 250.f));
 
-      // Scuffed and very ineffcient way of keeping the pause menu in the center of the screen. Should use a view instead, but it works
-      menuBackground->setPosition(Vector2f(Renderer::view.getCenter().x - 135, Renderer::view.getCenter().y - 135));
-      menuContinueButton->setPosition(Vector2f(menuBackground->getPosition().x + 60, menuBackground->getPosition().y + 110));
-      menuLoadButton->setPosition(Vector2f(menuBackground->getPosition().x + 60, menuBackground->getPosition().y + 160));
-      menuSaveButton->setPosition(Vector2f(menuBackground->getPosition().x + 60, menuBackground->getPosition().y + 210));
-      menuMenuButton->setPosition(Vector2f(menuBackground->getPosition().x + 60, menuBackground->getPosition().y + 260));
-  }
+        // Scuffed and very ineffcient way of keeping the pause menu in the center of the screen. Should use a view instead, but it works
+        menuBackground->setPosition(Vector2f(Renderer::view.getCenter().x - 135, Renderer::view.getCenter().y - 135));
+        menuContinueButton->setPosition(Vector2f(menuBackground->getPosition().x + 60, menuBackground->getPosition().y + 110));
+        menuLoadButton->setPosition(Vector2f(menuBackground->getPosition().x + 60, menuBackground->getPosition().y + 160));
+        menuSaveButton->setPosition(Vector2f(menuBackground->getPosition().x + 60, menuBackground->getPosition().y + 210));
+        menuMenuButton->setPosition(Vector2f(menuBackground->getPosition().x + 60, menuBackground->getPosition().y + 260));
+    }
 
-  // Check if mouse button has been released
-  static bool mouse_released = true;
+    // Check if mouse button has been released
+    static bool mouse_released = true;
 
-  // Display Pause menu
-  if (sf::Keyboard::isKeyPressed(Keyboard::Escape)) {
-      _isPaused = true;
-      Engine::pausePhysics(_isPaused);
-      menuBackground->setVisible(true);
-      menuContinueButton->setVisible(true);
-      menuLoadButton->setVisible(true);
-      menuSaveButton->setVisible(true);
-      menuMenuButton->setVisible(true);
-  
-  }
+    // Display Pause menu
+    if (sf::Keyboard::isKeyPressed(Keyboard::Escape)) {
+        _isPaused = true;
+        Engine::pausePhysics(_isPaused);
+        menuBackground->setVisible(true);
+        menuContinueButton->setVisible(true);
+        menuLoadButton->setVisible(true);
+        menuSaveButton->setVisible(true);
+        menuMenuButton->setVisible(true);
 
-  if (sf::Keyboard::isKeyPressed(Keyboard::Tab)) {
-      _isPaused = false;
-      Engine::pausePhysics(_isPaused);
-      menuBackground->setVisible(false);
-      menuContinueButton->setVisible(false);
-      menuLoadButton->setVisible(false);
-      menuSaveButton->setVisible(false);
-      menuMenuButton->setVisible(false);
-  }
+    }
+
+    if (sf::Keyboard::isKeyPressed(Keyboard::Tab)) {
+        _isPaused = false;
+        Engine::pausePhysics(_isPaused);
+        menuBackground->setVisible(false);
+        menuContinueButton->setVisible(false);
+        menuLoadButton->setVisible(false);
+        menuSaveButton->setVisible(false);
+        menuMenuButton->setVisible(false);
+    }
+
+    bool released = true;
+
+    if (released) {
+        if (sf::Keyboard::isKeyPressed(Keyboard::Enter)) {
+            SaveGame();
+            released = false;
+        }
+    } { released = true; }
+
+
+
+    if (sf::Keyboard::isKeyPressed(Keyboard::Backspace)) {
+        LoadGame();
+    }
+    
 
   // If the player is dead, game over.
   if (!player->isAlive()) {     
@@ -230,9 +247,66 @@ void Level1Scene::Update(const double& dt) {
       return;
   }
 
+  cout << player->getPosition() << endl;
 
+  if (!_isPaused) {
       Scene::Update(dt);
+  }
   
+}
+
+const std::string savepath = "C:\\Users\\Suttie\\Documents\\My Games\\level1.save";
+
+void Level1Scene::SaveGame()
+{
+    std::ofstream savefile(savepath);
+
+    if (!savefile.is_open())
+    {
+        std::cerr << "Error while opening file for writing: " << savepath << std::endl;
+        return;
+    }
+    else
+    {
+        std::cerr << "Game Saved" << std::endl;
+        return;
+    }
+
+    // We save player position and player lives.
+    Vector2f position = player->getPosition();
+    auto lives = player->GetCompatibleComponent<LifeComponent>();
+    assert(lives.size());
+
+    savefile << position.x << " " << position.y << std::endl;
+    savefile << lives[0]->getLives() << std::endl;
+}
+
+void Level1Scene::LoadGame()
+{
+    std::ifstream savefile(savepath);
+    if (!savefile.is_open())
+    {
+        std::cerr << "Error while opening save file: " << savepath << std::endl;
+        return;
+    }
+
+    Vector2f position;
+    int lives;
+    int score;
+
+    // Load values from the files
+    savefile >> position.x >> position.y >> lives;
+
+    // Get lives
+    auto lifecomp = player->GetCompatibleComponent<LifeComponent>();
+    assert(lifecomp.size());
+    lifecomp[0]->setLives(lives);
+
+    // Get physics 
+    auto body = player->GetCompatibleComponent<PhysicsComponent>();
+    player->setPosition(position);
+    body[0]->teleport(position);
+
 }
 
 void Level1Scene::Render() {

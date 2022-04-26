@@ -5,6 +5,8 @@
 class Level1Scene : public Scene {
 private:
 	bool _isPaused = false;
+	void LoadGame();
+	void SaveGame();
 public:
   void Load() override;
 
