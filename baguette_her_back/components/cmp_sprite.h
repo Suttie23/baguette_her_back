@@ -4,6 +4,7 @@
 #include <SFML/Graphics/Shape.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 #include"../animation.h">
+#include <SFML/Graphics/Sprite.hpp>
 
 // STATIC SPRITE
 class SpriteComponent : public Component {
@@ -12,7 +13,6 @@ protected:
   std::shared_ptr<sf::Texture> _texture;
 public:
   SpriteComponent() = delete;
-
   explicit SpriteComponent(Entity* p);
   void update(double dt) override;
   void render() override;
@@ -21,6 +21,7 @@ public:
 
 
   void setTexture(std::shared_ptr<sf::Texture> tex);
+
 };
 
 // REPEATED SPRITE

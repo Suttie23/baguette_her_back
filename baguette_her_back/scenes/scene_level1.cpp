@@ -15,11 +15,21 @@
 using namespace std;
 using namespace sf;
 
-static shared_ptr<Entity> player;
-static shared_ptr<Entity> life;
-static shared_ptr<Entity> enemy;
+// Textures
 static shared_ptr<Texture> _texture;
 static shared_ptr<Texture> background_text;
+
+// Player, Enemies & Level
+static shared_ptr<Entity> player;
+static shared_ptr<Entity> enemy;
+
+// UI
+static shared_ptr<Entity> life;
+static shared_ptr<Entity> menuBackground;
+static shared_ptr<Entity> menuContinueButton;
+static shared_ptr<Entity> menuLoadButton;
+static shared_ptr<Entity> menuSaveButton;
+static shared_ptr<Entity> menuMenuButton;
 
 void Level1Scene::Load() {
   cout << " Scene 1 Load" << endl;
@@ -27,6 +37,7 @@ void Level1Scene::Load() {
 
   auto ho = Engine::getWindowSize().y - (ls::getHeight() * 40.f);
   ls::setOffset(Vector2f(0, 0));
+
 
   // Background
   background_text = make_shared<Texture>();
@@ -50,6 +61,8 @@ void Level1Scene::Load() {
       player->addComponent<PlayerPhysicsComponent>(Vector2f(20.f, 30.f));
       player->addComponent<LifeComponent>(3);
 
+      Renderer::view.setSize(Vector2f(Engine::getWindowSize()) * Vector2f(0.5f, 0.55f));
+      Renderer::view.setCenter(Vector2f(player->getPosition().x, player->getPosition().y - 50));    
 
   }
 
@@ -79,6 +92,46 @@ void Level1Scene::Load() {
 
   // Pause Menu
   {
+
+      // Pause Menu Background
+      menuBackground = makeEntity();
+      auto mbg = menuBackground->addComponent<SpriteComponent>();
+      _texture = make_shared<Texture>();
+      _texture->loadFromFile("res/pause/pause_menu_background.png");
+      mbg->setTexture(_texture);
+      menuBackground->setVisible(false);
+
+      // Pause Menu Continue Button
+      menuContinueButton = makeEntity();
+      auto mcb = menuContinueButton->addComponent<SpriteComponent>();
+      _texture = make_shared<Texture>();
+      _texture->loadFromFile("res/pause/continue_button.png");
+      mcb->setTexture(_texture);
+      menuContinueButton->setVisible(false);
+
+      // Pause Menu Load Button
+      menuLoadButton = makeEntity();
+      auto mlb = menuLoadButton->addComponent<SpriteComponent>();
+      _texture = make_shared<Texture>();
+      _texture->loadFromFile("res/pause/load_button.png");
+      mlb->setTexture(_texture);
+      menuLoadButton->setVisible(false);
+
+      // Pause Menu Save Button
+      menuSaveButton = makeEntity();
+      auto msb = menuSaveButton->addComponent<SpriteComponent>();
+      _texture = make_shared<Texture>();
+      _texture->loadFromFile("res/pause/save_button.png");
+      msb->setTexture(_texture);
+      menuSaveButton->setVisible(false);
+
+      // Pause Menu Save Button
+      menuMenuButton = makeEntity();
+      auto mmb = menuMenuButton->addComponent<SpriteComponent>();
+      _texture = make_shared<Texture>();
+      _texture->loadFromFile("res/pause/menu_button.png");
+      mmb->setTexture(_texture);
+      menuMenuButton->setVisible(false);
 
   }
 
@@ -130,7 +183,6 @@ void Level1Scene::Update(const double& dt) {
     Renderer::view.setSize(Vector2f(Engine::getWindowSize()) * Vector2f(0.5f, 0.55f));
     Renderer::view.setCenter(Vector2f(player->getPosition().x, player->getPosition().y - 50));
 
-
   // If the player is at the end of the level, change to next scene
   if (ls::getTileAt(player->getPosition()) == ls::END) {
     Engine::ChangeScene((Scene*)&menu);
@@ -138,16 +190,38 @@ void Level1Scene::Update(const double& dt) {
   else {
       // Cheaty way to keep GUI on screen with player for testing. TODO: Create seperate view for UI
       life->setPosition(Vector2f(player->getPosition().x - 300.f, player->getPosition().y - 250.f));
+
+      // Scuffed and very ineffcient way of keeping the pause menu in the center of the screen. Should use a view instead, but it works
+      menuBackground->setPosition(Vector2f(Renderer::view.getCenter().x - 135, Renderer::view.getCenter().y - 135));
+      menuContinueButton->setPosition(Vector2f(menuBackground->getPosition().x + 60, menuBackground->getPosition().y + 110));
+      menuLoadButton->setPosition(Vector2f(menuBackground->getPosition().x + 60, menuBackground->getPosition().y + 160));
+      menuSaveButton->setPosition(Vector2f(menuBackground->getPosition().x + 60, menuBackground->getPosition().y + 210));
+      menuMenuButton->setPosition(Vector2f(menuBackground->getPosition().x + 60, menuBackground->getPosition().y + 260));
   }
 
+  // Check if mouse button has been released
+  static bool mouse_released = true;
+
+  // Display Pause menu
   if (sf::Keyboard::isKeyPressed(Keyboard::Escape)) {
       _isPaused = true;
       Engine::pausePhysics(_isPaused);
+      menuBackground->setVisible(true);
+      menuContinueButton->setVisible(true);
+      menuLoadButton->setVisible(true);
+      menuSaveButton->setVisible(true);
+      menuMenuButton->setVisible(true);
+  
   }
 
   if (sf::Keyboard::isKeyPressed(Keyboard::Tab)) {
       _isPaused = false;
       Engine::pausePhysics(_isPaused);
+      menuBackground->setVisible(false);
+      menuContinueButton->setVisible(false);
+      menuLoadButton->setVisible(false);
+      menuSaveButton->setVisible(false);
+      menuMenuButton->setVisible(false);
   }
 
   // If the player is dead, game over.
@@ -156,9 +230,9 @@ void Level1Scene::Update(const double& dt) {
       return;
   }
 
-  if (!_isPaused) {
+
       Scene::Update(dt);
-  }
+  
 }
 
 void Level1Scene::Render() {
