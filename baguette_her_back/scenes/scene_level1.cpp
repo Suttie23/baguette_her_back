@@ -26,13 +26,13 @@ void Level1Scene::Load() {
   ls::loadLevelFile("res/level_1.txt", 38.0f);
 
   auto ho = Engine::getWindowSize().y - (ls::getHeight() * 40.f);
-  ls::setOffset(Vector2f(0, ho));
+  ls::setOffset(Vector2f(0, 0));
 
   // Background
   background_text = make_shared<Texture>();
   background_text->loadFromFile("res/sprites/game_bg.png");
   Sprite bg(*background_text);
-  bg.setPosition(Vcast<float>(Engine::getWindowSize()) * Vector2f(0.0f, -1.40f));;
+  bg.setPosition(Vector2f(0, 2));
   setBackground(bg);
 
   // Create player
@@ -75,6 +75,11 @@ void Level1Scene::Load() {
       auto li = life->addComponent<RepeatedSpriteComponent>(player->get_components<LifeComponent>()[0]->getLives());
       li->setSprite(Sprite(*(li->setTexture(h))));
       life->setPosition(Vector2f(player->getPosition().x, player->getPosition().y));
+  }
+
+  // Pause Menu
+  {
+
   }
 
   // Add physics colliders to level tiles.
@@ -126,6 +131,7 @@ void Level1Scene::Update(const double& dt) {
     Renderer::view.setCenter(Vector2f(player->getPosition().x, player->getPosition().y - 50));
 
 
+  // If the player is at the end of the level, change to next scene
   if (ls::getTileAt(player->getPosition()) == ls::END) {
     Engine::ChangeScene((Scene*)&menu);
   }
@@ -134,12 +140,25 @@ void Level1Scene::Update(const double& dt) {
       life->setPosition(Vector2f(player->getPosition().x - 300.f, player->getPosition().y - 250.f));
   }
 
+  if (sf::Keyboard::isKeyPressed(Keyboard::Escape)) {
+      _isPaused = true;
+      Engine::pausePhysics(_isPaused);
+  }
+
+  if (sf::Keyboard::isKeyPressed(Keyboard::Tab)) {
+      _isPaused = false;
+      Engine::pausePhysics(_isPaused);
+  }
+
+  // If the player is dead, game over.
   if (!player->isAlive()) {     
       Engine::ChangeScene((Scene*)&menu);
       return;
   }
 
-  Scene::Update(dt);
+  if (!_isPaused) {
+      Scene::Update(dt);
+  }
 }
 
 void Level1Scene::Render() {
@@ -151,11 +170,6 @@ void Level1Scene::Render() {
    }
 
   ls::render(Engine::GetWindow());
-
-
-  //if (_foreground != nullptr) {
-   //   window.draw(*_foreground);
- // }
 
   Scene::Render();
 }

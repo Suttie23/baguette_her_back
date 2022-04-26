@@ -48,12 +48,14 @@ public:
   static sf::RenderWindow& GetWindow();
   static sf::Vector2u getWindowSize();
   static Scene* getActiveScene();
+  static void pausePhysics(bool paused);
   static void setVsync(bool b);
   static UserPreferences user_preferences;
 
 private:
   static Scene* _activeScene;
   static std::string _gameName;
+  static bool _pausePhysics;
   static void Update();
   static void Render(sf::RenderWindow& window);
 };
