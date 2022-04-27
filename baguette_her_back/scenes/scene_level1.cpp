@@ -269,16 +269,17 @@ void Level1Scene::SaveGame()
     else
     {
         std::cerr << "Game Saved" << std::endl;
+
+        // We save player position and player lives.
+        Vector2f position = player->getPosition();
+        auto lives = player->GetCompatibleComponent<LifeComponent>();
+        assert(lives.size());
+
+        savefile << position.x << " " << position.y << std::endl;
+        savefile << lives[0]->getLives() << std::endl;
+
         return;
     }
-
-    // We save player position and player lives.
-    Vector2f position = player->getPosition();
-    auto lives = player->GetCompatibleComponent<LifeComponent>();
-    assert(lives.size());
-
-    savefile << position.x << " " << position.y << std::endl;
-    savefile << lives[0]->getLives() << std::endl;
 }
 
 void Level1Scene::LoadGame()
@@ -289,23 +290,27 @@ void Level1Scene::LoadGame()
         std::cerr << "Error while opening save file: " << savepath << std::endl;
         return;
     }
+    else {
+        std::cerr << "Game Loaded" << std::endl;
 
-    Vector2f position;
-    int lives;
-    int score;
+        Vector2f position;
+        int lives;
+        int score;
 
-    // Load values from the files
-    savefile >> position.x >> position.y >> lives;
+        // Load values from the files
+        savefile >> position.x >> position.y >> lives;
 
-    // Get lives
-    auto lifecomp = player->GetCompatibleComponent<LifeComponent>();
-    assert(lifecomp.size());
-    lifecomp[0]->setLives(lives);
+        // Get lives
+        auto lifecomp = player->GetCompatibleComponent<LifeComponent>();
+        assert(lifecomp.size());
+        lifecomp[0]->setLives(lives);
 
-    // Get physics 
-    auto body = player->GetCompatibleComponent<PhysicsComponent>();
-    player->setPosition(position);
-    body[0]->teleport(position);
+        // Get physics 
+        auto body = player->GetCompatibleComponent<PhysicsComponent>();
+        player->setPosition(position);
+        body[0]->teleport(position);
+
+    }
 
 }
 
