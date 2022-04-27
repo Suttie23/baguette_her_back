@@ -247,25 +247,25 @@ void Level1Scene::Update(const double& dt) {
       return;
   }
 
-  cout << player->getPosition() << endl;
-
   if (!_isPaused) {
       Scene::Update(dt);
   }
   
 }
 
-const std::string savepath = "C:\\Users\\Suttie\\Documents\\My Games\\level1.save";
+const std::string savepath = "config/save/level1.save";
 
 void Level1Scene::SaveGame()
 {
     std::ofstream savefile(savepath);
 
+    // If file is not opened, throw error
     if (!savefile.is_open())
     {
         std::cerr << "Error while opening file for writing: " << savepath << std::endl;
         return;
     }
+    // Else, save data
     else
     {
         std::cerr << "Game Saved" << std::endl;
@@ -285,11 +285,15 @@ void Level1Scene::SaveGame()
 void Level1Scene::LoadGame()
 {
     std::ifstream savefile(savepath);
+
+    // If file is not opened, throw error
     if (!savefile.is_open())
     {
         std::cerr << "Error while opening save file: " << savepath << std::endl;
         return;
     }
+
+    // Else, load data
     else {
         std::cerr << "Game Loaded" << std::endl;
 
