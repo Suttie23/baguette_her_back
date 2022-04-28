@@ -14,6 +14,7 @@ Scene* Engine::_activeScene = nullptr;
 std::string Engine::_gameName;
 sf::View Renderer::view;
 UserPreferences Engine::user_preferences;
+bool Engine::_pausePhysics = false;
 
 static bool loading = false;
 static float loadingspinner = 0.f;
@@ -66,7 +67,9 @@ void Engine::Update() {
   if (loading) {
     Loading_update(dt, _activeScene);
   } else if (_activeScene != nullptr) {
-    Physics::update(dt);
+      if (!_pausePhysics) {
+          Physics::update(dt);
+      }
     _activeScene->Update(dt);
   }
 }
@@ -127,10 +130,21 @@ Scene* Engine::getActiveScene()
     return _activeScene;
 }
 
+void Engine::pausePhysics(bool paused)
+{
+
+    _pausePhysics = paused;
+
+}
+
 void Engine::setVsync(bool b) { _window->setVerticalSyncEnabled(b); }
 
 void Engine::ChangeScene(Scene* s) {
   cout << "Eng: changing scene: " << s << endl;
+
+  // Ensure physics is not paused when a scene is changed.
+  _pausePhysics = false;
+
   auto old = _activeScene;
   _activeScene = s;
 

@@ -23,6 +23,12 @@ add_custom_target(copy_resources ALL COMMAND ${CMAKE_COMMAND}
     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/$<CONFIGURATION>/res
 )
 
+add_custom_target(copy_config ALL COMMAND ${CMAKE_COMMAND} 
+  -E copy_directory
+    "${PROJECT_SOURCE_DIR}/config"
+    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/$<CONFIGURATION>/config
+)
+
 #### Add External Dependencies ####
 # SFML - graphics library
 add_subdirectory("lib/sfml" EXCLUDE_FROM_ALL)
@@ -87,6 +93,7 @@ set(EXECUTABLES ${EXECUTABLES} BAGUETTE_HER_BACK)
 
 add_dependencies(BAGUETTE_HER_BACK copy_dll)
 add_dependencies(BAGUETTE_HER_BACK copy_resources)
+add_dependencies(BAGUETTE_HER_BACK copy_config)
 
 set_target_properties(BAGUETTE_HER_BACK 
     PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY

@@ -22,6 +22,7 @@ void SpriteComponent::update(double dt) {
   _sprite->setRotation(sf::degrees(_parent->getRotation()));
 }
 
+
 void SpriteComponent::render() { Renderer::queue(_sprite.get()); }
 
 sf::Sprite& SpriteComponent::getSprite() const { return *_sprite; }

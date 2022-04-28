@@ -9,30 +9,42 @@
 #include <LevelSystem.h>
 #include "system_renderer.h"
 #include <iostream>
+#include <fstream>
 #include <thread>
 #include <vector>
 
 using namespace std;
 using namespace sf;
 
-static shared_ptr<Entity> player;
-static shared_ptr<Entity> life;
-static shared_ptr<Entity> enemy;
+// Textures
 static shared_ptr<Texture> _texture;
 static shared_ptr<Texture> background_text;
+
+// Player, Enemies & Level
+static shared_ptr<Entity> player;
+static shared_ptr<Entity> enemy;
+
+// UI
+static shared_ptr<Entity> life;
+static shared_ptr<Entity> menuBackground;
+static shared_ptr<Entity> menuContinueButton;
+static shared_ptr<Entity> menuLoadButton;
+static shared_ptr<Entity> menuSaveButton;
+static shared_ptr<Entity> menuMenuButton;
 
 void Level1Scene::Load() {
   cout << " Scene 1 Load" << endl;
   ls::loadLevelFile("res/level_1.txt", 38.0f);
 
   auto ho = Engine::getWindowSize().y - (ls::getHeight() * 40.f);
-  ls::setOffset(Vector2f(0, ho));
+  ls::setOffset(Vector2f(0, 0));
+
 
   // Background
   background_text = make_shared<Texture>();
   background_text->loadFromFile("res/sprites/game_bg.png");
   Sprite bg(*background_text);
-  bg.setPosition(Vcast<float>(Engine::getWindowSize()) * Vector2f(0.0f, -1.40f));;
+  bg.setPosition(Vector2f(0, 2));
   setBackground(bg);
 
   // Create player
@@ -50,6 +62,8 @@ void Level1Scene::Load() {
       player->addComponent<PlayerPhysicsComponent>(Vector2f(20.f, 30.f));
       player->addComponent<LifeComponent>(3);
 
+      Renderer::view.setSize(Vector2f(Engine::getWindowSize()) * Vector2f(0.5f, 0.55f));
+      Renderer::view.setCenter(Vector2f(player->getPosition().x, player->getPosition().y - 50));    
 
   }
 
@@ -75,6 +89,51 @@ void Level1Scene::Load() {
       auto li = life->addComponent<RepeatedSpriteComponent>(player->get_components<LifeComponent>()[0]->getLives());
       li->setSprite(Sprite(*(li->setTexture(h))));
       life->setPosition(Vector2f(player->getPosition().x, player->getPosition().y));
+  }
+
+  // Pause Menu
+  {
+
+      // Pause Menu Background
+      menuBackground = makeEntity();
+      auto mbg = menuBackground->addComponent<SpriteComponent>();
+      _texture = make_shared<Texture>();
+      _texture->loadFromFile("res/pause/pause_menu_background.png");
+      mbg->setTexture(_texture);
+      menuBackground->setVisible(false);
+
+      // Pause Menu Continue Button
+      menuContinueButton = makeEntity();
+      auto mcb = menuContinueButton->addComponent<SpriteComponent>();
+      _texture = make_shared<Texture>();
+      _texture->loadFromFile("res/pause/continue_button.png");
+      mcb->setTexture(_texture);
+      menuContinueButton->setVisible(false);
+
+      // Pause Menu Load Button
+      menuLoadButton = makeEntity();
+      auto mlb = menuLoadButton->addComponent<SpriteComponent>();
+      _texture = make_shared<Texture>();
+      _texture->loadFromFile("res/pause/load_button.png");
+      mlb->setTexture(_texture);
+      menuLoadButton->setVisible(false);
+
+      // Pause Menu Save Button
+      menuSaveButton = makeEntity();
+      auto msb = menuSaveButton->addComponent<SpriteComponent>();
+      _texture = make_shared<Texture>();
+      _texture->loadFromFile("res/pause/save_button.png");
+      msb->setTexture(_texture);
+      menuSaveButton->setVisible(false);
+
+      // Pause Menu Save Button
+      menuMenuButton = makeEntity();
+      auto mmb = menuMenuButton->addComponent<SpriteComponent>();
+      _texture = make_shared<Texture>();
+      _texture->loadFromFile("res/pause/menu_button.png");
+      mmb->setTexture(_texture);
+      menuMenuButton->setVisible(false);
+
   }
 
   // Add physics colliders to level tiles.
@@ -125,21 +184,138 @@ void Level1Scene::Update(const double& dt) {
     Renderer::view.setSize(Vector2f(Engine::getWindowSize()) * Vector2f(0.5f, 0.55f));
     Renderer::view.setCenter(Vector2f(player->getPosition().x, player->getPosition().y - 50));
 
+    // If the player is at the end of the level, change to next scene
+    if (ls::getTileAt(player->getPosition()) == ls::END) {
+        Engine::ChangeScene((Scene*)&menu);
+    }
+    else {
+        // Cheaty way to keep GUI on screen with player for testing. TODO: Create seperate view for UI
+        life->setPosition(Vector2f(player->getPosition().x - 300.f, player->getPosition().y - 250.f));
 
-  if (ls::getTileAt(player->getPosition()) == ls::END) {
-    Engine::ChangeScene((Scene*)&menu);
-  }
-  else {
-      // Cheaty way to keep GUI on screen with player for testing. TODO: Create seperate view for UI
-      life->setPosition(Vector2f(player->getPosition().x - 300.f, player->getPosition().y - 250.f));
-  }
+        // Scuffed and very ineffcient way of keeping the pause menu in the center of the screen. Should use a view instead, but it works
+        menuBackground->setPosition(Vector2f(Renderer::view.getCenter().x - 135, Renderer::view.getCenter().y - 135));
+        menuContinueButton->setPosition(Vector2f(menuBackground->getPosition().x + 60, menuBackground->getPosition().y + 110));
+        menuLoadButton->setPosition(Vector2f(menuBackground->getPosition().x + 60, menuBackground->getPosition().y + 160));
+        menuSaveButton->setPosition(Vector2f(menuBackground->getPosition().x + 60, menuBackground->getPosition().y + 210));
+        menuMenuButton->setPosition(Vector2f(menuBackground->getPosition().x + 60, menuBackground->getPosition().y + 260));
+    }
 
+    // Check if mouse button has been released
+    static bool mouse_released = true;
+
+    // Display Pause menu
+    if (sf::Keyboard::isKeyPressed(Keyboard::Escape)) {
+        _isPaused = true;
+        Engine::pausePhysics(_isPaused);
+        menuBackground->setVisible(true);
+        menuContinueButton->setVisible(true);
+        menuLoadButton->setVisible(true);
+        menuSaveButton->setVisible(true);
+        menuMenuButton->setVisible(true);
+
+    }
+
+    if (sf::Keyboard::isKeyPressed(Keyboard::Tab)) {
+        _isPaused = false;
+        Engine::pausePhysics(_isPaused);
+        menuBackground->setVisible(false);
+        menuContinueButton->setVisible(false);
+        menuLoadButton->setVisible(false);
+        menuSaveButton->setVisible(false);
+        menuMenuButton->setVisible(false);
+    }
+
+    bool released = true;
+
+    if (released) {
+        if (sf::Keyboard::isKeyPressed(Keyboard::Enter)) {
+            SaveGame();
+            released = false;
+        }
+    } { released = true; }
+
+
+
+    if (sf::Keyboard::isKeyPressed(Keyboard::Backspace)) {
+        LoadGame();
+    }
+    
+
+  // If the player is dead, game over.
   if (!player->isAlive()) {     
       Engine::ChangeScene((Scene*)&menu);
       return;
   }
 
-  Scene::Update(dt);
+  if (!_isPaused) {
+      Scene::Update(dt);
+  }
+  
+}
+
+const std::string savepath = "config/save/level1.save";
+
+void Level1Scene::SaveGame()
+{
+    std::ofstream savefile(savepath);
+
+    // If file is not opened, throw error
+    if (!savefile.is_open())
+    {
+        std::cerr << "Error while opening file for writing: " << savepath << std::endl;
+        return;
+    }
+    // Else, save data
+    else
+    {
+        std::cerr << "Game Saved" << std::endl;
+
+        // We save player position and player lives.
+        Vector2f position = player->getPosition();
+        auto lives = player->GetCompatibleComponent<LifeComponent>();
+        assert(lives.size());
+
+        savefile << position.x << " " << position.y << std::endl;
+        savefile << lives[0]->getLives() << std::endl;
+
+        return;
+    }
+}
+
+void Level1Scene::LoadGame()
+{
+    std::ifstream savefile(savepath);
+
+    // If file is not opened, throw error
+    if (!savefile.is_open())
+    {
+        std::cerr << "Error while opening save file: " << savepath << std::endl;
+        return;
+    }
+
+    // Else, load data
+    else {
+        std::cerr << "Game Loaded" << std::endl;
+
+        Vector2f position;
+        int lives;
+        int score;
+
+        // Load values from the files
+        savefile >> position.x >> position.y >> lives;
+
+        // Get lives
+        auto lifecomp = player->GetCompatibleComponent<LifeComponent>();
+        assert(lifecomp.size());
+        lifecomp[0]->setLives(lives);
+
+        // Get physics 
+        auto body = player->GetCompatibleComponent<PhysicsComponent>();
+        player->setPosition(position);
+        body[0]->teleport(position);
+
+    }
+
 }
 
 void Level1Scene::Render() {
@@ -151,11 +327,6 @@ void Level1Scene::Render() {
    }
 
   ls::render(Engine::GetWindow());
-
-
-  //if (_foreground != nullptr) {
-   //   window.draw(*_foreground);
- // }
 
   Scene::Render();
 }
