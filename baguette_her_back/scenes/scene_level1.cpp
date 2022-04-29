@@ -67,6 +67,45 @@ void Level1Scene::Load() {
   setBackground(bg);
 
 
+  // Add physics colliders + textures to level tiles.
+  {
+      // WALL COLLIDERS
+      {
+          _texture = make_shared<Texture>();
+          _texture->loadFromFile("res/level_assets/wall.png");
+          auto walls = ls::findTiles(ls::WALL);
+          for (auto w : walls) {
+              auto pos = ls::getTilePosition(w);
+              pos += Vector2f(20.f, 20.f); //offset to center
+              auto e = makeEntity();
+              e->setPosition(pos);
+              auto s = e->addComponent<SpriteComponent>();
+              s->setOrigin(20.f, 20.f);
+              s->setTexture(_texture);
+              auto phy = e->addComponent<PhysicsComponent>(false, Vector2f(40.f, 40.f));
+          }
+      }
+
+      // FLOOR COLLIDERS
+      {
+          _texture = make_shared<Texture>();
+          _texture->loadFromFile("res/level_assets/floor.png");
+          auto floor = ls::findTiles(ls::FLOOR);
+          for (auto w : floor) {
+              auto pos = ls::getTilePosition(w);
+              pos += Vector2f(20.f, 20.f); //offset to center
+              auto e = makeEntity();
+              e->setPosition(pos);
+              auto s = e->addComponent<SpriteComponent>();
+              s->setOrigin(20.f, 20.f);
+              s->setTexture(_texture);
+              auto phy = e->addComponent<PhysicsComponent>(false, Vector2f(40.f, 40.f));
+
+          }
+      }
+
+  }
+
   // Create player
   {
       player = makeEntity();
@@ -100,37 +139,7 @@ void Level1Scene::Load() {
 
   }
 
-  // Add physics colliders to level tiles.
-  {
-      // WALL COLLIDERS
-      {
-          auto walls = ls::findTiles(ls::WALL);
-          for (auto w : walls) {
-              auto pos = ls::getTilePosition(w);
-              pos += Vector2f(20.f, 20.f); //offset to center
-              auto e = makeEntity();
-              e->setPosition(pos);
-              e->addComponent<PhysicsComponent>(false, Vector2f(40.f, 40.f));
-          }
-      }
 
-      // FLOOR COLLIDERS
-      {
-          _texture = make_shared<Texture>();
-          _texture->loadFromFile("res/level_assets/floor.png");
-          auto floor = ls::findTiles(ls::FLOOR);
-          for (auto w : floor) {
-              auto pos = ls::getTilePosition(w);
-              pos += Vector2f(20.f, 20.f); //offset to center
-              auto e = makeEntity();
-              e->setPosition(pos);
-              auto s = e->addComponent<SpriteComponent>();
-              s->setOrigin(20.f, 20.f);
-              s->setTexture(_texture);
-              auto phy = e->addComponent<PhysicsComponent>(false, Vector2f(40.f, 40.f));
-
-          }
-      }
 
       // HAZARD COLLIDERS
       {
@@ -154,7 +163,7 @@ void Level1Scene::Load() {
           }
       }
 
-  }
+  
 
   // Player health
   {

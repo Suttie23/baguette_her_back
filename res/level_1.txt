@@ -41,5 +41,4 @@ w                     ff             w
 w                 ff                 w
 w            ff                      w
 w s       ff                         w
-wfffhhhhfffffffffffffffffffffffffffffw
-wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+wfffhhhhfffffffhhhfffffffffffffffffffw
