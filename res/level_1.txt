@@ -10,36 +10,36 @@ w                                    w
 w                                    w
 w                                    w
 w                                    w
-w  wwww                              w
+wffffff                              w
 w                                    w
 w                                    w
 w                                    w
 w                                    w
-wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww   w
-w                                   ww
-w                                ww  w
-w                             ww     w
-w                          ww        w
-w                      ww            w
-w               ww                   w
-w        ww                          w
-w   w                                w
-wwwwww                               w
-w        ww                          w
-w            ww                      w
+wfffffffffffffffffffffffffffffff    fw
 w                                    w
-w               w                    w
-wwwww       wwwwwwwwwwwwwwwwwwwwwwwwww
-w       ww                           w
-w          ww                        w
+w                                ff  w
+w                             ff     w
+w                          ff        w
+w                      ff            w
+w               ff                   w
+w        ff                          w
+w   f                                w
+wfffff                               w
+w        ff                          w
+w            ff                      w
 w                                    w
-w            ww                      w
-w               ww   ww    n         w
-w                          w         w
-w                        wwwwwwwwwwwww
-w                     ww             w
-w                 ww                 w
-w            ww                      w
-w  s      ww                         w
-wwwwhhhwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+w               f                    w
+wffff       fffffffffffffffffffffffffw
+w       ff                           w
+w          ff                        w
+w                                    w
+w            ff                      w
+w               ff   ff    n         w
+w                          f         w
+w                        ffffffffffffw
+w                     ff             w
+w                 ff                 w
+w            ff                      w
+w s       ff                         w
+wfffhhhhfffffffffffffffffffffffffffffw
 wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww

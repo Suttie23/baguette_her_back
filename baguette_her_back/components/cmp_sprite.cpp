@@ -14,6 +14,11 @@ void SpriteComponent::setTexture(std::shared_ptr<sf::Texture> tex)
   _sprite->setTexture(*_texture);
 }
 
+void SpriteComponent::setOrigin(float x, float y)
+{
+	_sprite->setOrigin(sf::Vector2f(x, y));
+}
+
 SpriteComponent::SpriteComponent(Entity* p)
     : Component(p), _sprite(make_shared<sf::Sprite>()) {}
 

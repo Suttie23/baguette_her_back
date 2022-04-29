@@ -8,6 +8,7 @@
 #include <SFML\Graphics\View.hpp>
 #include <LevelSystem.h>
 #include "system_renderer.h"
+#include "system_physics.h"
 #include <iostream>
 #include <fstream>
 #include <thread>
@@ -23,6 +24,7 @@ static shared_ptr<Texture> background_text;
 // Player, Enemies & Level
 static shared_ptr<Entity> player;
 static shared_ptr<Entity> enemy;
+static shared_ptr<Entity> floorTile;
 
 // UI
 static shared_ptr<Entity> life;
@@ -31,6 +33,23 @@ static shared_ptr<Entity> menuContinueButton;
 static shared_ptr<Entity> menuLoadButton;
 static shared_ptr<Entity> menuSaveButton;
 static shared_ptr<Entity> menuMenuButton;
+
+// Run Frames
+std::vector<sf::Vector2u>& GetSauceFrames() {
+    static bool isSetup = false;
+    static std::vector<sf::Vector2u> sauceFrames;
+
+    if (!isSetup)
+    {
+        isSetup = true;
+        sauceFrames.push_back(Vector2u(0, 0));
+        sauceFrames.push_back(Vector2u(0, 1));
+        sauceFrames.push_back(Vector2u(0, 2));
+
+    }
+
+    return sauceFrames;
+}
 
 void Level1Scene::Load() {
   cout << " Scene 1 Load" << endl;
@@ -42,10 +61,11 @@ void Level1Scene::Load() {
 
   // Background
   background_text = make_shared<Texture>();
-  background_text->loadFromFile("res/sprites/game_bg.png");
+  background_text->loadFromFile("res/level_assets/game_bg.png");
   Sprite bg(*background_text);
   bg.setPosition(Vector2f(0, 2));
   setBackground(bg);
+
 
   // Create player
   {
@@ -77,6 +97,62 @@ void Level1Scene::Load() {
       e->getShape().setOrigin(Vector2f(10.f, 15.f));
 
       enemy->addComponent<EnemyTurretComponent>();
+
+  }
+
+  // Add physics colliders to level tiles.
+  {
+      // WALL COLLIDERS
+      {
+          auto walls = ls::findTiles(ls::WALL);
+          for (auto w : walls) {
+              auto pos = ls::getTilePosition(w);
+              pos += Vector2f(20.f, 20.f); //offset to center
+              auto e = makeEntity();
+              e->setPosition(pos);
+              e->addComponent<PhysicsComponent>(false, Vector2f(40.f, 40.f));
+          }
+      }
+
+      // FLOOR COLLIDERS
+      {
+          _texture = make_shared<Texture>();
+          _texture->loadFromFile("res/level_assets/floor.png");
+          auto floor = ls::findTiles(ls::FLOOR);
+          for (auto w : floor) {
+              auto pos = ls::getTilePosition(w);
+              pos += Vector2f(20.f, 20.f); //offset to center
+              auto e = makeEntity();
+              e->setPosition(pos);
+              auto s = e->addComponent<SpriteComponent>();
+              s->setOrigin(20.f, 20.f);
+              s->setTexture(_texture);
+              auto phy = e->addComponent<PhysicsComponent>(false, Vector2f(40.f, 40.f));
+
+          }
+      }
+
+      // HAZARD COLLIDERS
+      {
+
+
+          auto hazards = ls::findTiles(ls::HAZARD);
+          for (auto h : hazards) {
+              auto pos = ls::getTilePosition(h);
+              pos += Vector2f(20.f, 20.f); //offset to center
+              auto e = makeEntity();
+              e->setPosition(pos);
+              _texture = make_shared<Texture>();
+              _texture->loadFromFile("res/level_assets/sauce.png");
+              auto s = e->addComponent<AnimatedSpriteComponent>(_texture.get(), Vector2u(1, 3), 0.2f);
+              e->addComponent<HurtComponentHazard>();
+              s->setTextureRect(_texture);
+              s->getSprite().setOrigin(Vector2f(20.f, 32.f));
+              auto phy = e->addComponent<PhysicsComponent>(false, Vector2f(40.f, 40.f));
+              s->SetFrames(GetSauceFrames());
+
+          }
+      }
 
   }
 
@@ -136,41 +212,12 @@ void Level1Scene::Load() {
 
   }
 
-  // Add physics colliders to level tiles.
-  {
-      // WALL COLLIDERS
-      {
-          auto walls = ls::findTiles(ls::WALL);
-          for (auto w : walls) {
-              auto pos = ls::getTilePosition(w);
-              pos += Vector2f(20.f, 20.f); //offset to center
-              auto e = makeEntity();
-              e->setPosition(pos);
-              e->addComponent<PhysicsComponent>(false, Vector2f(40.f, 40.f));
-          }
-      }
-
-      // HAZARD COLLIDERS
-      {
-          auto hazards = ls::findTiles(ls::HAZZARD);
-          for (auto h : hazards) {
-              auto pos = ls::getTilePosition(h);
-              pos += Vector2f(20.f, 20.f); //offset to center
-              auto e = makeEntity();
-              e->setPosition(pos);
-              e->addComponent<PhysicsComponent>(false, Vector2f(40.f, 40.f));
-              e->addComponent<HurtComponentHazard>();
-          }
-      }
-
-  }
-
-  //Simulate long loading times
-  //std::this_thread::sleep_for(std::chrono::milliseconds(3000));
   cout << " Scene 1 Load Done" << endl;
 
   setLoaded(true);
 }
+
+
 
 void Level1Scene::UnLoad() {
   cout << "Scene 1 Unload" << endl;
@@ -180,6 +227,7 @@ void Level1Scene::UnLoad() {
 }
 
 void Level1Scene::Update(const double& dt) {
+
 
     Renderer::view.setSize(Vector2f(Engine::getWindowSize()) * Vector2f(0.5f, 0.55f));
     Renderer::view.setCenter(Vector2f(player->getPosition().x, player->getPosition().y - 50));

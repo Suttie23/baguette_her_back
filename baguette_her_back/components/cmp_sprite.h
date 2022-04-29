@@ -11,6 +11,7 @@ class SpriteComponent : public Component {
 protected:
   std::shared_ptr<sf::Sprite> _sprite;
   std::shared_ptr<sf::Texture> _texture;
+  std::shared_ptr<sf::Vector2f> _position;
 public:
   SpriteComponent() = delete;
   explicit SpriteComponent(Entity* p);
@@ -21,6 +22,7 @@ public:
 
 
   void setTexture(std::shared_ptr<sf::Texture> tex);
+  void setOrigin(float x, float y);
 };
 
 // REPEATED SPRITE

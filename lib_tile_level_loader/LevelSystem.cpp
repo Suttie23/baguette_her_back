@@ -5,7 +5,7 @@ using namespace std;
 using namespace sf;
 
 std::map<LevelSystem::Tile, sf::Color> LevelSystem::_colours{
-    {WALL, Color::White}, {END, Color::Yellow} , {HAZZARD, Color::Red} };
+    {WALL, Color::White} , {FLOOR, Color::Green}, {END, Color::Yellow} , {HAZARD, Color::Red}  };
 
 sf::Color LevelSystem::getColor(LevelSystem::Tile t) {
   auto it = _colours.find(t);
@@ -240,6 +240,12 @@ void LevelSystem::unload() {
   _width = 0;
   _height = 0;
   _offset = {0, 0};
+}
+
+void LevelSystem::setTexture(sf::Sprite& texture)
+{
+    _texture.reset();
+    _texture = make_shared<Sprite>(texture);
 }
 
 const Vector2f& LevelSystem::getOffset() { return _offset; }
