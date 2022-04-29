@@ -32,6 +32,38 @@ void SpriteComponent::render() { Renderer::queue(_sprite.get()); }
 
 sf::Sprite& SpriteComponent::getSprite() const { return *_sprite; }
 
+// BUTTON COMPONENT
+
+void ButtonComponent::setTexture(std::shared_ptr<sf::Texture> tex)
+{
+	_texture = tex;
+	_sprite->setTexture(*_texture);
+}
+
+void ButtonComponent::setOrigin(float x, float y)
+{
+	_sprite->setOrigin(sf::Vector2f(x, y));
+}
+
+sf:: FloatRect ButtonComponent::getGlobalBounds()
+{
+	return _sprite->getGlobalBounds();
+
+}
+
+ButtonComponent::ButtonComponent(Entity* p)
+	: Component(p), _sprite(make_shared<sf::Sprite>()) {}
+
+void ButtonComponent::update(double dt) {
+	_sprite->setPosition(_parent->getPosition());
+	_sprite->setRotation(sf::degrees(_parent->getRotation()));
+}
+
+
+void ButtonComponent::render() { Renderer::queue(_sprite.get()); }
+
+sf::Sprite& ButtonComponent::getSprite() const { return *_sprite; }
+
 // SHAPE COMPONENT
 
 void ShapeComponent::update(double dt) {

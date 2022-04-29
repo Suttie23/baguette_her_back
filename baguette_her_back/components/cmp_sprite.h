@@ -25,6 +25,27 @@ public:
   void setOrigin(float x, float y);
 };
 
+// BUTTON SPRITE
+class ButtonComponent : public Component {
+protected:
+	std::shared_ptr<sf::Sprite> _sprite;
+	std::shared_ptr<sf::Texture> _texture;
+	std::shared_ptr<sf::Vector2f> _position;
+
+public:
+	ButtonComponent() = delete;
+	explicit ButtonComponent(Entity* p);
+	void update(double dt) override;
+	void render() override;
+
+	sf::Sprite& getSprite() const;
+
+
+	void setTexture(std::shared_ptr<sf::Texture> tex);
+	void setOrigin(float x, float y);
+	sf::FloatRect getGlobalBounds();
+};
+
 // REPEATED SPRITE
 
 class RepeatedSpriteComponent : public Component {

@@ -23,6 +23,7 @@ TextListComponent::TextListComponent(Entity * p, const std::vector<std::string> 
 void TextListComponent::update(double dt)
 {
 	_text.setPosition(_parent->getPosition());
+	FloatRect bounds = _text.getGlobalBounds();
 
 	//checking if the click was close and then change the text
 	if (_text.getGlobalBounds().contains(_parent->scene->mouse_pos)) {
