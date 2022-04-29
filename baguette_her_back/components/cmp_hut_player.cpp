@@ -25,7 +25,6 @@ void HurtComponentHazard::update(double dt) {
     if (auto pl = _player.lock()) {
         if (length(pl->getPosition() - _parent->getPosition()) < 40.0) {
             pl->get_components<LifeComponent>()[0]->reduceLives();
-            _parent->setForDelete();
         }
     }
 }

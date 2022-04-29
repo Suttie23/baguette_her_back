@@ -1,6 +1,8 @@
 #pragma once
 #include"SFML\System\Vector2.hpp"
 #include "SFML\Window\WindowStyle.hpp"
+#include <SFML/Window/Keyboard.hpp>
+#include<map>
 
 
 struct UserPreferences

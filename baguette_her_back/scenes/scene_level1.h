@@ -4,6 +4,7 @@
 
 class Level1Scene : public Scene {
 private:
+	std::vector<sf::Vector2f> menuIndex;
 	bool _isPaused = false;
 	void LoadGame();
 	void SaveGame();

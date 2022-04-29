@@ -8,6 +8,7 @@
 #include <SFML\Graphics\View.hpp>
 #include <LevelSystem.h>
 #include "system_renderer.h"
+#include "system_physics.h"
 #include <iostream>
 #include <fstream>
 #include <thread>
@@ -23,6 +24,7 @@ static shared_ptr<Texture> background_text;
 // Player, Enemies & Level
 static shared_ptr<Entity> player;
 static shared_ptr<Entity> enemy;
+static shared_ptr<Entity> floorTile;
 
 // UI
 static shared_ptr<Entity> life;
@@ -31,6 +33,24 @@ static shared_ptr<Entity> menuContinueButton;
 static shared_ptr<Entity> menuLoadButton;
 static shared_ptr<Entity> menuSaveButton;
 static shared_ptr<Entity> menuMenuButton;
+static shared_ptr<Entity> indicator;
+
+// Run Frames
+std::vector<sf::Vector2u>& GetSauceFrames() {
+    static bool isSetup = false;
+    static std::vector<sf::Vector2u> sauceFrames;
+
+    if (!isSetup)
+    {
+        isSetup = true;
+        sauceFrames.push_back(Vector2u(0, 0));
+        sauceFrames.push_back(Vector2u(0, 1));
+        sauceFrames.push_back(Vector2u(0, 2));
+
+    }
+
+    return sauceFrames;
+}
 
 void Level1Scene::Load() {
   cout << " Scene 1 Load" << endl;
@@ -42,10 +62,50 @@ void Level1Scene::Load() {
 
   // Background
   background_text = make_shared<Texture>();
-  background_text->loadFromFile("res/sprites/game_bg.png");
+  background_text->loadFromFile("res/level_assets/game_bg.png");
   Sprite bg(*background_text);
   bg.setPosition(Vector2f(0, 2));
   setBackground(bg);
+
+
+  // Add physics colliders + textures to level tiles.
+  {
+      // WALL COLLIDERS
+      {
+          _texture = make_shared<Texture>();
+          _texture->loadFromFile("res/level_assets/wall.png");
+          auto walls = ls::findTiles(ls::WALL);
+          for (auto w : walls) {
+              auto pos = ls::getTilePosition(w);
+              pos += Vector2f(20.f, 20.f); //offset to center
+              auto e = makeEntity();
+              e->setPosition(pos);
+              auto s = e->addComponent<SpriteComponent>();
+              s->setOrigin(20.f, 20.f);
+              s->setTexture(_texture);
+              auto phy = e->addComponent<PhysicsComponent>(false, Vector2f(40.f, 40.f));
+          }
+      }
+
+      // FLOOR COLLIDERS
+      {
+          _texture = make_shared<Texture>();
+          _texture->loadFromFile("res/level_assets/floor.png");
+          auto floor = ls::findTiles(ls::FLOOR);
+          for (auto w : floor) {
+              auto pos = ls::getTilePosition(w);
+              pos += Vector2f(20.f, 20.f); //offset to center
+              auto e = makeEntity();
+              e->setPosition(pos);
+              auto s = e->addComponent<SpriteComponent>();
+              s->setOrigin(20.f, 20.f);
+              s->setTexture(_texture);
+              auto phy = e->addComponent<PhysicsComponent>(false, Vector2f(40.f, 40.f));
+
+          }
+      }
+
+  }
 
   // Create player
   {
@@ -80,6 +140,32 @@ void Level1Scene::Load() {
 
   }
 
+
+
+      // HAZARD COLLIDERS
+      {
+
+
+          auto hazards = ls::findTiles(ls::HAZARD);
+          for (auto h : hazards) {
+              auto pos = ls::getTilePosition(h);
+              pos += Vector2f(20.f, 20.f); //offset to center
+              auto e = makeEntity();
+              e->setPosition(pos);
+              _texture = make_shared<Texture>();
+              _texture->loadFromFile("res/level_assets/sauce.png");
+              auto s = e->addComponent<AnimatedSpriteComponent>(_texture.get(), Vector2u(1, 3), 0.2f);
+              e->addComponent<HurtComponentHazard>();
+              s->setTextureRect(_texture);
+              s->getSprite().setOrigin(Vector2f(20.f, 32.f));
+              auto phy = e->addComponent<PhysicsComponent>(false, Vector2f(40.f, 40.f));
+              s->SetFrames(GetSauceFrames());
+
+          }
+      }
+
+  
+
   // Player health
   {
       Texture h;
@@ -104,7 +190,7 @@ void Level1Scene::Load() {
 
       // Pause Menu Continue Button
       menuContinueButton = makeEntity();
-      auto mcb = menuContinueButton->addComponent<SpriteComponent>();
+      auto mcb = menuContinueButton->addComponent<ButtonComponent>();
       _texture = make_shared<Texture>();
       _texture->loadFromFile("res/pause/continue_button.png");
       mcb->setTexture(_texture);
@@ -112,7 +198,7 @@ void Level1Scene::Load() {
 
       // Pause Menu Load Button
       menuLoadButton = makeEntity();
-      auto mlb = menuLoadButton->addComponent<SpriteComponent>();
+      auto mlb = menuLoadButton->addComponent<ButtonComponent>();
       _texture = make_shared<Texture>();
       _texture->loadFromFile("res/pause/load_button.png");
       mlb->setTexture(_texture);
@@ -120,7 +206,7 @@ void Level1Scene::Load() {
 
       // Pause Menu Save Button
       menuSaveButton = makeEntity();
-      auto msb = menuSaveButton->addComponent<SpriteComponent>();
+      auto msb = menuSaveButton->addComponent<ButtonComponent>();
       _texture = make_shared<Texture>();
       _texture->loadFromFile("res/pause/save_button.png");
       msb->setTexture(_texture);
@@ -128,49 +214,29 @@ void Level1Scene::Load() {
 
       // Pause Menu Save Button
       menuMenuButton = makeEntity();
-      auto mmb = menuMenuButton->addComponent<SpriteComponent>();
+      auto mmb = menuMenuButton->addComponent<ButtonComponent>();
       _texture = make_shared<Texture>();
       _texture->loadFromFile("res/pause/menu_button.png");
       mmb->setTexture(_texture);
       menuMenuButton->setVisible(false);
 
-  }
-
-  // Add physics colliders to level tiles.
-  {
-      // WALL COLLIDERS
-      {
-          auto walls = ls::findTiles(ls::WALL);
-          for (auto w : walls) {
-              auto pos = ls::getTilePosition(w);
-              pos += Vector2f(20.f, 20.f); //offset to center
-              auto e = makeEntity();
-              e->setPosition(pos);
-              e->addComponent<PhysicsComponent>(false, Vector2f(40.f, 40.f));
-          }
-      }
-
-      // HAZARD COLLIDERS
-      {
-          auto hazards = ls::findTiles(ls::HAZZARD);
-          for (auto h : hazards) {
-              auto pos = ls::getTilePosition(h);
-              pos += Vector2f(20.f, 20.f); //offset to center
-              auto e = makeEntity();
-              e->setPosition(pos);
-              e->addComponent<PhysicsComponent>(false, Vector2f(40.f, 40.f));
-              e->addComponent<HurtComponentHazard>();
-          }
-      }
+      // Menu indicator to highlight the button selected
+      indicator = makeEntity();
+      indicator->addTag("indicator");
+      auto s = indicator->addComponent<ShapeComponent>();
+      s->setShape<sf::RectangleShape>(Vector2f(125.f, 40.f));
+      s->getShape().setFillColor(Color(220, 140, 44, 128));
+      s->getShape().setOrigin(Vector2f(5.f, 5.f));
+      indicator->setVisible(false);
 
   }
 
-  //Simulate long loading times
-  //std::this_thread::sleep_for(std::chrono::milliseconds(3000));
   cout << " Scene 1 Load Done" << endl;
 
   setLoaded(true);
 }
+
+
 
 void Level1Scene::UnLoad() {
   cout << "Scene 1 Unload" << endl;
@@ -181,65 +247,10 @@ void Level1Scene::UnLoad() {
 
 void Level1Scene::Update(const double& dt) {
 
+
     Renderer::view.setSize(Vector2f(Engine::getWindowSize()) * Vector2f(0.5f, 0.55f));
     Renderer::view.setCenter(Vector2f(player->getPosition().x, player->getPosition().y - 50));
 
-    // If the player is at the end of the level, change to next scene
-    if (ls::getTileAt(player->getPosition()) == ls::END) {
-        Engine::ChangeScene((Scene*)&menu);
-    }
-    else {
-        // Cheaty way to keep GUI on screen with player for testing. TODO: Create seperate view for UI
-        life->setPosition(Vector2f(player->getPosition().x - 300.f, player->getPosition().y - 250.f));
-
-        // Scuffed and very ineffcient way of keeping the pause menu in the center of the screen. Should use a view instead, but it works
-        menuBackground->setPosition(Vector2f(Renderer::view.getCenter().x - 135, Renderer::view.getCenter().y - 135));
-        menuContinueButton->setPosition(Vector2f(menuBackground->getPosition().x + 60, menuBackground->getPosition().y + 110));
-        menuLoadButton->setPosition(Vector2f(menuBackground->getPosition().x + 60, menuBackground->getPosition().y + 160));
-        menuSaveButton->setPosition(Vector2f(menuBackground->getPosition().x + 60, menuBackground->getPosition().y + 210));
-        menuMenuButton->setPosition(Vector2f(menuBackground->getPosition().x + 60, menuBackground->getPosition().y + 260));
-    }
-
-    // Check if mouse button has been released
-    static bool mouse_released = true;
-
-    // Display Pause menu
-    if (sf::Keyboard::isKeyPressed(Keyboard::Escape)) {
-        _isPaused = true;
-        Engine::pausePhysics(_isPaused);
-        menuBackground->setVisible(true);
-        menuContinueButton->setVisible(true);
-        menuLoadButton->setVisible(true);
-        menuSaveButton->setVisible(true);
-        menuMenuButton->setVisible(true);
-
-    }
-
-    if (sf::Keyboard::isKeyPressed(Keyboard::Tab)) {
-        _isPaused = false;
-        Engine::pausePhysics(_isPaused);
-        menuBackground->setVisible(false);
-        menuContinueButton->setVisible(false);
-        menuLoadButton->setVisible(false);
-        menuSaveButton->setVisible(false);
-        menuMenuButton->setVisible(false);
-    }
-
-    bool released = true;
-
-    if (released) {
-        if (sf::Keyboard::isKeyPressed(Keyboard::Enter)) {
-            SaveGame();
-            released = false;
-        }
-    } { released = true; }
-
-
-
-    if (sf::Keyboard::isKeyPressed(Keyboard::Backspace)) {
-        LoadGame();
-    }
-    
 
   // If the player is dead, game over.
   if (!player->isAlive()) {     
@@ -247,9 +258,123 @@ void Level1Scene::Update(const double& dt) {
       return;
   }
 
-  if (!_isPaused) {
-      Scene::Update(dt);
+  // If the player is at the end of the level, change to next scene
+  if (ls::getTileAt(player->getPosition()) == ls::END) {
+      Engine::ChangeScene((Scene*)&menu);
   }
+  else {
+      // Cheaty way to keep GUI on screen with player for testing. TODO: Create seperate view for UI
+      life->setPosition(Vector2f(player->getPosition().x - 300.f, player->getPosition().y - 250.f));
+
+      // Scuffed and very ineffcient way of keeping the pause menu in the center of the screen. Should use a view instead, but it works
+      menuBackground->setPosition(Vector2f(Renderer::view.getCenter().x - 135, Renderer::view.getCenter().y - 135));
+      menuContinueButton->setPosition(Vector2f(menuBackground->getPosition().x + 60, menuBackground->getPosition().y + 110));
+      menuLoadButton->setPosition(Vector2f(menuBackground->getPosition().x + 60, menuBackground->getPosition().y + 160));
+      menuSaveButton->setPosition(Vector2f(menuBackground->getPosition().x + 60, menuBackground->getPosition().y + 210));
+      menuMenuButton->setPosition(Vector2f(menuBackground->getPosition().x + 60, menuBackground->getPosition().y + 260));
+      menuIndex.clear(); // Ensures that the index does not stack each time the game is paused
+      menuIndex.push_back(menuContinueButton->getPosition());
+      menuIndex.push_back(menuLoadButton->getPosition());
+      menuIndex.push_back(menuSaveButton->getPosition());
+      menuIndex.push_back(menuMenuButton->getPosition());
+  }
+
+  // Display Pause menu
+  if (sf::Keyboard::isKeyPressed(Keyboard::Escape)) {
+      _isPaused = true;
+      Engine::pausePhysics(_isPaused);
+      menuBackground->setVisible(true);
+      menuContinueButton->setVisible(true);
+      menuLoadButton->setVisible(true);
+      menuSaveButton->setVisible(true);
+      menuMenuButton->setVisible(true);
+      indicator->setVisible(true);
+
+  }
+
+  if (_isPaused) {
+
+      static int curIndex = 0;
+      // Countdown should stop the pointer from warping to ludicrous speed when navigating
+      static float countdown = 0.0f;
+      countdown -= dt;
+
+      ents.find("indicator")[0]->setPosition(menuIndex[curIndex] - Vector2f(-4.15f, (-7.f)));
+    
+      if (sf::Keyboard::isKeyPressed(Keyboard::Down)) {
+          if (curIndex < (menuIndex.size() - 1) && countdown <= 0) {
+              countdown = 0.25f;
+              curIndex++;
+              cout << curIndex << endl;
+              cout << menuIndex[curIndex] << endl;
+              ents.find("indicator")[0]->setPosition(menuIndex[curIndex] - Vector2f(-4.15f, (-7.f)));
+          }
+      }
+
+      if (sf::Keyboard::isKeyPressed(Keyboard::Up)) {
+          if (curIndex > 0 && countdown <= 0) {
+              countdown = 0.2f;
+              curIndex--;
+              cout << curIndex << endl;
+              cout << menuIndex[curIndex] << endl;
+              ents.find("indicator")[0]->setPosition(menuIndex[curIndex] - Vector2f(-4.15f, (-7.f)));
+          }
+      }
+
+      // Keyboard controls for the menu (Enter)
+      if (sf::Keyboard::isKeyPressed(Keyboard::Enter)) {
+          if (ents.find("indicator")[0]->getPosition() == menuIndex[0] - Vector2f(-4.15f, (-7.f))) { // Continue
+              _isPaused = false;
+              Engine::pausePhysics(_isPaused);
+              menuBackground->setVisible(false);
+              menuContinueButton->setVisible(false);
+              menuLoadButton->setVisible(false);
+              menuSaveButton->setVisible(false);
+              menuMenuButton->setVisible(false);
+              indicator->setVisible(false);
+              menuIndex.clear(); // Ensures that the index does not stack each time the game is paused
+          }
+          else if (ents.find("indicator")[0]->getPosition() == menuIndex[1] - Vector2f(-4.15f, (-7.f))) { // Load
+              _isPaused = false;
+              Engine::pausePhysics(_isPaused);
+              menuBackground->setVisible(false);
+              menuContinueButton->setVisible(false);
+              menuLoadButton->setVisible(false);
+              menuSaveButton->setVisible(false);
+              menuMenuButton->setVisible(false);
+              indicator->setVisible(false);
+              LoadGame();
+              menuIndex.clear(); // Ensures that the index does not stack each time the game is paused
+          }
+          else if (ents.find("indicator")[0]->getPosition() == menuIndex[2] - Vector2f(-4.15f, (-7.f))) {// Save
+              _isPaused = false;
+              Engine::pausePhysics(_isPaused);
+              menuBackground->setVisible(false);
+              menuContinueButton->setVisible(false);
+              menuLoadButton->setVisible(false);
+              menuSaveButton->setVisible(false);
+              menuMenuButton->setVisible(false);
+              indicator->setVisible(false);
+              SaveGame();
+              menuIndex.clear(); // Ensures that the index does not stack each time the game is paused
+          }
+          else if (ents.find("indicator")[0]->getPosition() == menuIndex[3] - Vector2f(-4.15f, (-7.f))) {// Menu
+              _isPaused = false;
+              Engine::pausePhysics(_isPaused);
+              menuBackground->setVisible(false);
+              menuContinueButton->setVisible(false);
+              menuLoadButton->setVisible(false);
+              menuSaveButton->setVisible(false);
+              menuMenuButton->setVisible(false);
+              indicator->setVisible(false);
+              Engine::ChangeScene(&menu);
+              menuIndex.clear(); // Ensures that the index does not stack each time the game is paused
+          }
+      }
+  }
+     if (!_isPaused) {
+          Scene::Update(dt);
+      }
   
 }
 

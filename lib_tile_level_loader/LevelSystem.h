@@ -22,9 +22,10 @@ public:
     START = 's',
     END = 'e',
     WALL = 'w',
+    FLOOR = 'f',
     ENEMY = 'n',
     WAYPOINT = '+',
-    HAZZARD = 'h'
+    HAZARD = 'h'
   };
 
   static Tile getTile(sf::Vector2ul);
@@ -51,11 +52,15 @@ public:
 
   static float getTileSize();
 
+  std::shared_ptr<sf::Sprite> setTexture();
+  void setTexture(sf::Sprite& background);
+
 protected:
   static std::unique_ptr<Tile[]> _tiles;
   static size_t _width;
   static size_t _height;
   static sf::Vector2f _offset;
+  std::shared_ptr<sf::Sprite> _texture;
 
   static std::vector<std::unique_ptr<sf::RectangleShape>> _sprites;
 
