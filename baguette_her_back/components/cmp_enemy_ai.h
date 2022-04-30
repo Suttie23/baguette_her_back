@@ -31,6 +31,8 @@ protected:
     sf::Vector2f _direction;
     std::weak_ptr<Entity> _player;
     std::vector<Location> route;
+    std::shared_ptr<Entity> testz = _player.lock();
+    bool test = true;
 public:
     void update(double dt) override;
 

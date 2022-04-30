@@ -18,25 +18,31 @@ array<Location, 4> DIRS = {
 };
 
 void EnemyAIComponent::update(double dt) {
-    if (route.empty()) {
-        route = pathFinding();
+    if (test) {
+        if (route.empty()) {
+            route = pathFinding();
+            test = false;
+        }
     }
-    // Vector2f disp;
-     //disp.x = (route.front().x * 1.f);
-     //disp.y = (route.front().y * 1.f);
-     //move((_parent->getPosition()+(disp - _parent->getPosition())));
-     //route.front() = std::move(route.back());
-     //route.pop_back();
-
+/*
+     Vector2f disp;
+     disp.x = (route.front().x * 1.f);
+     disp.y = (route.front().y * 1.f);
+     move((_parent->getPosition()+(disp - _parent->getPosition())));
+     route.front() = std::move(route.back());
+     route.pop_back();
+     */
      //gets current direction and multiplies by speed and dt
      //adds a buffer of 16f before checking if it'll end up in a wall
+    /*
     auto mov = _direction * (float)(dt * _speed);
     mov.x += _direction.x * 16.f;
     if (!validMove(_parent->getPosition() + mov)) {
         _direction *= -1.f;
     }
 
-    //move(_direction * (float)(dt * _speed));
+    move(_direction * (float)(dt * _speed));
+    */
     ActorMovementComponent::update(dt);
 }
 
@@ -51,21 +57,32 @@ std::vector<Location> EnemyAIComponent::pathFinding() {
 
     start.x = (int)floor(begin.x);
     start.y = (int)floor(begin.y);
-
+    
     Location goal;
-    auto player = _player.lock();
-    Vector2f end = (player->getPosition());
+    Vector2f end;
+    if (auto pl = _player.lock()) {
+        end.x = (pl->getPosition().x);
+        end.y = (pl->getPosition().y);
+    }
+    else {
+        end.x = 50.f;
+        end.y = 400.f;
+    }
     goal.x = (int)floor(end.x);
     goal.y = (int)floor(end.y);
-
+    std::cout << begin << std::endl;
+    std::cout << start.x << std::endl;
+    std::cout << end << std::endl;
+    std::cout << goal.x << std::endl;
+    
     unordered_map<Location, Location> came_from;
     unordered_map<Location, int> cost_so_far;
     PriorityQueue<Location, double> frontier;
     frontier.put(start, 0);
-
+   
     came_from[start] = start;
     cost_so_far[start] = 0;
-
+   
     while (!frontier.empty()) {
         Location current = frontier.get();
 
@@ -83,7 +100,7 @@ std::vector<Location> EnemyAIComponent::pathFinding() {
             }
         }
     }
-
+    
     vector<Location> path;
     Location cur = goal;
     while ((!(cur.x == start.x && cur.y == start.y)) || dist(cur, goal) >= 20) {  // note: this will fail if no path found
@@ -92,8 +109,12 @@ std::vector<Location> EnemyAIComponent::pathFinding() {
     }
     //path.push_back(begin); // optional
     std::reverse(path.begin(), path.end());
+    std::cout << path.size() << std::endl;
     return path;
-
+    
+    //vector<Location> path;
+     //std::cout << path.size() << std::endl;
+    //return path;
 }
 
 

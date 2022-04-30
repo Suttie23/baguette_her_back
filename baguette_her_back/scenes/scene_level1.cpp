@@ -3,6 +3,7 @@
 #include "../components/cmp_player_physics.h"
 #include "../components/cmp_sprite.h"
 #include "../components/cmp_enemy_turret.h"
+#include "../components/cmp_enemy_ai.h"
 #include "../components/cmp_life.h"
 #include "../components/cmp_hurt_player.h"
 #include <SFML\Graphics\View.hpp>
@@ -143,7 +144,8 @@ void Level1Scene::Load() {
       e->getShape().setFillColor(Color::Magenta);
       e->getShape().setOrigin(Vector2f(10.f, 15.f));
 
-      enemy->addComponent<EnemyTurretComponent>();
+      //enemy->addComponent<EnemyTurretComponent>();
+      enemy->addComponent<EnemyAIComponent>();
   }
 
       // HAZARD COLLIDERS
@@ -249,11 +251,7 @@ void Level1Scene::Update(const double& dt) {
 
     Renderer::view.setSize(Vector2f(Engine::getWindowSize()) * Vector2f(0.5f, 0.55f));
     Renderer::view.setCenter(Vector2f(player->getPosition().x, player->getPosition().y - 50));
-<<<<<<< Updated upstream
-=======
-    //sf::Vector2f playPos = Vector2f(player->getPosition().x, player->getPosition().y);
-    //cout << playPos;
->>>>>>> Stashed changes
+
 
   // If the player is dead, game over. 
   if (!player->isAlive()) {     
