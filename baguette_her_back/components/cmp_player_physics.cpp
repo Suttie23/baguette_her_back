@@ -8,6 +8,7 @@ using namespace std;
 using namespace sf;
 using namespace Physics;
 
+sf::SoundBuffer playerbuffer;
 
 // Run Frames
 std::vector<sf::Vector2u>& GetRunFrames() {
@@ -136,6 +137,13 @@ void PlayerPhysicsComponent::update(double dt) {
       setVelocity(Vector2f(getVelocity().x, 0.f));
       teleport(Vector2f(pos.x, pos.y - 4.0f));
       impulse(Vector2f(0, -7.f));
+
+      if (!playerbuffer.loadFromFile("res/sfx/jump_sound.ogg")) {
+          std::cout << "ERROR" << std::endl;
+      }
+      this->jump.setBuffer(playerbuffer);
+      this->jump.setVolume(15);
+      this->jump.play();
     }
   }
 

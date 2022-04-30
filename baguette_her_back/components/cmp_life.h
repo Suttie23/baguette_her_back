@@ -1,5 +1,7 @@
 #pragma once
 #include <ecm.h>
+#include <SFML\Audio\Music.hpp>
+#include <SFML/Audio.hpp>
 
 class LifeComponent : public Component {
 private:

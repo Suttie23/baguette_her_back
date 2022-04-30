@@ -1,6 +1,8 @@
 #pragma once
 
 #include "cmp_physics.h"
+#include <SFML\Audio\Music.hpp>
+#include <SFML/Audio.hpp>
 
 class PlayerPhysicsComponent : public PhysicsComponent {
 protected:
@@ -12,6 +14,7 @@ protected:
   bool isGrounded() const;
 
 public:
+	sf::Sound jump;
   void update(double dt) override;
 
   explicit PlayerPhysicsComponent(Entity* p, const sf::Vector2f& size);

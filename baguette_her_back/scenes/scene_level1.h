@@ -1,9 +1,12 @@
 #pragma once
 
 #include "engine.h"
+#include <SFML\Audio\Music.hpp>
+#include <SFML/Audio.hpp>
 
 class Level1Scene : public Scene {
 private:
+	sf::Music levelTrack;
 	std::vector<sf::Vector2f> menuIndex;
 	bool _isPaused = false;
 	void LoadGame();

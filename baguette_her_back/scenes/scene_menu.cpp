@@ -21,7 +21,7 @@ void MenuScene::Load() {
     if (!this->menuTheme.openFromFile("res/music/new_york_baguette.mp3"))
         cout << "Error: we not found music file";
     this->menuTheme.setLoop(true);
-    this->menuTheme.setVolume(50);
+    this->menuTheme.setVolume(25);
     this->menuTheme.play();
 
     if (!buffer.loadFromFile("res/sfx/menu_crunch.ogg")) {
