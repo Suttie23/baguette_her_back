@@ -17,3 +17,15 @@ you, but most of all have fun, no-one likes a sourdough.
 New York Baguette (Menu Music) - https://www.dargolan-free.com/world-music
 
 Chic Magnet (Gameplay) - https://www.dargolan-free.com/world-music
+
+Menu Background - https://www.reddit.com/r/tamagotchi/comments/dwjlzj/kikis_bg_done_3_drawing_with_15_colours_only_is/
+
+Baguette Healthbar - http://pixelartmaker.com/art/e28315a56835976
+
+Menu buttons - https://nectanebo.itch.io/menu-buttons
+
+Level Tiles - https://gif-superretroworld.itch.io/interior-pack?download
+
+Level 1 music - https://www.youtube.com/watch?v=nDDfWDvVROI
+
+Boing sound - https://gfxsounds.com/sound-effect/game-jump-boing/
