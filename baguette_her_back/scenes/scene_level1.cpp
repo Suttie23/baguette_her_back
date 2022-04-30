@@ -232,6 +232,7 @@ void Level1Scene::Load() {
 
   cout << " Scene 1 Load Done" << endl;
 
+  std::this_thread::sleep_for(std::chrono::milliseconds(1));
   setLoaded(true);
 }
 
