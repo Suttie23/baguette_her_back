@@ -249,6 +249,11 @@ void Level1Scene::Update(const double& dt) {
 
     Renderer::view.setSize(Vector2f(Engine::getWindowSize()) * Vector2f(0.5f, 0.55f));
     Renderer::view.setCenter(Vector2f(player->getPosition().x, player->getPosition().y - 50));
+<<<<<<< Updated upstream
+=======
+    //sf::Vector2f playPos = Vector2f(player->getPosition().x, player->getPosition().y);
+    //cout << playPos;
+>>>>>>> Stashed changes
 
   // If the player is dead, game over. 
   if (!player->isAlive()) {     
