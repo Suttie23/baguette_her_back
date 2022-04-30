@@ -6,6 +6,7 @@
 #include "../components/cmp_life.h"
 #include "../components/cmp_hurt_player.h"
 #include <SFML\Graphics\View.hpp>
+#include <SFML\Audio\Music.hpp>
 #include <LevelSystem.h>
 #include "system_renderer.h"
 #include "system_physics.h"
@@ -16,6 +17,8 @@
 
 using namespace std;
 using namespace sf;
+
+sf::SoundBuffer level1buffer;
 
 // Textures
 static shared_ptr<Texture> _texture;
@@ -35,7 +38,7 @@ static shared_ptr<Entity> menuSaveButton;
 static shared_ptr<Entity> menuMenuButton;
 static shared_ptr<Entity> indicator;
 
-// Run Frames
+// Sauce Frames
 std::vector<sf::Vector2u>& GetSauceFrames() {
     static bool isSetup = false;
     static std::vector<sf::Vector2u> sauceFrames;
@@ -46,13 +49,19 @@ std::vector<sf::Vector2u>& GetSauceFrames() {
         sauceFrames.push_back(Vector2u(0, 0));
         sauceFrames.push_back(Vector2u(0, 1));
         sauceFrames.push_back(Vector2u(0, 2));
-
     }
 
     return sauceFrames;
 }
 
 void Level1Scene::Load() {
+
+    if (!this->levelTrack.openFromFile("res/music/swing_time.mp3"))
+        cout << "Error: we not found music file";
+    this->levelTrack.setLoop(true);
+    this->levelTrack.setVolume(15);
+    this->levelTrack.play();
+
   cout << " Scene 1 Load" << endl;
   ls::loadLevelFile("res/level_1.txt", 38.0f);
 
@@ -104,7 +113,6 @@ void Level1Scene::Load() {
 
           }
       }
-
   }
 
   // Create player
@@ -124,7 +132,6 @@ void Level1Scene::Load() {
 
       Renderer::view.setSize(Vector2f(Engine::getWindowSize()) * Vector2f(0.5f, 0.55f));
       Renderer::view.setCenter(Vector2f(player->getPosition().x, player->getPosition().y - 50));    
-
   }
 
   // Create enemy
@@ -137,15 +144,10 @@ void Level1Scene::Load() {
       e->getShape().setOrigin(Vector2f(10.f, 15.f));
 
       enemy->addComponent<EnemyTurretComponent>();
-
   }
-
-
 
       // HAZARD COLLIDERS
       {
-
-
           auto hazards = ls::findTiles(ls::HAZARD);
           for (auto h : hazards) {
               auto pos = ls::getTilePosition(h);
@@ -160,11 +162,8 @@ void Level1Scene::Load() {
               s->getSprite().setOrigin(Vector2f(20.f, 32.f));
               auto phy = e->addComponent<PhysicsComponent>(false, Vector2f(40.f, 40.f));
               s->SetFrames(GetSauceFrames());
-
           }
       }
-
-  
 
   // Player health
   {
@@ -251,9 +250,9 @@ void Level1Scene::Update(const double& dt) {
     Renderer::view.setSize(Vector2f(Engine::getWindowSize()) * Vector2f(0.5f, 0.55f));
     Renderer::view.setCenter(Vector2f(player->getPosition().x, player->getPosition().y - 50));
 
-
-  // If the player is dead, game over.
+  // If the player is dead, game over. 
   if (!player->isAlive()) {     
+      this->levelTrack.stop();
       Engine::ChangeScene((Scene*)&menu);
       return;
   }
@@ -263,20 +262,25 @@ void Level1Scene::Update(const double& dt) {
       Engine::ChangeScene((Scene*)&menu);
   }
   else {
-      // Cheaty way to keep GUI on screen with player for testing. TODO: Create seperate view for UI
-      life->setPosition(Vector2f(player->getPosition().x - 300.f, player->getPosition().y - 250.f));
 
-      // Scuffed and very ineffcient way of keeping the pause menu in the center of the screen. Should use a view instead, but it works
-      menuBackground->setPosition(Vector2f(Renderer::view.getCenter().x - 135, Renderer::view.getCenter().y - 135));
-      menuContinueButton->setPosition(Vector2f(menuBackground->getPosition().x + 60, menuBackground->getPosition().y + 110));
-      menuLoadButton->setPosition(Vector2f(menuBackground->getPosition().x + 60, menuBackground->getPosition().y + 160));
-      menuSaveButton->setPosition(Vector2f(menuBackground->getPosition().x + 60, menuBackground->getPosition().y + 210));
-      menuMenuButton->setPosition(Vector2f(menuBackground->getPosition().x + 60, menuBackground->getPosition().y + 260));
-      menuIndex.clear(); // Ensures that the index does not stack each time the game is paused
-      menuIndex.push_back(menuContinueButton->getPosition());
-      menuIndex.push_back(menuLoadButton->getPosition());
-      menuIndex.push_back(menuSaveButton->getPosition());
-      menuIndex.push_back(menuMenuButton->getPosition());
+      // Cheaty way to keep GUI on screen with player for testing. TODO: Create seperate view for UI
+      {
+          life->setPosition(Vector2f(player->getPosition().x - 300.f, player->getPosition().y - 250.f));
+
+          // Scuffed and very ineffcient way of keeping the pause menu in the center of the screen. Should use a view instead, but it works
+          menuBackground->setPosition(Vector2f(Renderer::view.getCenter().x - 135, Renderer::view.getCenter().y - 135));
+          menuContinueButton->setPosition(Vector2f(menuBackground->getPosition().x + 60, menuBackground->getPosition().y + 110));
+          menuLoadButton->setPosition(Vector2f(menuBackground->getPosition().x + 60, menuBackground->getPosition().y + 160));
+          menuSaveButton->setPosition(Vector2f(menuBackground->getPosition().x + 60, menuBackground->getPosition().y + 210));
+          menuMenuButton->setPosition(Vector2f(menuBackground->getPosition().x + 60, menuBackground->getPosition().y + 260));
+
+          // Ensures that the index does not stack each time the game is paused
+          menuIndex.clear();
+          menuIndex.push_back(menuContinueButton->getPosition());
+          menuIndex.push_back(menuLoadButton->getPosition());
+          menuIndex.push_back(menuSaveButton->getPosition());
+          menuIndex.push_back(menuMenuButton->getPosition());
+      }
   }
 
   // Display Pause menu
@@ -368,6 +372,7 @@ void Level1Scene::Update(const double& dt) {
               menuMenuButton->setVisible(false);
               indicator->setVisible(false);
               Engine::ChangeScene(&menu);
+              this->levelTrack.stop();
               menuIndex.clear(); // Ensures that the index does not stack each time the game is paused
           }
       }
