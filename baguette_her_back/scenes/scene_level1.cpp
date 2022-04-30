@@ -232,7 +232,6 @@ void Level1Scene::Load() {
 
   cout << " Scene 1 Load Done" << endl;
 
-  std::this_thread::sleep_for(std::chrono::milliseconds(1));
   setLoaded(true);
 }
 
@@ -374,6 +373,7 @@ void Level1Scene::Update(const double& dt) {
               indicator->setVisible(false);
               Engine::ChangeScene(&menu);
               this->levelTrack.stop();
+              std::this_thread::sleep_for(std::chrono::milliseconds(500));
               menuIndex.clear(); // Ensures that the index does not stack each time the game is paused
           }
       }

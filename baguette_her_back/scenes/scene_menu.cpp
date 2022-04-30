@@ -105,7 +105,6 @@ void MenuScene::Load() {
            
     }
 
-    std::this_thread::sleep_for(std::chrono::milliseconds(1));
     // Weird bug, having this commented out stops the menu from breaking as much?
     //setLoaded(true);
     //cout << "Menu Load \n";
