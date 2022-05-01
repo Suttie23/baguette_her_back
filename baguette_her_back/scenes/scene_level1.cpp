@@ -294,7 +294,7 @@ void Level1Scene::Update(const double& dt) {
       menuLoadButton->setVisible(true);
       menuSaveButton->setVisible(true);
       menuMenuButton->setVisible(true);
-      indicator->setVisible(false); // Kinda broken right now, so just keep it false
+      indicator->setVisible(false);
 
   }
 
@@ -418,6 +418,13 @@ void Level1Scene::Update(const double& dt) {
               std::this_thread::sleep_for(std::chrono::milliseconds(500));
               menuIndex.clear(); // Ensures that the index does not stack each time the game is paused
           }
+      }
+
+      if (player->GetCompatibleComponent<LifeComponent>()[0]->getLives() == 2) {
+          //cout << "2 lives left" << endl;
+      }
+      if (player->GetCompatibleComponent<LifeComponent>()[0]->getLives() == 1) {
+          //cout << "1 lives left" << endl;
       }
   }
      if (!_isPaused) {
