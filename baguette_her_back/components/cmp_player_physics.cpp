@@ -9,6 +9,7 @@ using namespace sf;
 using namespace Physics;
 
 sf::SoundBuffer playerbuffer;
+UserPreferences PlayerPhysicsComponent::user_preferences;
 
 // Run Frames
 std::vector<sf::Vector2u>& GetRunFrames() {
@@ -104,12 +105,12 @@ void PlayerPhysicsComponent::update(double dt) {
     teleport(ls::getTilePosition(ls::findTiles(ls::START)[0]));
   }
 
-  if (Keyboard::isKeyPressed(Keyboard::Left) ||
-      Keyboard::isKeyPressed(Keyboard::Right) || 
+  if (Keyboard::isKeyPressed(static_cast<Keyboard::Key>(user_preferences.moveLeft)) ||
+      Keyboard::isKeyPressed((static_cast<Keyboard::Key>(user_preferences.moveRight))) ||
       Joystick::getAxisPosition(0, Joystick::X) < -10.0f || Joystick::getAxisPosition(0, Joystick::X) > 10.0f)
   {
     // Moving Either Left or Right
-    if (Keyboard::isKeyPressed(Keyboard::Right) ||
+    if (Keyboard::isKeyPressed(static_cast<Keyboard::Key>(user_preferences.moveRight)) ||
         Joystick::getAxisPosition(0, Joystick::X) > 10.0f) {
       if (getVelocity().x < _maxVelocity.x)
         impulse({(float)(dt * _groundspeed), 0});
@@ -130,7 +131,7 @@ void PlayerPhysicsComponent::update(double dt) {
   }
 
   // Handle Jump
-  if (Keyboard::isKeyPressed(Keyboard::Up) ||
+  if (Keyboard::isKeyPressed(static_cast<Keyboard::Key>(user_preferences.jump)) ||
       Joystick::isButtonPressed(0, Joystick::isButtonPressed(0,1))) {
     _grounded = isGrounded();
     if (_grounded) {

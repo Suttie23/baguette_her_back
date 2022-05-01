@@ -3,6 +3,7 @@
 #include "cmp_physics.h"
 #include <SFML\Audio\Music.hpp>
 #include <SFML/Audio.hpp>
+#include "user_preferences.h"
 
 class PlayerPhysicsComponent : public PhysicsComponent {
 protected:
@@ -15,6 +16,7 @@ protected:
 
 public:
 	sf::Sound jump;
+	static UserPreferences user_preferences;
   void update(double dt) override;
 
   explicit PlayerPhysicsComponent(Entity* p, const sf::Vector2f& size);

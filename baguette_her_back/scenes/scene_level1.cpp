@@ -68,7 +68,6 @@ void Level1Scene::Load() {
   auto ho = Engine::getWindowSize().y - (ls::getHeight() * 40.f);
   ls::setOffset(Vector2f(0, 0));
 
-
   // Background
   background_text = make_shared<Texture>();
   background_text->loadFromFile("res/level_assets/game_bg.png");
