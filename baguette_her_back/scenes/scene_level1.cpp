@@ -2,7 +2,11 @@
 #include "../game.h"
 #include "../components/cmp_player_physics.h"
 #include "../components/cmp_sprite.h"
+#include "../components/constant_follow.h"
 #include "../components/cmp_enemy_turret.h"
+#include "../components/cmp_enemy_ai.h"
+#include "../components/move_horizontal.h"
+#include "../components/move_vertical.h"
 #include "../components/cmp_life.h"
 #include "../components/cmp_hurt_player.h"
 #include <SFML\Graphics\View.hpp>
@@ -59,12 +63,12 @@ std::vector<sf::Vector2u>& GetSauceFrames() {
 void Level1Scene::Load() {
 
     if (!this->levelTrack.openFromFile("res/music/swing_time.mp3"))
-        cout << "Error: we not found music file";
+        std::cout << "Error: we not found music file";
     this->levelTrack.setLoop(true);
     this->levelTrack.setVolume(15);
     this->levelTrack.play();
 
-  cout << " Scene 1 Load" << endl;
+  std::cout << " Scene 1 Load" << endl;
   ls::loadLevelFile("res/level_1.txt", 38.0f);
 
   auto ho = Engine::getWindowSize().y - (ls::getHeight() * 40.f);
@@ -77,7 +81,7 @@ void Level1Scene::Load() {
   bg.setPosition(Vector2f(0, 2));
   setBackground(bg);
 
-
+  
   // Add physics colliders + textures to level tiles.
   {
       // WALL COLLIDERS
@@ -96,7 +100,7 @@ void Level1Scene::Load() {
               auto phy = e->addComponent<PhysicsComponent>(false, Vector2f(40.f, 40.f));
           }
       }
-
+     
       // FLOOR COLLIDERS
       {
           _texture = make_shared<Texture>();
@@ -134,7 +138,7 @@ void Level1Scene::Load() {
       Renderer::view.setSize(Vector2f(Engine::getWindowSize()) * Vector2f(0.5f, 0.55f));
       Renderer::view.setCenter(Vector2f(player->getPosition().x, player->getPosition().y - 50));    
   }
-
+  /*
   // Create enemy
   {
       enemy = makeEntity();
@@ -143,9 +147,74 @@ void Level1Scene::Load() {
       e->setShape<sf::RectangleShape>(Vector2f(20.f, 30.f));
       e->getShape().setFillColor(Color::Magenta);
       e->getShape().setOrigin(Vector2f(10.f, 15.f));
+      
+  }
+  */
+  //Create turret
+  {
+      enemy = makeEntity();
+      enemy->setPosition(ls::getTilePosition(ls::findTiles(ls::TURRET)[0]));
+      auto e = enemy->addComponent<ShapeComponent>();
+      e->setShape<sf::RectangleShape>(Vector2f(20.f, 30.f));
+      e->getShape().setFillColor(Color::Black);
+      e->getShape().setOrigin(Vector2f(10.f, 15.f));
 
       enemy->addComponent<EnemyTurretComponent>();
   }
+  
+  //Create follow enemy (follow enemy actively keeps locking onto player position and moves towards the player at all times, hope you brought your running shoes)
+  {
+      enemy = makeEntity();
+      enemy->setPosition(ls::getTilePosition(ls::findTiles(ls::FOLLOW_ENEMY)[0]));
+      auto e = enemy->addComponent<ShapeComponent>();
+      e->setShape<sf::RectangleShape>(Vector2f(20.f, 30.f));
+      e->getShape().setFillColor(Color::Green);
+      e->getShape().setOrigin(Vector2f(10.f, 15.f));
+
+      enemy->addComponent<EnemyTurretComponent>();
+      enemy->addComponent<FollowComponent>();
+  }
+
+  
+  //Create chase enemy (chase enemy lock onto player position and travels to that position even if player isn't there anymore, gets lonely if you're too far away)
+  {
+      enemy = makeEntity();
+      enemy->setPosition(ls::getTilePosition(ls::findTiles(ls::CHASE_ENEMY)[0]));
+      auto e = enemy->addComponent<ShapeComponent>();
+      e->setShape<sf::RectangleShape>(Vector2f(20.f, 30.f));
+      e->getShape().setFillColor(Color::Yellow);
+      e->getShape().setOrigin(Vector2f(10.f, 15.f));
+
+      enemy->addComponent<EnemyTurretComponent>();
+      enemy->addComponent<EnemyAIComponent>();
+  }
+
+  
+  //Create horizontally moving enemy
+  {
+      enemy = makeEntity();
+      enemy->setPosition(ls::getTilePosition(ls::findTiles(ls::HORIZ_ENEMY)[0]));
+      auto e = enemy->addComponent<ShapeComponent>();
+      e->setShape<sf::RectangleShape>(Vector2f(20.f, 30.f));
+      e->getShape().setFillColor(Color::Red);
+      e->getShape().setOrigin(Vector2f(10.f, 15.f));
+
+      enemy->addComponent<HorizontalComponent>();
+  }
+
+  //Create vertically moving enemy
+
+  {
+      enemy = makeEntity();
+      enemy->setPosition(ls::getTilePosition(ls::findTiles(ls::VERT_ENEMY)[0]));
+      auto e = enemy->addComponent<ShapeComponent>();
+      e->setShape<sf::RectangleShape>(Vector2f(20.f, 30.f));
+      e->getShape().setFillColor(Color::Blue);
+      e->getShape().setOrigin(Vector2f(10.f, 15.f));
+
+      enemy->addComponent<VerticalComponent>();
+  }
+  
 
       // HAZARD COLLIDERS
       {
@@ -232,15 +301,16 @@ void Level1Scene::Load() {
 
   }
 
-  cout << " Scene 1 Load Done" << endl;
+  std::cout << " Scene 1 Load Done" << endl;
 
   setLoaded(true);
+
 }
 
 
 
 void Level1Scene::UnLoad() {
-  cout << "Scene 1 Unload" << endl;
+  std::cout << "Scene 1 Unload" << endl;
   player.reset();
   ls::unload();
   Scene::UnLoad();
@@ -252,6 +322,8 @@ void Level1Scene::Update(const double& dt) {
     Renderer::view.setSize(Vector2f(Engine::getWindowSize()) * Vector2f(0.5f, 0.55f));
     Renderer::view.setCenter(Vector2f(player->getPosition().x, player->getPosition().y - 50));
 
+    //std::std::cout << player->getPosition().x << std::endl;
+    //std::std::cout << player->getPosition().y << std::endl;
   // If the player is dead, game over. 
   if (!player->isAlive()) {     
       this->levelTrack.stop();
@@ -313,8 +385,8 @@ void Level1Scene::Update(const double& dt) {
           if (curIndex < (menuIndex.size() - 1) && countdown <= 0) {
               countdown = 0.25f;
               curIndex++;
-              cout << curIndex << endl;
-              cout << menuIndex[curIndex] << endl;
+              std::cout << curIndex << endl;
+              std::cout << menuIndex[curIndex] << endl;
               ents.find("indicator")[0]->setPosition(menuIndex[curIndex] - Vector2f(-4.15f, (-7.f)));
 
               if (curIndex == 1) {
@@ -342,8 +414,8 @@ void Level1Scene::Update(const double& dt) {
           if (curIndex > 0 && countdown <= 0) {
               countdown = 0.2f;
               curIndex--;
-              cout << curIndex << endl;
-              cout << menuIndex[curIndex] << endl;
+              std::cout << curIndex << endl;
+              std::cout << menuIndex[curIndex] << endl;
               ents.find("indicator")[0]->setPosition(menuIndex[curIndex] - Vector2f(-4.15f, (-7.f)));
 
               if (curIndex == 0) {

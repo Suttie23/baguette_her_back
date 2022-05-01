@@ -1,14 +1,14 @@
 #include "cmp_hurt_player.h"
 #include "engine.h"
-#include "cmp_enemy_ai.h"
+#include "constant_follow.h"
 #include <unordered_set>
 //#include "LevelSystem.h"
 
-size_t operator==(Location const& a, Location const& b) {
+size_t operator==(Coord const& a, Coord const& b) {
     return (a.x == b.x && a.y == b.y);
 }
 
-size_t operator<(Location const& a, Location const& b) {
+size_t operator<(Coord const& a, Coord const& b) {
     return (a.y < b.y);
 }
 
@@ -33,13 +33,13 @@ struct PriorityQueue {
     }
 };
 
-array<Location, 4> DIRS = {
+array<Coord, 4> DIRS = {
     /* East, West, North, South */
-    Location{1, 0}, Location{-1, 0},
-    Location{0, -1}, Location{0, 1}
+    Coord{1, 0}, Coord{-1, 0},
+    Coord{0, -1}, Coord{0, 1}
 };
 
-void EnemyAIComponent::update(double dt) {
+void FollowComponent::update(double dt) {
     Vector2f disp;
     //if (auto pl = _player.lock()) {
         //std::cout << pl->getPosition() << std::endl;
@@ -47,9 +47,9 @@ void EnemyAIComponent::update(double dt) {
     //}
     if (route.empty()) {
         if (can_pathfind) {
-        
+
             route = pathFinding();
-            can_pathfind = !can_pathfind;
+            
             //for (int i = 0; i < route.size(); i++) {
                 //std::cout << "~~~~~~" << std::endl;
                 //std::cout << route[i].x << std::endl;
@@ -57,61 +57,59 @@ void EnemyAIComponent::update(double dt) {
             //}
         }
     }
-        
-        _delay -= dt;
-        if  (_delay<=0.f && !route.empty()) {
-            disp.x = (route.front().x * 1.f);
-            disp.y = (route.front().y * 1.f);
-            _parent->setPosition(disp);
 
-            
-                route.front() = std::move(route.back());
-                route.pop_back();
-                if(route.empty()){ can_pathfind = !can_pathfind; }
-                _delay = 0.02f;
+    _delay -= dt;
+    if (_delay <= 0.f && !route.empty()) {
+        disp.x = (route.front().x * 1.f);
+        disp.y = (route.front().y * 1.f);
 
-        }
-        
-   // }
-/*
-     Vector2f disp;
-     disp.x = (route.front().x * 1.f);
-     disp.y = (route.front().y * 1.f);
-     move((_parent->getPosition()+(disp - _parent->getPosition())));
-     route.front() = std::move(route.back());
-     route.pop_back();
-     */
-     //gets current direction and multiplies by speed and dt
-     //adds a buffer of 16f before checking if it'll end up in a wall
-    /*
-    auto mov = _direction * (float)(dt * _speed);
-    mov.x += _direction.x * 16.f;
-    if (!validMove(_parent->getPosition() + mov)) {
-        _direction *= -1.f;
+        _parent->setPosition(disp);
+
+        route.clear();
+
+        _delay = 0.75f;
+
     }
 
-    move(_direction * (float)(dt * _speed));
-    */
+    // }
+ /*
+      Vector2f disp;
+      disp.x = (route.front().x * 1.f);
+      disp.y = (route.front().y * 1.f);
+      move((_parent->getPosition()+(disp - _parent->getPosition())));
+      route.front() = std::move(route.back());
+      route.pop_back();
+      */
+      //gets current direction and multiplies by speed and dt
+      //adds a buffer of 16f before checking if it'll end up in a wall
+     /*
+     auto mov = _direction * (float)(dt * _speed);
+     mov.x += _direction.x * 16.f;
+     if (!validMove(_parent->getPosition() + mov)) {
+         _direction *= -1.f;
+     }
+
+     move(_direction * (float)(dt * _speed));
+     */
     ActorMovementComponent::update(dt);
 }
 
-EnemyAIComponent::EnemyAIComponent(Entity* p) : ActorMovementComponent(p) {
+FollowComponent::FollowComponent(Entity* p) : ActorMovementComponent(p) {
     _direction = Vector2f(1.0f, 0);
     _speed = 100.0f;
-    _player =(_parent->scene->ents.find("player")[0]);
-  
+    _player = (_parent->scene->ents.find("player")[0]);
 }
 
-std::vector<Location> EnemyAIComponent::pathFinding() {
-    vector<Location> path;
-    
+std::vector<Coord> FollowComponent::pathFinding() {
+    vector<Coord> path;
+
     Vector2f begin = (_parent->getPosition());
-    Location start;
+    Coord start;
 
     start.x = (int)floor(begin.x);
     start.y = (int)floor(begin.y);
-    
-    Location goal;
+
+    Coord goal;
     Vector2f end;
     if (auto pl = _player.lock()) {
         end = (pl->getPosition());
@@ -126,11 +124,11 @@ std::vector<Location> EnemyAIComponent::pathFinding() {
     //std::cout << start.x << std::endl;
     //std::cout << end << std::endl;
     //std::cout << goal.x << std::endl;
-    
-    unordered_map<Location, Location> came_from;
-    unordered_map<Location, int> cost_so_far;
-    PriorityQueue<Location, double> frontier;
-    //queue<Location> frontier;
+
+    unordered_map<Coord, Coord> came_from;
+    unordered_map<Coord, int> cost_so_far;
+    PriorityQueue<Coord, double> frontier;
+    //queue<Coord> frontier;
     //frontier.put(start, 0);
     
         frontier.put(start, 0);
@@ -138,15 +136,15 @@ std::vector<Location> EnemyAIComponent::pathFinding() {
         cost_so_far[start] = 0;
         //std::cout << frontier.empty() << std::endl;
         while (!frontier.empty()) {
-            Location current = frontier.get();
+            Coord current = frontier.get();
 
             if (current.x == goal.x && current.y == goal.y) {
                 //std::cout << dist(current, goal) << std::endl;
                 break;
             }
-            
-            for (Location next : neighbors(current)) {
-                
+
+            for (Coord next : neighbors(current)) {
+
                 //std::cout << "~~~~~~" << std::endl;
                 //std::cout << next.x << std::endl;
                 //std::cout << next.y << std::endl;
@@ -161,46 +159,46 @@ std::vector<Location> EnemyAIComponent::pathFinding() {
             }
         }
 
-        Location cur = goal;
+        Coord cur = goal;
         //std::cout << dist(cur, start) << std::endl;
         int counter = 0;
         while (cur.x != start.x && cur.y != start.y) {  // note: this will fail if no path found
-            
-                path.push_back(cur);
-            
+
+            path.push_back(cur);
+
             cur = came_from[cur];
 
         }
 
         return path;
-        
-    
+
+
     
 }
 
 
-vector<Location> EnemyAIComponent::neighbors(Location id) {
-    vector<Location> results;
-    for (Location dir : DIRS) {
-        
-        Location next{ id.x + dir.x, id.y + dir.y };
+vector<Coord> FollowComponent::neighbors(Coord id) {
+    vector<Coord> results;
+    for (Coord dir : DIRS) {
+
+        Coord next{ id.x + dir.x, id.y + dir.y };
         Vector2f temp;
         temp.x = (float)next.x;
         temp.y = (float)next.y;
- 
+
         if (validMove(temp)) {
             results.push_back(next);
-            
+
         }
         //std::cout << "got here5" << std::endl;
     }
-    
+
     return results;
 
 };
 
 
-int EnemyAIComponent::cost(Location from_node, Location to_node) {
+int FollowComponent::cost(Coord from_node, Coord to_node) {
     if (from_node.y < to_node.y) {
         return 2;
     }
@@ -211,6 +209,6 @@ int EnemyAIComponent::cost(Location from_node, Location to_node) {
 
 
 
-inline double EnemyAIComponent::heuristic(Location a, Location b) {
+inline double FollowComponent::heuristic(Coord a, Coord b) {
     return abs(a.x - b.x) + abs(a.y - b.y);
 }
