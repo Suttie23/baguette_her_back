@@ -11,10 +11,31 @@ size_t operator<(Location const& a, Location const& b) {
     return (a.y < b.y);
 }
 
+
+template<typename T, typename priority_t>
+struct PriorityQueue {
+    typedef pair<priority_t, T> PQElement;
+    priority_queue<PQElement, vector<PQElement>, greater<PQElement>> elements;
+
+    inline bool empty() const {
+        return elements.empty();
+    }
+
+    inline void put(T item, priority_t priority) {
+        elements.emplace(priority, item);
+    }
+
+    T get() {
+        T best_item = elements.top().second;
+        elements.pop();
+        return best_item;
+    }
+};
+
 array<Location, 4> DIRS = {
     /* East, West, North, South */
-    Location{30, 0}, Location{-30, 0},
-    Location{0, -30}, Location{0, 30}
+    Location{15, 0}, Location{-15, 0},
+    Location{0, -15}, Location{0, 15}
 };
 
 void EnemyAIComponent::update(double dt) {
@@ -52,6 +73,8 @@ EnemyAIComponent::EnemyAIComponent(Entity* p) : ActorMovementComponent(p) {
 }
 
 std::vector<Location> EnemyAIComponent::pathFinding() {
+    vector<Location> path;
+    
     Vector2f begin = (_parent->getPosition());
     Location start;
 
@@ -70,10 +93,10 @@ std::vector<Location> EnemyAIComponent::pathFinding() {
     }
     goal.x = (int)floor(end.x);
     goal.y = (int)floor(end.y);
-    std::cout << begin << std::endl;
-    std::cout << start.x << std::endl;
-    std::cout << end << std::endl;
-    std::cout << goal.x << std::endl;
+    //std::cout << begin << std::endl;
+    //std::cout << start.x << std::endl;
+    //std::cout << end << std::endl;
+    //std::cout << goal.x << std::endl;
     
     unordered_map<Location, Location> came_from;
     unordered_map<Location, int> cost_so_far;
@@ -82,14 +105,14 @@ std::vector<Location> EnemyAIComponent::pathFinding() {
    
     came_from[start] = start;
     cost_so_far[start] = 0;
-   
-    while (!frontier.empty()) {
+    std::cout << frontier.empty() << std::endl;
+    while (frontier.empty()) {
         Location current = frontier.get();
 
         if ((current.x == goal.x && current.y == goal.y) || (dist(current, goal) < 20)) {
             break;
         }
-
+        std::cout << "got here" << std::endl;
         for (Location next : neighbors(current)) {
             int new_cost = cost_so_far[current] + cost(current, next);
             if ((cost_so_far.find(next) == cost_so_far.end()) || (new_cost < cost_so_far[next])) {
@@ -100,16 +123,19 @@ std::vector<Location> EnemyAIComponent::pathFinding() {
             }
         }
     }
-    
-    vector<Location> path;
+    std::cout << came_from.size() << std::endl;
+    std::cout << cost_so_far.size() << std::endl;
     Location cur = goal;
-    while ((!(cur.x == start.x && cur.y == start.y)) || dist(cur, goal) >= 20) {  // note: this will fail if no path found
+    /*
+    while ((!(cur.x == start.x && cur.y == start.y)) || dist(cur, start) >= 20) {  // note: this will fail if no path found
         path.push_back(cur);
         cur = came_from[cur];
     }
+    
     //path.push_back(begin); // optional
     std::reverse(path.begin(), path.end());
     std::cout << path.size() << std::endl;
+    */
     return path;
     
     //vector<Location> path;
