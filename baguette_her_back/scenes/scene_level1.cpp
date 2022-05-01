@@ -23,6 +23,8 @@ sf::SoundBuffer level1buffer;
 // Textures
 static shared_ptr<Texture> _texture;
 static shared_ptr<Texture> background_text;
+static shared_ptr<Texture> _buttonDefault;
+static shared_ptr<Texture> _buttonSelected;
 
 // Player, Enemies & Level
 static shared_ptr<Entity> player;
@@ -190,7 +192,7 @@ void Level1Scene::Load() {
       menuContinueButton = makeEntity();
       auto mcb = menuContinueButton->addComponent<ButtonComponent>();
       _texture = make_shared<Texture>();
-      _texture->loadFromFile("res/pause/continue_button.png");
+      _texture->loadFromFile("res/pause/continue_button_selected.png");
       mcb->setTexture(_texture);
       menuContinueButton->setVisible(false);
 
@@ -226,6 +228,7 @@ void Level1Scene::Load() {
       s->getShape().setFillColor(Color(220, 140, 44, 128));
       s->getShape().setOrigin(Vector2f(5.f, 5.f));
       indicator->setVisible(false);
+      menuIndex.clear();
 
   }
 
@@ -291,7 +294,7 @@ void Level1Scene::Update(const double& dt) {
       menuLoadButton->setVisible(true);
       menuSaveButton->setVisible(true);
       menuMenuButton->setVisible(true);
-      indicator->setVisible(true);
+      indicator->setVisible(false); // Kinda broken right now, so just keep it false
 
   }
 
@@ -303,7 +306,9 @@ void Level1Scene::Update(const double& dt) {
       countdown -= dt;
 
       ents.find("indicator")[0]->setPosition(menuIndex[curIndex] - Vector2f(-4.15f, (-7.f)));
-    
+      _buttonDefault = make_shared<Texture>();
+      _buttonSelected = make_shared<Texture>();
+
       if (sf::Keyboard::isKeyPressed(Keyboard::Down)) {
           if (curIndex < (menuIndex.size() - 1) && countdown <= 0) {
               countdown = 0.25f;
@@ -311,6 +316,25 @@ void Level1Scene::Update(const double& dt) {
               cout << curIndex << endl;
               cout << menuIndex[curIndex] << endl;
               ents.find("indicator")[0]->setPosition(menuIndex[curIndex] - Vector2f(-4.15f, (-7.f)));
+
+              if (curIndex == 1) {
+                  _buttonSelected->loadFromFile("res/pause/load_button_selected.png");
+                  menuLoadButton->GetCompatibleComponent<ButtonComponent>()[0]->setTexture(_buttonSelected);
+                  _buttonDefault->loadFromFile("res/pause/continue_button.png");
+                  menuContinueButton->GetCompatibleComponent<ButtonComponent>()[0]->setTexture(_buttonDefault);
+              }
+              else if (curIndex == 2) {
+                  _buttonSelected->loadFromFile("res/pause/save_button_selected.png");
+                  menuSaveButton->GetCompatibleComponent<ButtonComponent>()[0]->setTexture(_buttonSelected);
+                  _buttonDefault->loadFromFile("res/pause/load_button.png");
+                  menuLoadButton->GetCompatibleComponent<ButtonComponent>()[0]->setTexture(_buttonDefault);
+              }
+              else if (curIndex == 3) {
+                  _buttonSelected->loadFromFile("res/pause/menu_button_selected.png");
+                  menuMenuButton->GetCompatibleComponent<ButtonComponent>()[0]->setTexture(_buttonSelected);
+                  _buttonDefault->loadFromFile("res/pause/save_button.png");
+                  menuSaveButton->GetCompatibleComponent<ButtonComponent>()[0]->setTexture(_buttonDefault);
+              }
           }
       }
 
@@ -321,6 +345,25 @@ void Level1Scene::Update(const double& dt) {
               cout << curIndex << endl;
               cout << menuIndex[curIndex] << endl;
               ents.find("indicator")[0]->setPosition(menuIndex[curIndex] - Vector2f(-4.15f, (-7.f)));
+
+              if (curIndex == 0) {
+                  _buttonSelected->loadFromFile("res/pause/continue_button_selected.png");
+                  menuContinueButton->GetCompatibleComponent<ButtonComponent>()[0]->setTexture(_buttonSelected);
+                  _buttonDefault->loadFromFile("res/pause/load_button.png");
+                  menuLoadButton->GetCompatibleComponent<ButtonComponent>()[0]->setTexture(_buttonDefault);
+              }
+              else if (curIndex == 1) {
+                  _buttonSelected->loadFromFile("res/pause/load_button_selected.png");
+                  menuLoadButton->GetCompatibleComponent<ButtonComponent>()[0]->setTexture(_buttonSelected);
+                  _buttonDefault->loadFromFile("res/pause/save_button.png");
+                  menuSaveButton->GetCompatibleComponent<ButtonComponent>()[0]->setTexture(_buttonDefault);
+              }
+              else if (curIndex == 2) {
+                  _buttonSelected->loadFromFile("res/pause/save_button_selected.png");
+                  menuSaveButton->GetCompatibleComponent<ButtonComponent>()[0]->setTexture(_buttonSelected);
+                  _buttonDefault->loadFromFile("res/pause/menu_button.png");
+                  menuMenuButton->GetCompatibleComponent<ButtonComponent>()[0]->setTexture(_buttonDefault);
+              }
           }
       }
 
