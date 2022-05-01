@@ -145,7 +145,7 @@ void Level1Scene::Load() {
       e->getShape().setOrigin(Vector2f(10.f, 15.f));
 
       enemy->addComponent<EnemyTurretComponent>();
-      enemy->addComponent<EnemyAIComponent>();
+      enemy->addComponent<EnemyAIComponent>(true);
   }
 
       // HAZARD COLLIDERS

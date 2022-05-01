@@ -19,27 +19,20 @@ struct Location {
     int x, y;
 };
 
-template <> struct hash<Location> {
-    size_t operator () (const Location& id) const noexcept {
 
-        return hash<int>() (id.x ^ (id.y << 16));
-    }
-};
-
-class EnemyAIComponent : public ActorMovementComponent {
+class FollowComponent : public ActorMovementComponent {
 protected:
     float _delay;
     sf::Vector2f _direction;
     std::weak_ptr<Entity> _player;
     std::vector<Location> route;
     bool can_pathfind = true;
-    bool follow;
 public:
     void update(double dt) override;
 
-    explicit EnemyAIComponent(Entity* p, bool s);
+    explicit FollowComponent(Entity* p);
 
-    EnemyAIComponent() = delete;
+    FollowComponent() = delete;
 
     std::vector<Location> neighbors(Location id);
 
@@ -55,6 +48,6 @@ public:
         int k = b.x;
         int l = b.y;
 
-        return sqrt((k - i)^2 + (l - j)^2);
+        return sqrt((k - i) ^ 2 + (l - j) ^ 2);
     };
 };
