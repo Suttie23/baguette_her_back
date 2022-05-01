@@ -28,11 +28,11 @@ wfffff                               w
 w        ff                          w
 w            ff                      w
 w                                    w
-w               f                    w
-wffff       fffffffffffffffffffffffffw
+w       v       f                    w
+wfffft      fffffffffffffffffffffffffw
 w       ff                           w
 w          ff                        w
-w                                    w
+w                        l           w
 w           fff                      w
 w       ff f    ff   ff              w
 w      f                   f         w
@@ -40,5 +40,5 @@ w     f                  ffffffffffffw
 w    f                ff             w
 w  s              ff                 w
 w  f         ff                      w
-wn        ff                         w
+wc        ff                       x w
 wfffhhhhfffffffhhhfffffffffffffffffffw

@@ -1,11 +1,12 @@
 #include "move_vertical.h"
+#include "cmp_hurt_player.h"
 
 using namespace std;
 using namespace sf;
 
 void VerticalComponent::update(double dt) {
     auto mov = _direction * (float)(dt * _speed);
-    mov.x += _direction.y * 16.f;
+    mov.y += _direction.y * 16.f;
     if (!validMove(_parent->getPosition() + mov)) {
         _direction *= -1.f;
     }

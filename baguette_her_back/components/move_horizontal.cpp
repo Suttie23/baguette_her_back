@@ -1,4 +1,5 @@
 #include "move_horizontal.h"
+#include "cmp_hurt_player.h"
 
 using namespace std;
 using namespace sf;
