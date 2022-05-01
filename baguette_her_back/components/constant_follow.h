@@ -14,18 +14,24 @@ using namespace std;
 using namespace sf;
 
 
-struct Location {
+struct Coord {
 
     int x, y;
 };
 
+template <> struct hash<Coord> {
+    size_t operator () (const Coord& id) const noexcept {
+
+        return hash<int>() (id.x ^ (id.y << 16));
+    }
+};
 
 class FollowComponent : public ActorMovementComponent {
 protected:
     float _delay;
     sf::Vector2f _direction;
     std::weak_ptr<Entity> _player;
-    std::vector<Location> route;
+    std::vector<Coord> route;
     bool can_pathfind = true;
 public:
     void update(double dt) override;
@@ -34,15 +40,15 @@ public:
 
     FollowComponent() = delete;
 
-    std::vector<Location> neighbors(Location id);
+    std::vector<Coord> neighbors(Coord id);
 
-    int cost(Location from_node, Location to_node);
+    int cost(Coord from_node, Coord to_node);
 
-    inline double heuristic(Location a, Location b);
+    inline double heuristic(Coord a, Coord b);
 
-    std::vector<Location> pathFinding();
+    std::vector<Coord> pathFinding();
 
-    double dist(Location a, Location b) {
+    double dist(Coord a, Coord b) {
         int i = a.x;
         int j = a.y;
         int k = b.x;

@@ -4,11 +4,11 @@
 #include <unordered_set>
 //#include "LevelSystem.h"
 
-size_t operator==(Location const& a, Location const& b) {
+size_t operator==(Coord const& a, Coord const& b) {
     return (a.x == b.x && a.y == b.y);
 }
 
-size_t operator<(Location const& a, Location const& b) {
+size_t operator<(Coord const& a, Coord const& b) {
     return (a.y < b.y);
 }
 
@@ -33,10 +33,10 @@ struct PriorityQueue {
     }
 };
 
-array<Location, 4> DIRS = {
+array<Coord, 4> DIRS = {
     /* East, West, North, South */
-    Location{1, 0}, Location{-1, 0},
-    Location{0, -1}, Location{0, 1}
+    Coord{1, 0}, Coord{-1, 0},
+    Coord{0, -1}, Coord{0, 1}
 };
 
 void FollowComponent::update(double dt) {
@@ -49,7 +49,7 @@ void FollowComponent::update(double dt) {
         if (can_pathfind) {
 
             route = pathFinding();
-            !can_pathfind;
+            
             //for (int i = 0; i < route.size(); i++) {
                 //std::cout << "~~~~~~" << std::endl;
                 //std::cout << route[i].x << std::endl;
@@ -62,13 +62,12 @@ void FollowComponent::update(double dt) {
     if (_delay <= 0.f && !route.empty()) {
         disp.x = (route.front().x * 1.f);
         disp.y = (route.front().y * 1.f);
-        //std::cout << "moving enemy" << std::endl;
+
         _parent->setPosition(disp);
-        //std::cout << _parent->getPosition() << std::endl;
+
         route.clear();
-        std::cout << "I'm onto you" << std::endl;
-        //std::cout << route.size() << std::endl;
-        _delay = 0.05f;
+
+        _delay = 0.65f;
 
     }
 
@@ -101,16 +100,16 @@ FollowComponent::FollowComponent(Entity* p) : ActorMovementComponent(p) {
     _player = (_parent->scene->ents.find("player")[0]);
 }
 
-std::vector<Location> FollowComponent::pathFinding() {
-    vector<Location> path;
+std::vector<Coord> FollowComponent::pathFinding() {
+    vector<Coord> path;
 
     Vector2f begin = (_parent->getPosition());
-    Location start;
+    Coord start;
 
     start.x = (int)floor(begin.x);
     start.y = (int)floor(begin.y);
 
-    Location goal;
+    Coord goal;
     Vector2f end;
     if (auto pl = _player.lock()) {
         end = (pl->getPosition());
@@ -126,25 +125,25 @@ std::vector<Location> FollowComponent::pathFinding() {
     //std::cout << end << std::endl;
     //std::cout << goal.x << std::endl;
 
-    unordered_map<Location, Location> came_from;
-    unordered_map<Location, int> cost_so_far;
-    PriorityQueue<Location, double> frontier;
-    //queue<Location> frontier;
+    unordered_map<Coord, Coord> came_from;
+    unordered_map<Coord, int> cost_so_far;
+    PriorityQueue<Coord, double> frontier;
+    //queue<Coord> frontier;
     //frontier.put(start, 0);
-    if (begin != end) {
+    
         frontier.put(start, 0);
         came_from[start] = start;
         cost_so_far[start] = 0;
         //std::cout << frontier.empty() << std::endl;
         while (!frontier.empty()) {
-            Location current = frontier.get();
+            Coord current = frontier.get();
 
             if (current.x == goal.x && current.y == goal.y) {
                 //std::cout << dist(current, goal) << std::endl;
                 break;
             }
 
-            for (Location next : neighbors(current)) {
+            for (Coord next : neighbors(current)) {
 
                 //std::cout << "~~~~~~" << std::endl;
                 //std::cout << next.x << std::endl;
@@ -160,7 +159,7 @@ std::vector<Location> FollowComponent::pathFinding() {
             }
         }
 
-        Location cur = goal;
+        Coord cur = goal;
         //std::cout << dist(cur, start) << std::endl;
         int counter = 0;
         while (cur.x != start.x && cur.y != start.y) {  // note: this will fail if no path found
@@ -174,15 +173,15 @@ std::vector<Location> FollowComponent::pathFinding() {
         return path;
 
 
-    }
+    
 }
 
 
-vector<Location> FollowComponent::neighbors(Location id) {
-    vector<Location> results;
-    for (Location dir : DIRS) {
+vector<Coord> FollowComponent::neighbors(Coord id) {
+    vector<Coord> results;
+    for (Coord dir : DIRS) {
 
-        Location next{ id.x + dir.x, id.y + dir.y };
+        Coord next{ id.x + dir.x, id.y + dir.y };
         Vector2f temp;
         temp.x = (float)next.x;
         temp.y = (float)next.y;
@@ -199,7 +198,7 @@ vector<Location> FollowComponent::neighbors(Location id) {
 };
 
 
-int FollowComponent::cost(Location from_node, Location to_node) {
+int FollowComponent::cost(Coord from_node, Coord to_node) {
     if (from_node.y < to_node.y) {
         return 2;
     }
@@ -210,6 +209,6 @@ int FollowComponent::cost(Location from_node, Location to_node) {
 
 
 
-inline double FollowComponent::heuristic(Location a, Location b) {
+inline double FollowComponent::heuristic(Coord a, Coord b) {
     return abs(a.x - b.x) + abs(a.y - b.y);
 }

@@ -64,27 +64,11 @@ void EnemyAIComponent::update(double dt) {
             disp.y = (route.front().y * 1.f);
             _parent->setPosition(disp);
 
-            if (follow) {
-                route.clear();
-               can_pathfind = !can_pathfind;
-                _delay = 0.6f;
-            }
-            else {
+            
                 route.front() = std::move(route.back());
                 route.pop_back();
-                _delay = 0.2f;
-                if (!can_pathfind) {
-                    if (route.empty()) {
-                        can_pathfind = !can_pathfind;
-                    }
-                }
-            }
-            //std::cout << _parent->getPosition() << std::endl;
-            //route.front() = std::move(route.back());
-           // route.pop_back();
-           
-            //std::cout << route.size() << std::endl;
-           
+                if(route.empty()){ can_pathfind = !can_pathfind; }
+                _delay = 0.02f;
 
         }
         
@@ -111,11 +95,11 @@ void EnemyAIComponent::update(double dt) {
     ActorMovementComponent::update(dt);
 }
 
-EnemyAIComponent::EnemyAIComponent(Entity* p, bool s) : ActorMovementComponent(p) {
+EnemyAIComponent::EnemyAIComponent(Entity* p) : ActorMovementComponent(p) {
     _direction = Vector2f(1.0f, 0);
     _speed = 100.0f;
     _player =(_parent->scene->ents.find("player")[0]);
-    follow = s;
+  
 }
 
 std::vector<Location> EnemyAIComponent::pathFinding() {

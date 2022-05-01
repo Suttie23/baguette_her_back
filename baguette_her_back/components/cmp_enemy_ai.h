@@ -33,11 +33,10 @@ protected:
     std::weak_ptr<Entity> _player;
     std::vector<Location> route;
     bool can_pathfind = true;
-    bool follow;
 public:
     void update(double dt) override;
 
-    explicit EnemyAIComponent(Entity* p, bool s);
+    explicit EnemyAIComponent(Entity* p);
 
     EnemyAIComponent() = delete;
 

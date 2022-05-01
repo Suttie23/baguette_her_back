@@ -2,8 +2,11 @@
 #include "../game.h"
 #include "../components/cmp_player_physics.h"
 #include "../components/cmp_sprite.h"
+#include "../components/constant_follow.h"
 #include "../components/cmp_enemy_turret.h"
 #include "../components/cmp_enemy_ai.h"
+#include "../components/move_horizontal.h"
+#include "../components/move_vertical.h"
 #include "../components/cmp_life.h"
 #include "../components/cmp_hurt_player.h"
 #include <SFML\Graphics\View.hpp>
@@ -145,7 +148,7 @@ void Level1Scene::Load() {
       e->getShape().setOrigin(Vector2f(10.f, 15.f));
 
       enemy->addComponent<EnemyTurretComponent>();
-      enemy->addComponent<EnemyAIComponent>(true);
+      enemy->addComponent<EnemyAIComponent>();
   }
 
       // HAZARD COLLIDERS

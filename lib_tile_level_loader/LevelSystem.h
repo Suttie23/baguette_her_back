@@ -22,7 +22,12 @@ public:
     START = 's',
     END = 'e',
     WALL = 'w',
+    TURRET = 't',
     FLOOR = 'f',
+    VERT_ENEMY = 'v',
+    HORIZ_ENEMY = 'l',
+    CHASE_ENEMY = 'c',
+    FOLLOW_ENEMY = 'x',
     ENEMY = 'n',
     WAYPOINT = '+',
     HAZARD = 'h'
