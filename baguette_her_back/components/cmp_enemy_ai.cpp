@@ -41,7 +41,10 @@ array<Location, 4> DIRS = {
 
 void EnemyAIComponent::update(double dt) {
     Vector2f disp;
-    auto pl = _player.lock();
+    //if (auto pl = _player.lock()) {
+        //std::cout << pl->getPosition() << std::endl;
+        //std::cout << "~~~~~~" << std::endl;
+    //}
     if (route.empty()) {
     if (can_pathfind) {
         
@@ -65,7 +68,7 @@ void EnemyAIComponent::update(double dt) {
             route.front() = std::move(route.back());
             route.pop_back();
             //std::cout << route.size() << std::endl;
-            _delay = 0.02f;
+            _delay = 0.05f;
 
         }
         
@@ -95,6 +98,7 @@ void EnemyAIComponent::update(double dt) {
 EnemyAIComponent::EnemyAIComponent(Entity* p) : ActorMovementComponent(p) {
     _direction = Vector2f(1.0f, 0);
     _speed = 100.0f;
+    _player =(_parent->scene->ents.find("player")[0]);
 }
 
 std::vector<Location> EnemyAIComponent::pathFinding() {
@@ -110,10 +114,10 @@ std::vector<Location> EnemyAIComponent::pathFinding() {
     Vector2f end;
     if (auto pl = _player.lock()) {
         end = (pl->getPosition());
-        std::cout << "player lock worked" << std::endl;
+        //std::cout << "player lock worked" << std::endl;
     }
     else {
-        end = { 846.f, 1000.f };
+        end = { 800.f, 1000.f };
     }
     goal.x = (int)floor(end.x);
     goal.y = (int)floor(end.y);
@@ -160,28 +164,16 @@ std::vector<Location> EnemyAIComponent::pathFinding() {
         //std::cout << dist(cur, start) << std::endl;
         int counter = 0;
         while (cur.x != start.x && cur.y != start.y) {  // note: this will fail if no path found
-            //std::cout << "getting path" << std::endl;
             
                 path.push_back(cur);
             
             cur = came_from[cur];
 
-            //counter++;
-            //if (counter > came_from.size()) {
-
-                //break;
-            //}
         }
 
-        //path.push_back(start); // optional
-        //std::reverse(path.begin(), path.end());
-        //std::cout << path.size() << std::endl;
-        cout << "returned path" << endl;
         return path;
         
-        //vector<Location> path;
-         //std::cout << path.size() << std::endl;
-        //return path;
+    
     }
 }
 
