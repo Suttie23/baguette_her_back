@@ -77,7 +77,7 @@ void Level1Scene::Load() {
   bg.setPosition(Vector2f(0, 2));
   setBackground(bg);
 
-
+  
   // Add physics colliders + textures to level tiles.
   {
       // WALL COLLIDERS
@@ -96,7 +96,7 @@ void Level1Scene::Load() {
               auto phy = e->addComponent<PhysicsComponent>(false, Vector2f(40.f, 40.f));
           }
       }
-
+     
       // FLOOR COLLIDERS
       {
           _texture = make_shared<Texture>();
@@ -144,7 +144,7 @@ void Level1Scene::Load() {
       e->getShape().setFillColor(Color::Magenta);
       e->getShape().setOrigin(Vector2f(10.f, 15.f));
 
-      //enemy->addComponent<EnemyTurretComponent>();
+      enemy->addComponent<EnemyTurretComponent>();
       enemy->addComponent<EnemyAIComponent>();
   }
 
@@ -235,6 +235,7 @@ void Level1Scene::Load() {
   cout << " Scene 1 Load Done" << endl;
 
   setLoaded(true);
+
 }
 
 
@@ -252,7 +253,8 @@ void Level1Scene::Update(const double& dt) {
     Renderer::view.setSize(Vector2f(Engine::getWindowSize()) * Vector2f(0.5f, 0.55f));
     Renderer::view.setCenter(Vector2f(player->getPosition().x, player->getPosition().y - 50));
 
-
+    //std::cout << player->getPosition().x << std::endl;
+    //std::cout << player->getPosition().y << std::endl;
   // If the player is dead, game over. 
   if (!player->isAlive()) {     
       this->levelTrack.stop();

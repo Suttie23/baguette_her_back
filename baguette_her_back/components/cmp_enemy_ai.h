@@ -28,11 +28,12 @@ template <> struct hash<Location> {
 
 class EnemyAIComponent : public ActorMovementComponent {
 protected:
+    float _delay;
     sf::Vector2f _direction;
     std::weak_ptr<Entity> _player;
     std::vector<Location> route;
     std::shared_ptr<Entity> testz = _player.lock();
-    bool test = true;
+    bool can_pathfind = true;
 public:
     void update(double dt) override;
 
@@ -54,6 +55,6 @@ public:
         int k = b.x;
         int l = b.y;
 
-        return sqrt((k - i) ^ 2 + (l - j) ^ 2);
+        return sqrt((k - i)^2 + (l - j)^2);
     };
 };

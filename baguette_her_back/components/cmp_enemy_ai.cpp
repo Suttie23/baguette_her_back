@@ -1,7 +1,8 @@
-
+#include "cmp_hurt_player.h"
+#include "engine.h"
 #include "cmp_enemy_ai.h"
 #include <unordered_set>
-
+//#include "LevelSystem.h"
 
 size_t operator==(Location const& a, Location const& b) {
     return (a.x == b.x && a.y == b.y);
@@ -34,17 +35,41 @@ struct PriorityQueue {
 
 array<Location, 4> DIRS = {
     /* East, West, North, South */
-    Location{15, 0}, Location{-15, 0},
-    Location{0, -15}, Location{0, 15}
+    Location{1, 0}, Location{-1, 0},
+    Location{0, -1}, Location{0, 1}
 };
 
 void EnemyAIComponent::update(double dt) {
-    if (test) {
-        if (route.empty()) {
+    Vector2f disp;
+    auto pl = _player.lock();
+    if (route.empty()) {
+    if (can_pathfind) {
+        
             route = pathFinding();
-            test = false;
+            !can_pathfind;
+            //for (int i = 0; i < route.size(); i++) {
+                //std::cout << "~~~~~~" << std::endl;
+                //std::cout << route[i].x << std::endl;
+                //std::cout << route[i].y << std::endl;
+            //}
         }
     }
+        
+        _delay -= dt;
+        if  (_delay<=0.f && !route.empty()) {
+            disp.x = (route.front().x * 1.f);
+            disp.y = (route.front().y * 1.f);
+            //std::cout << "moving enemy" << std::endl;
+            _parent->setPosition(disp);
+            //std::cout << _parent->getPosition() << std::endl;
+            route.front() = std::move(route.back());
+            route.pop_back();
+            //std::cout << route.size() << std::endl;
+            _delay = 0.02f;
+
+        }
+        
+   // }
 /*
      Vector2f disp;
      disp.x = (route.front().x * 1.f);
@@ -84,12 +109,11 @@ std::vector<Location> EnemyAIComponent::pathFinding() {
     Location goal;
     Vector2f end;
     if (auto pl = _player.lock()) {
-        end.x = (pl->getPosition().x);
-        end.y = (pl->getPosition().y);
+        end = (pl->getPosition());
+        std::cout << "player lock worked" << std::endl;
     }
     else {
-        end.x = 50.f;
-        end.y = 400.f;
+        end = { 846.f, 1000.f };
     }
     goal.x = (int)floor(end.x);
     goal.y = (int)floor(end.y);
@@ -101,62 +125,83 @@ std::vector<Location> EnemyAIComponent::pathFinding() {
     unordered_map<Location, Location> came_from;
     unordered_map<Location, int> cost_so_far;
     PriorityQueue<Location, double> frontier;
-    frontier.put(start, 0);
-   
-    came_from[start] = start;
-    cost_so_far[start] = 0;
-    std::cout << frontier.empty() << std::endl;
-    while (frontier.empty()) {
-        Location current = frontier.get();
+    //queue<Location> frontier;
+    //frontier.put(start, 0);
+    if (begin != end) {
+        frontier.put(start, 0);
+        came_from[start] = start;
+        cost_so_far[start] = 0;
+        //std::cout << frontier.empty() << std::endl;
+        while (!frontier.empty()) {
+            Location current = frontier.get();
 
-        if ((current.x == goal.x && current.y == goal.y) || (dist(current, goal) < 20)) {
-            break;
-        }
-        std::cout << "got here" << std::endl;
-        for (Location next : neighbors(current)) {
-            int new_cost = cost_so_far[current] + cost(current, next);
-            if ((cost_so_far.find(next) == cost_so_far.end()) || (new_cost < cost_so_far[next])) {
-                cost_so_far[next] = new_cost;
-                double priority = new_cost + heuristic(next, goal);
-                frontier.put(next, priority);
-                came_from[next] = current;
+            if (current.x == goal.x && current.y == goal.y) {
+                //std::cout << dist(current, goal) << std::endl;
+                break;
+            }
+            
+            for (Location next : neighbors(current)) {
+                
+                //std::cout << "~~~~~~" << std::endl;
+                //std::cout << next.x << std::endl;
+                //std::cout << next.y << std::endl;
+                int new_cost = cost_so_far[current] + cost(current, next);
+
+                if ((cost_so_far.find(next) == cost_so_far.end()) || (new_cost < cost_so_far[next])) {
+                    cost_so_far[next] = new_cost;
+                    double priority = new_cost + heuristic(next, goal);
+                    frontier.put(next, priority);
+                    came_from[next] = current;
+                }
             }
         }
+
+        Location cur = goal;
+        //std::cout << dist(cur, start) << std::endl;
+        int counter = 0;
+        while (cur.x != start.x && cur.y != start.y) {  // note: this will fail if no path found
+            //std::cout << "getting path" << std::endl;
+            
+                path.push_back(cur);
+            
+            cur = came_from[cur];
+
+            //counter++;
+            //if (counter > came_from.size()) {
+
+                //break;
+            //}
+        }
+
+        //path.push_back(start); // optional
+        //std::reverse(path.begin(), path.end());
+        //std::cout << path.size() << std::endl;
+        cout << "returned path" << endl;
+        return path;
+        
+        //vector<Location> path;
+         //std::cout << path.size() << std::endl;
+        //return path;
     }
-    std::cout << came_from.size() << std::endl;
-    std::cout << cost_so_far.size() << std::endl;
-    Location cur = goal;
-    /*
-    while ((!(cur.x == start.x && cur.y == start.y)) || dist(cur, start) >= 20) {  // note: this will fail if no path found
-        path.push_back(cur);
-        cur = came_from[cur];
-    }
-    
-    //path.push_back(begin); // optional
-    std::reverse(path.begin(), path.end());
-    std::cout << path.size() << std::endl;
-    */
-    return path;
-    
-    //vector<Location> path;
-     //std::cout << path.size() << std::endl;
-    //return path;
 }
 
 
 vector<Location> EnemyAIComponent::neighbors(Location id) {
     vector<Location> results;
-
     for (Location dir : DIRS) {
+        
         Location next{ id.x + dir.x, id.y + dir.y };
         Vector2f temp;
         temp.x = (float)next.x;
         temp.y = (float)next.y;
-        if (validMove(_parent->getPosition() + temp)) {
+ 
+        if (validMove(temp)) {
             results.push_back(next);
+            
         }
+        //std::cout << "got here5" << std::endl;
     }
-
+    
     return results;
 
 };
