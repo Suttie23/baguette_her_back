@@ -438,6 +438,7 @@ void Level1Scene::Update(const double& dt) {
               }
           }
       }
+
       // Keyboard controls for the menu (Enter)
       if (sf::Keyboard::isKeyPressed(Keyboard::Enter)) {
           if (ents.find("indicator")[0]->getPosition() == menuIndex[0] - Vector2f(-4.15f, (-7.f))) { // Continue
@@ -486,11 +487,7 @@ void Level1Scene::Update(const double& dt) {
               indicator->setVisible(false);
               Engine::ChangeScene(&menu);
               this->levelTrack.stop();
-<<<<<<< Updated upstream
               std::this_thread::sleep_for(std::chrono::milliseconds(500));
-=======
-              std::this_thread::sleep_for(std::chrono::milliseconds(250));
->>>>>>> Stashed changes
               menuIndex.clear(); // Ensures that the index does not stack each time the game is paused
           }
       }
