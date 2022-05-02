@@ -38,7 +38,7 @@ void EnemyTurretComponent::fire() const {
   if (auto pl = _player.lock()) {
 
 	  Vector2f direction(pl->getPosition().x - _parent->getPosition().x, pl->getPosition().y - _parent->getPosition().y);
-	  cout << direction << endl;
+	  //cout << direction << endl;
 	  float length_vector = sqrt(pow(direction.x, 2) + pow(direction.y, 2));
 	  p->impulse(direction / length_vector * _speed);
 

@@ -67,7 +67,7 @@ void FollowComponent::update(double dt) {
 
         route.clear();
 
-        _delay = 0.75f;
+        _delay = 0.65f;
 
     }
 

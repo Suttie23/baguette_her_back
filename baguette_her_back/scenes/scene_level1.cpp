@@ -150,7 +150,7 @@ void Level1Scene::Load() {
       e->getShape().setOrigin(Vector2f(10.f, 15.f));
       
   }
-  */
+ 
   //Create turret
   {
       enemy = makeEntity();
@@ -162,7 +162,7 @@ void Level1Scene::Load() {
 
       enemy->addComponent<EnemyTurretComponent>();
   }
-  
+   */
   //Create follow enemy (follow enemy actively keeps locking onto player position and moves towards the player at all times, hope you brought your running shoes)
   {
       enemy = makeEntity();
@@ -176,7 +176,7 @@ void Level1Scene::Load() {
       enemy->addComponent<FollowComponent>();
   }
 
-  
+  /*
   //Create chase enemy (chase enemy lock onto player position and travels to that position even if player isn't there anymore, gets lonely if you're too far away)
   {
       enemy = makeEntity();
@@ -215,7 +215,7 @@ void Level1Scene::Load() {
 
       enemy->addComponent<VerticalComponent>();
   }
-  
+   */
 
       // HAZARD COLLIDERS
       {
