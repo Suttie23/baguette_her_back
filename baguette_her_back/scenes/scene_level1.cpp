@@ -139,9 +139,8 @@ void Level1Scene::Load() {
       Renderer::view.setSize(Vector2f(Engine::getWindowSize()) * Vector2f(0.5f, 0.55f));
       Renderer::view.setCenter(Vector2f(player->getPosition().x, player->getPosition().y - 50));    
   }
-
-
-  //Create vertically moving enemy
+  
+  // Create Verticle Enemy
   {
       auto movingBarrier = ls::findTiles(ls::VERT_ENEMY);
       for (auto mb : movingBarrier) {
@@ -159,8 +158,7 @@ void Level1Scene::Load() {
 
   }
 
-  //Create a rat enemy
-
+  // Create Horizontal Enemy
   {
       auto rat = ls::findTiles(ls::HORIZ_ENEMY);
       for (auto r : rat) {
@@ -212,7 +210,7 @@ void Level1Scene::Load() {
       }
 
   }
-  
+   */
 
       // HAZARD COLLIDERS
       {
