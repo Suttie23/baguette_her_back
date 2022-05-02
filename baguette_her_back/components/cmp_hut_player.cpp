@@ -31,3 +31,16 @@ void HurtComponentHazard::update(double dt) {
 
 HurtComponentHazard::HurtComponentHazard(Entity* p)
     : Component(p), _player(_parent->scene->ents.find("player")[0]) {}
+
+// MOVING BARRIER DAMAGE
+
+void HurtComponentBarrier::update(double dt) {
+    if (auto pl = _player.lock()) {
+        if (length(pl->getPosition() - _parent->getPosition()) < 20.0) {
+            pl->get_components<LifeComponent>()[0]->reduceLives();
+        }
+    }
+}
+
+HurtComponentBarrier::HurtComponentBarrier(Entity* p)
+    : Component(p), _player(_parent->scene->ents.find("player")[0]) {}

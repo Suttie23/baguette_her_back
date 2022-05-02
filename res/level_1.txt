@@ -3,42 +3,42 @@ w                                    w
 w                                    w
 w                                    w
 w                                    w
+wffffffffffffffffffffffffffffffffffffw
+wffffffffffffffffffffffffffffffffffffw
+wffffffffffffffffffffffffffffffffffffw
+wffffffffffffffffffffffffffffffffffffw
+wffffffffffffffffffffffffffffffffffffw
+wffffffffffffffffffffffffffffffffffffw
+wffffffffffffffffffffffffffffffffffffw
+wffffffffffffffffffffffffffffffffffffw
+w      w                             w
+we     w                             w
+wff    w                             w
+w      w         t                   w
+w     ffff      f  fff               w
 w                                    w
+w  f                                tw
+w   f                               fw
+w    f  vv          vv               w
+wfffffffffffhhhhhhffffffffffff       w
+wffffffffffffffffffffffffffffff      w
+w                               f    w
 w                                    w
-w                                    w
-w                                    w
-w                                    w
-w                                    w
-w                                    w
-wffffff                              w
-w                                    w
-w                                    w
-w                                    w
-w                                    w
-wfffffffffffffffffffffffffffffff    fw
-w                                    w
-w                                ff  w
-w                             ff     w
-w                          ff        w
-w                      ff            w
-w               ff                   w
-w        ff                          w
-w   f                                w
-wfffff                               w
-w        ff                          w
-w            ff                      w
-w                                    w
-w       v       f                    w
-wfffft      fffffffffffffffffffffffffw
+w     v   v                         fw
+w   ffffffffff                     fww
+w                                 fwww
+wf           t                   fwwww
+wfff        fffffffffhhhhhfffffffffffw
+wffff       fffffffffffffffffffffffffw
 w       ff                           w
-w          ff                        w
-w                        l           w
-w           fff                      w
-w       ff f    ff   ff              w
-w      f                   f         w
-w     f                  ffffffffffffw
-w    f                ff             w
-w  s              ff                 w
-w  f         ff                      w
-wc        ff                       x w
-wfffhhhhfffffffhhhfffffffffffffffffffw
+w                                    w
+w   f                                w
+w                                    w
+wf                                   w
+wl                 lf                w
+wfffffffffffffffffffffhhhhhfffff     w
+wffffffffffffffffffffffffffffffff    w
+w                                   fw
+w                                    w
+w s       v   v   v   v          f   w
+wfffhhhhfffffffhhffhhffffffffffffffffw

@@ -25,3 +25,15 @@ public:
 	explicit HurtComponentHazard(Entity* p);
 	HurtComponentHazard() = delete;
 };
+
+class HurtComponentBarrier : public Component {
+protected:
+	void fire() const;
+	std::weak_ptr<Entity> _player;
+
+public:
+	void update(double dt) override;
+	void render() override {}
+	explicit HurtComponentBarrier(Entity* p);
+	HurtComponentBarrier() = delete;
+};
