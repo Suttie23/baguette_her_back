@@ -2,6 +2,7 @@
 
 Coursework Submission for Games Engineering SET09121.
 Contributors: Michael Thomas Suttie & Mikolaj Figiel
+NOTE: This game was for a university project and is likely buggy as hell - Development may continue, but for now, this is the final prototype.
 
 Itch.io: https://suttie.itch.io/baguette-her-back
 
