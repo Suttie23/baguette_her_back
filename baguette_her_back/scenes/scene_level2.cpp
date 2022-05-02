@@ -75,14 +75,14 @@ void Level2Scene::Load() {
     background_text = make_shared<Texture>();
     background_text->loadFromFile("res/level_assets/roof.jpg");
     Sprite bg(*background_text);
-    bg.setPosition(Vector2f(0, 2));
+    bg.setPosition(Vector2f(0, -100));
     setBackground(bg);
 
 
     //make walls
     {
         _texture = make_shared<Texture>();
-        _texture->loadFromFile("res/level_assets/wall.png");
+        _texture->loadFromFile("res/level_assets/brick.png");
         auto walls = ls::findTiles(ls::WALL);
         for (auto w : walls) {
             auto pos = ls::getTilePosition(w);
@@ -99,7 +99,7 @@ void Level2Scene::Load() {
     //make floors
     {
         _texture = make_shared<Texture>();
-        _texture->loadFromFile("res/level_assets/cloud.png");
+        _texture->loadFromFile("res/level_assets/brick.png");
         auto floor = ls::findTiles(ls::FLOOR);
         for (auto w : floor) {
             auto pos = ls::getTilePosition(w);
@@ -113,6 +113,23 @@ void Level2Scene::Load() {
 
         }
     }
+
+    //Create door texture
+    {
+        auto door = ls::findTiles(ls::END);
+        for (auto d : door) {
+            Vector2f pos = ls::getTilePosition(d);
+            auto d = makeEntity();
+            d->setPosition(pos);
+            _texture = make_shared<Texture>();
+            _texture->loadFromFile("res/level_assets/door.png");
+            auto s = d->addComponent<SpriteComponent>();
+            s->setTexture(_texture);
+            s->getSprite().setOrigin(Vector2f(0.f, 1.f));
+        }
+
+    }
+
   // Create player
   {
       player = makeEntity();

@@ -210,7 +210,6 @@ void Level1Scene::Load() {
       }
 
   }
-   */
 
       // HAZARD COLLIDERS
       {
@@ -328,7 +327,7 @@ void Level1Scene::Update(const double& dt) {
 
   // If the player is at the end of the level, change to next scene
   if (ls::getTileAt(player->getPosition()) == ls::END) {
-      Engine::ChangeScene((Scene*)&menu);
+      Engine::ChangeScene((Scene*)&level2);
       levelTrack.stop();
   }
   else {
