@@ -142,17 +142,17 @@ void Level1Scene::Load() {
 
 
   //Create vertically moving enemy
-
   {
       auto movingBarrier = ls::findTiles(ls::VERT_ENEMY);
       for (auto mb : movingBarrier) {
           Vector2f pos = ls::getTilePosition(mb);
           auto mb = makeEntity();
           mb->setPosition(pos);
-          auto s = mb->addComponent<ShapeComponent>();
-          s->setShape<sf::RectangleShape>(Vector2f(20.f, 40.f));
-          s->getShape().setFillColor(Color::Blue);
-          s->getShape().setOrigin(Vector2f(10.f, 15.f));
+          _texture = make_shared<Texture>();
+          _texture->loadFromFile("res/level_assets/spike_barrier.png");
+          auto s = mb->addComponent<SpriteComponent>();
+          s->setTexture(_texture);
+          s->getSprite().setOrigin(Vector2f(10.f, 15.f));
           mb->addComponent<VerticalComponent>();
           mb->addComponent<HurtComponentBarrier>();
       }
@@ -191,6 +191,22 @@ void Level1Scene::Load() {
           s->getShape().setOrigin(Vector2f(10.f, 15.f));
           ab->addComponent<EnemyTurretComponent>();
 
+      }
+
+  }
+
+  //Create door texture
+  {
+      auto door = ls::findTiles(ls::END);
+      for (auto d : door) {
+          Vector2f pos = ls::getTilePosition(d);
+          auto d = makeEntity();
+          d->setPosition(pos);
+          _texture = make_shared<Texture>();
+          _texture->loadFromFile("res/level_assets/door.png");
+          auto s = d->addComponent<SpriteComponent>();
+          s->setTexture(_texture);
+          s->getSprite().setOrigin(Vector2f(0.f, 15.f));
       }
 
   }
