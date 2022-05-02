@@ -139,81 +139,78 @@ void Level1Scene::Load() {
       Renderer::view.setSize(Vector2f(Engine::getWindowSize()) * Vector2f(0.5f, 0.55f));
       Renderer::view.setCenter(Vector2f(player->getPosition().x, player->getPosition().y - 50));    
   }
-  /*
-  // Create enemy
-  {
-      enemy = makeEntity();
-      enemy->setPosition(ls::getTilePosition(ls::findTiles(ls::ENEMY)[0]));
-      auto e = enemy->addComponent<ShapeComponent>();
-      e->setShape<sf::RectangleShape>(Vector2f(20.f, 30.f));
-      e->getShape().setFillColor(Color::Magenta);
-      e->getShape().setOrigin(Vector2f(10.f, 15.f));
-      
-  }
-  */
-  //Create turret
-  {
-      enemy = makeEntity();
-      enemy->setPosition(ls::getTilePosition(ls::findTiles(ls::TURRET)[0]));
-      auto e = enemy->addComponent<ShapeComponent>();
-      e->setShape<sf::RectangleShape>(Vector2f(20.f, 30.f));
-      e->getShape().setFillColor(Color::Black);
-      e->getShape().setOrigin(Vector2f(10.f, 15.f));
 
-      enemy->addComponent<EnemyTurretComponent>();
-  }
-  
-  //Create follow enemy (follow enemy actively keeps locking onto player position and moves towards the player at all times, hope you brought your running shoes)
-  {
-      enemy = makeEntity();
-      enemy->setPosition(ls::getTilePosition(ls::findTiles(ls::FOLLOW_ENEMY)[0]));
-      auto e = enemy->addComponent<ShapeComponent>();
-      e->setShape<sf::RectangleShape>(Vector2f(20.f, 30.f));
-      e->getShape().setFillColor(Color::Green);
-      e->getShape().setOrigin(Vector2f(10.f, 15.f));
-
-      enemy->addComponent<EnemyTurretComponent>();
-      enemy->addComponent<FollowComponent>();
-  }
-
-  
-  //Create chase enemy (chase enemy lock onto player position and travels to that position even if player isn't there anymore, gets lonely if you're too far away)
-  {
-      enemy = makeEntity();
-      enemy->setPosition(ls::getTilePosition(ls::findTiles(ls::CHASE_ENEMY)[0]));
-      auto e = enemy->addComponent<ShapeComponent>();
-      e->setShape<sf::RectangleShape>(Vector2f(20.f, 30.f));
-      e->getShape().setFillColor(Color::Yellow);
-      e->getShape().setOrigin(Vector2f(10.f, 15.f));
-
-      enemy->addComponent<EnemyTurretComponent>();
-      enemy->addComponent<EnemyAIComponent>();
-  }
-
-  
-  //Create horizontally moving enemy
-  {
-      enemy = makeEntity();
-      enemy->setPosition(ls::getTilePosition(ls::findTiles(ls::HORIZ_ENEMY)[0]));
-      auto e = enemy->addComponent<ShapeComponent>();
-      e->setShape<sf::RectangleShape>(Vector2f(20.f, 30.f));
-      e->getShape().setFillColor(Color::Red);
-      e->getShape().setOrigin(Vector2f(10.f, 15.f));
-
-      enemy->addComponent<HorizontalComponent>();
-  }
 
   //Create vertically moving enemy
+  {
+      auto movingBarrier = ls::findTiles(ls::VERT_ENEMY);
+      for (auto mb : movingBarrier) {
+          Vector2f pos = ls::getTilePosition(mb);
+          auto mb = makeEntity();
+          mb->setPosition(pos);
+          _texture = make_shared<Texture>();
+          _texture->loadFromFile("res/level_assets/spike_barrier.png");
+          auto s = mb->addComponent<SpriteComponent>();
+          s->setTexture(_texture);
+          s->getSprite().setOrigin(Vector2f(10.f, 15.f));
+          mb->addComponent<VerticalComponent>();
+          mb->addComponent<HurtComponentBarrier>();
+      }
+
+  }
+
+  //Create a rat enemy
 
   {
-      enemy = makeEntity();
-      enemy->setPosition(ls::getTilePosition(ls::findTiles(ls::VERT_ENEMY)[0]));
-      auto e = enemy->addComponent<ShapeComponent>();
-      e->setShape<sf::RectangleShape>(Vector2f(20.f, 30.f));
-      e->getShape().setFillColor(Color::Blue);
-      e->getShape().setOrigin(Vector2f(10.f, 15.f));
+      auto rat = ls::findTiles(ls::HORIZ_ENEMY);
+      for (auto r : rat) {
+          Vector2f pos = ls::getTilePosition(r);
+          auto r = makeEntity();
+          r->setPosition(pos);
+          _texture = make_shared<Texture>();
+          _texture->loadFromFile("res/sprites/rat.png");
+          auto s = r->addComponent<SpriteComponent>(); // SHOULD BE ANIMATED, BUT HAVE NO TIME
+          s->setTexture(_texture);
+          s->getSprite().setOrigin(Vector2f(10.f, -10.f));
+          r->addComponent<HorizontalComponent>();
+          r->addComponent<HurtComponentBarrier>();
+      }
 
-      enemy->addComponent<VerticalComponent>();
+  }
+
+  //Create a turret enemy
+
+  {
+      auto angrybread = ls::findTiles(ls::TURRET);
+      for (auto ab : angrybread) {
+          Vector2f pos = ls::getTilePosition(ab);
+          auto ab = makeEntity();
+          ab->setPosition(pos);
+          _texture = make_shared<Texture>();
+          _texture->loadFromFile("res/sprites/angry_bread1.png");
+          auto s = ab->addComponent<SpriteComponent>(); // SHOULD BE ANIMATED, BUT HAVE NO TIME
+          s->setTexture(_texture);
+          s->getSprite().setOrigin(Vector2f(10.f, 2.f));
+          ab->addComponent<EnemyTurretComponent>();
+
+      }
+
+  }
+
+  //Create door texture
+  {
+      auto door = ls::findTiles(ls::END);
+      for (auto d : door) {
+          Vector2f pos = ls::getTilePosition(d);
+          auto d = makeEntity();
+          d->setPosition(pos);
+          _texture = make_shared<Texture>();
+          _texture->loadFromFile("res/level_assets/door.png");
+          auto s = d->addComponent<SpriteComponent>();
+          s->setTexture(_texture);
+          s->getSprite().setOrigin(Vector2f(0.f, 1.f));
+      }
+
   }
   
 
@@ -334,6 +331,7 @@ void Level1Scene::Update(const double& dt) {
   // If the player is at the end of the level, change to next scene
   if (ls::getTileAt(player->getPosition()) == ls::END) {
       Engine::ChangeScene((Scene*)&menu);
+      levelTrack.stop();
   }
   else {
 
