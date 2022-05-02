@@ -3,6 +3,8 @@
 Coursework Submission for Games Engineering SET09121.
 Contributors: Michael Thomas Suttie & Mikolaj Figiel
 
+Itch.io: https://suttie.itch.io/baguette-her-back
+
 ## Overview
 
 A fun and light-hearted platformer that aims to be a true glu-ten out of ten. You must get to the goal 
