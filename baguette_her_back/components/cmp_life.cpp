@@ -2,10 +2,7 @@
 #include "cmp_blinking.h"
 #include "engine.h"
 #include "cmp_sprite.h"
-#include <SFML/Audio.hpp>
 #include <iostream>
-
-sf::SoundBuffer damagebuffer;
 
 void LifeComponent::update(double dt)
 {
@@ -53,12 +50,6 @@ void LifeComponent::reduceLives() {
 		_damaged = true;
 		_parent->addComponent<BlinkComponent>(0.3f);
 		std::cout << _lives << std::endl;
-		if (!damagebuffer.loadFromFile("res/sfx/damage_sound.ogg")) {
-			std::cout << "ERROR" << std::endl;
-		}
-		this->damage.setBuffer(damagebuffer);
-		this->damage.setVolume(15);
-		this->damage.play();
 	} 	
 }
 

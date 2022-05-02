@@ -29,7 +29,7 @@ int UserPreferences::LoadLeft()
         savefile >> left >> right >> up;
 
         return left;
-       
+
     }
 
 }
@@ -94,6 +94,6 @@ int UserPreferences::LoadUp()
 
 UserPreferences::UserPreferences() :
     // Fullscreen default = 7 (OFF), Fullscreen is activated when fullscreen(8)
-	fullscreen(7), video_resolution(Vector2f(1920,1080)), changed_fullscreen(false), changed_resolution(false), moveLeft(LoadLeft()), moveRight(LoadRight()), jump(LoadUp()) {
-} 
+    fullscreen(7), video_resolution(Vector2f(1920, 1080)), changed_fullscreen(false), changed_resolution(false), moveLeft(LoadLeft()), moveRight(LoadRight()), jump(LoadUp()) {
+}
 

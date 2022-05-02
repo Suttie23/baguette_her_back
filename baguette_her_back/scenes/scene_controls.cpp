@@ -22,7 +22,7 @@ void ControlsScene::Load() {
         _texture = make_shared<Texture>();
         _texture->loadFromFile("res/menu/menu_bg.png");
         bg->setTexture(_texture);
-        background->setPosition(Vector2f(0.0f, 0.0f));
+        background->setPosition(Vcast<float>(Engine::getWindowSize()) * Vector2f(0.0f, 0.0f));
 
         auto logo = makeEntity();
         auto lo = logo->addComponent<SpriteComponent>();
@@ -30,16 +30,6 @@ void ControlsScene::Load() {
         _texture->loadFromFile("res/menu/controls_title.png");
         lo->setTexture(_texture);
         logo->setPosition(Vcast<float>(Engine::getWindowSize()) * Vector2f(0.33f, 0.05f));
-
-        auto heading = makeEntity();
-        auto h = heading->addComponent<TextComponent>(
-            "KEY REBINDING");
-        heading->setPosition(Vcast<float>(Engine::getWindowSize()) * Vector2f(0.42f, 0.45f));
-
-        auto instructions = makeEntity();
-        auto i = instructions->addComponent<TextComponent>(
-            "TO REBIND - GO TO: bin/debug/config/user preferences");
-        instructions->setPosition(Vcast<float>(Engine::getWindowSize()) * Vector2f(0.10f, 0.55f));
 
     }
 

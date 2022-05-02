@@ -74,6 +74,7 @@ void Level1Scene::Load() {
   auto ho = Engine::getWindowSize().y - (ls::getHeight() * 40.f);
   ls::setOffset(Vector2f(0, 0));
 
+
   // Background
   background_text = make_shared<Texture>();
   background_text->loadFromFile("res/level_assets/game_bg.png");
@@ -261,7 +262,7 @@ void Level1Scene::Load() {
       menuContinueButton = makeEntity();
       auto mcb = menuContinueButton->addComponent<ButtonComponent>();
       _texture = make_shared<Texture>();
-      _texture->loadFromFile("res/pause/continue_button_selected.png");
+      _texture->loadFromFile("res/pause/continue_button.png");
       mcb->setTexture(_texture);
       menuContinueButton->setVisible(false);
 
@@ -297,7 +298,6 @@ void Level1Scene::Load() {
       s->getShape().setFillColor(Color(220, 140, 44, 128));
       s->getShape().setOrigin(Vector2f(5.f, 5.f));
       indicator->setVisible(false);
-      menuIndex.clear();
 
   }
 
@@ -487,16 +487,8 @@ void Level1Scene::Update(const double& dt) {
               indicator->setVisible(false);
               Engine::ChangeScene(&menu);
               this->levelTrack.stop();
-              std::this_thread::sleep_for(std::chrono::milliseconds(500));
               menuIndex.clear(); // Ensures that the index does not stack each time the game is paused
           }
-      }
-
-      if (player->GetCompatibleComponent<LifeComponent>()[0]->getLives() == 2) {
-          //cout << "2 lives left" << endl;
-      }
-      if (player->GetCompatibleComponent<LifeComponent>()[0]->getLives() == 1) {
-          //cout << "1 lives left" << endl;
       }
   }
      if (!_isPaused) {
