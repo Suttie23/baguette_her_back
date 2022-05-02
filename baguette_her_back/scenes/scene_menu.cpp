@@ -145,7 +145,7 @@ void MenuScene::Update(const double& dt) {
     if (sf::Keyboard::isKeyPressed(Keyboard::Enter) ||
         Joystick::isButtonPressed(0, Joystick::isButtonPressed(0, 1))) {
         if (ents.find("indicator")[0]->getPosition() == menuIndex[0] - Vector2f(-4.15f, (-7.f))) { // Play Game
-            Engine::ChangeScene(&level2);
+            Engine::ChangeScene(&level1);
             this->menuTheme.stop();
         }
         else if (ents.find("indicator")[0]->getPosition() == menuIndex[1] - Vector2f(-4.15f, (-7.f))) { // Options
