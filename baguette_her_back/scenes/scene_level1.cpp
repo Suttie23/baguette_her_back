@@ -262,7 +262,7 @@ void Level1Scene::Load() {
       menuContinueButton = makeEntity();
       auto mcb = menuContinueButton->addComponent<ButtonComponent>();
       _texture = make_shared<Texture>();
-      _texture->loadFromFile("res/pause/continue_button.png");
+      _texture->loadFromFile("res/pause/continue_button_selected.png");
       mcb->setTexture(_texture);
       menuContinueButton->setVisible(false);
 

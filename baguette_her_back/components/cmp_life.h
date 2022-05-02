@@ -10,10 +10,11 @@ private:
 	bool _damaged;
 	float _invincibleTime;
 public:
+	sf::Sound damage;
 	void update(double dt) override;
 	void render() override {};
 	int getLives();
-	void setLives( int lives );
+	void setLives(int lives);
 	void reduceLives();
 	void increaseLives();
 	explicit LifeComponent(Entity* p, int lives);
