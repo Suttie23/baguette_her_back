@@ -14,6 +14,26 @@ come strictly through the levels, no shops or money systems as frankly you donâ€
 resources to make any dough. Rye-s to the occasion and get back what was wrongfully taken from 
 you, but most of all have fun, no-one likes a sourdough.
 
+## Game Preview
+
+![menu](https://user-images.githubusercontent.com/76448183/166221627-34d26fe1-e5cb-417f-9dd4-778a822769da.PNG)
+The Main Menu
+<br> </br>
+
+
+![Jaque and Angry Bread](https://user-images.githubusercontent.com/76448183/166221668-39bd0f6a-4782-4a53-b083-cac4fb593c2d.PNG)
+Jaque and the Angry Bread Enemy
+<br> </br>
+
+![level 1 spawn](https://user-images.githubusercontent.com/76448183/166221805-cd5192cf-52f6-4919-88c5-9ad4efc56ec5.PNG)
+Spawn point for level 1
+<br> </br>
+
+https://user-images.githubusercontent.com/76448183/166222324-4c54bebe-09ca-4d34-9f57-ad26d0f20605.mp4
+
+Level 1 preview video
+<br> </br>
+
 ## Game Credits
 
 **Sound Effects**
