@@ -110,7 +110,11 @@ void PlayerPhysicsComponent::update(double dt) {
       Joystick::getAxisPosition(0, Joystick::X) < -10.0f || Joystick::getAxisPosition(0, Joystick::X) > 10.0f)
   {
     // Moving Either Left or Right
+<<<<<<< Updated upstream
     if (Keyboard::isKeyPressed(static_cast<Keyboard::Key>(user_preferences.moveRight)) ||
+=======
+      if (Keyboard::isKeyPressed(static_cast<Keyboard::Key>(user_preferences.moveRight)) ||
+>>>>>>> Stashed changes
         Joystick::getAxisPosition(0, Joystick::X) > 10.0f) {
       if (getVelocity().x < _maxVelocity.x)
         impulse({(float)(dt * _groundspeed), 0});

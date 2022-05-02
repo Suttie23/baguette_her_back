@@ -2,7 +2,10 @@
 #include"SFML\System\Vector2.hpp"
 #include "SFML\Window\WindowStyle.hpp"
 #include <SFML/Window/Keyboard.hpp>
+<<<<<<< Updated upstream
 #include<map>
+=======
+>>>>>>> Stashed changes
 #include <iostream>
 #include <fstream>
 

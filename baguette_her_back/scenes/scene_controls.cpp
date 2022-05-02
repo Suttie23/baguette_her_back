@@ -48,7 +48,7 @@ void ControlsScene::Load() {
 }
 
 void ControlsScene::Update(const double& dt) {
-    
+
     if (sf::Keyboard::isKeyPressed(Keyboard::Escape)) {
         Engine::ChangeScene((Scene*)&menu);
     }

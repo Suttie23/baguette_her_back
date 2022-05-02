@@ -4,6 +4,9 @@
 #include "cmp_sprite.h"
 #include <SFML/Audio.hpp>
 #include <iostream>
+#include <SFML/Audio.hpp>
+
+sf::SoundBuffer damagebuffer;
 
 sf::SoundBuffer damagebuffer;
 
