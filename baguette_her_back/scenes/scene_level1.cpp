@@ -167,10 +167,11 @@ void Level1Scene::Load() {
           Vector2f pos = ls::getTilePosition(r);
           auto r = makeEntity();
           r->setPosition(pos);
-          auto s = r->addComponent<ShapeComponent>();
-          s->setShape<sf::RectangleShape>(Vector2f(20.f, 30.f));
-          s->getShape().setFillColor(Color::Red);
-          s->getShape().setOrigin(Vector2f(10.f, 15.f));
+          _texture = make_shared<Texture>();
+          _texture->loadFromFile("res/sprites/rat.png");
+          auto s = r->addComponent<SpriteComponent>(); // SHOULD BE ANIMATED, BUT HAVE NO TIME
+          s->setTexture(_texture);
+          s->getSprite().setOrigin(Vector2f(10.f, -10.f));
           r->addComponent<HorizontalComponent>();
           r->addComponent<HurtComponentBarrier>();
       }
@@ -185,10 +186,11 @@ void Level1Scene::Load() {
           Vector2f pos = ls::getTilePosition(ab);
           auto ab = makeEntity();
           ab->setPosition(pos);
-          auto s = ab->addComponent<ShapeComponent>();
-          s->setShape<sf::RectangleShape>(Vector2f(20.f, 30.f));
-          s->getShape().setFillColor(Color::Red);
-          s->getShape().setOrigin(Vector2f(10.f, 15.f));
+          _texture = make_shared<Texture>();
+          _texture->loadFromFile("res/sprites/angry_bread1.png");
+          auto s = ab->addComponent<SpriteComponent>(); // SHOULD BE ANIMATED, BUT HAVE NO TIME
+          s->setTexture(_texture);
+          s->getSprite().setOrigin(Vector2f(10.f, 2.f));
           ab->addComponent<EnemyTurretComponent>();
 
       }
@@ -206,7 +208,7 @@ void Level1Scene::Load() {
           _texture->loadFromFile("res/level_assets/door.png");
           auto s = d->addComponent<SpriteComponent>();
           s->setTexture(_texture);
-          s->getSprite().setOrigin(Vector2f(0.f, 15.f));
+          s->getSprite().setOrigin(Vector2f(0.f, 1.f));
       }
 
   }

@@ -44,3 +44,16 @@ void HurtComponentBarrier::update(double dt) {
 
 HurtComponentBarrier::HurtComponentBarrier(Entity* p)
     : Component(p), _player(_parent->scene->ents.find("player")[0]) {}
+
+// RAT DAMAGE
+
+void HurtComponentRat::update(double dt) {
+    if (auto pl = _player.lock()) {
+        if (length(pl->getPosition() - _parent->getPosition()) < 60.0) {
+            pl->get_components<LifeComponent>()[0]->reduceLives();
+        }
+    }
+}
+
+HurtComponentRat::HurtComponentRat(Entity* p)
+    : Component(p), _player(_parent->scene->ents.find("player")[0]) {}
